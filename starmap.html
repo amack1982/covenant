@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Covenant of the Flowers — Relationship Web</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e14;color:#c8cdd4;font-family:'EB Garamond',serif;overflow:hidden;height:100vh;width:100vw}
+canvas{position:fixed;top:0;left:0;z-index:0}
+#aurora{z-index:0}
+#web{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1}
+svg{width:100%;height:100%}
+.node{cursor:pointer;transition:opacity 0.6s ease}
+.node text{font-family:'Cormorant Garamond',serif;font-weight:600;fill:#c8cdd4;pointer-events:none;transition:opacity 0.6s ease;text-anchor:middle}
+.node.dimmed{opacity:0.06}
+.node.dimmed text{opacity:0}
+.node:hover circle{filter:brightness(1.4)}
+.node.selected circle{filter:brightness(1.6)}
+.node.secondary{opacity:0.35}
+.node.secondary text{opacity:0.5}
+.link{cursor:pointer}
+.link:hover{filter:brightness(1.8)}
+#tooltip{position:fixed;z-index:10;background:rgba(14,18,26,0.92);border:1px solid rgba(200,205,212,0.15);border-radius:6px;padding:10px 14px;font-family:'EB Garamond',serif;font-size:14px;color:#c8cdd4;pointer-events:none;opacity:0;transition:opacity 0.2s;max-width:260px;backdrop-filter:blur(8px)}
+#tooltip .tt-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#e8ecf0;margin-bottom:4px}
+#tooltip .tt-detail{font-style:italic;color:#a0a8b4}
+#legend{position:fixed;bottom:20px;left:20px;z-index:5;font-size:13px;opacity:0.6;transition:opacity 0.3s}
+#legend:hover{opacity:1}
+.leg-row{display:flex;align-items:center;gap:8px;margin:4px 0}
+.leg-swatch{width:24px;height:3px;border-radius:2px}
+#title-bar{position:fixed;top:0;left:0;right:0;z-index:5;text-align:center;padding:18px 0 20px;background:linear-gradient(to bottom,rgba(10,14,20,0.9),transparent);pointer-events:none}
+#title-bar h1{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#8090a0;letter-spacing:0.15em}
+#title-bar .sub{font-size:13px;color:#506070;font-style:italic;margin-top:2px}
+#reset-btn{position:fixed;top:16px;right:20px;z-index:5;background:rgba(200,205,212,0.08);border:1px solid rgba(200,205,212,0.12);color:#8090a0;font-family:'EB Garamond',serif;font-size:13px;padding:6px 14px;border-radius:16px;cursor:pointer;opacity:0;transition:opacity 0.3s;pointer-events:none}
+#reset-btn.visible{opacity:0.7;pointer-events:auto}
+#reset-btn:hover{opacity:1;background:rgba(200,205,212,0.12)}
+#instructions{position:fixed;bottom:20px;right:20px;z-index:5;font-size:12px;color:#506070;text-align:right;opacity:0.5}
+#wormhole{position:fixed;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0;transition:opacity 0.3s}
+
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<canvas id="aurora"></canvas>
+<div id="web"><svg id="svg"></svg></div>
+<div id="wormhole"><canvas id="wh-canvas"></canvas></div>
+<div id="title-bar"><h1>RELATIONSHIP WEB</h1><div class="sub">The Covenant of the Flowers</div></div>
+<div id="tooltip"><div class="tt-name"></div><div class="tt-detail"></div></div>
+<button id="reset-btn">Reset View</button>
+<div id="legend">
+<div class="leg-row"><div class="leg-swatch" style="background:#e05050"></div> Family / Relative</div>
+<div class="leg-row"><div class="leg-swatch" style="background:#50c878"></div> Well-Known</div>
+<div class="leg-row"><div class="leg-swatch" style="background:#4a90d9"></div> Known</div>
+</div>
+<div id="instructions">Click a node to focus<br>Click a connection for details<br>Click empty space to reset</div>
+<script>
+const COLORS={family:'#e05050','well-known':'#50c878',known:'#4a90d9'};
+const canvas=document.getElementById('stars');const ctx=canvas.getContext('2d');let starParticles=[];
+function initStars(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;starParticles=[];for(let i=0;i<300;i++){starParticles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.2,a:Math.random()*0.5+0.1,speed:Math.random()*0.0008+0.0002,phase:Math.random()*Math.PI*2});}}
+function drawStars(t){ctx.clearRect(0,0,canvas.width,canvas.height);starParticles.forEach(s=>{const f1=Math.sin(t*s.speed*400+s.phase);const f2=Math.sin(t*s.speed*170+s.phase*2.7);const f3=Math.sin(t*s.speed*80+s.phase*0.4);const f=(f1*0.19+f2*0.115+f3*0.075+0.625);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(180,195,220,${s.a*f})`;ctx.fill();});requestAnimationFrame(drawStars);}
+initStars();requestAnimationFrame(drawStars);
+window.addEventListener('resize',()=>{initStars();layoutNodes();render();});
+
+
+// Aurora
+const aCanvas=document.getElementById('aurora');const aCtx=aCanvas.getContext('2d');
+function initAurora(){aCanvas.width=window.innerWidth;aCanvas.height=window.innerHeight;}
+initAurora();
+const auroraStreams=[
+  {yBase:0.75,amplitude:40,wavelength:800,speed:0.000015,hue:160,sat:60,light:35,alpha:0.15,width:120},
+  {yBase:0.78,amplitude:55,wavelength:600,speed:0.0000225,hue:180,sat:50,light:40,alpha:0.10,width:90},
+  {yBase:0.82,amplitude:35,wavelength:900,speed:0.0000125,hue:140,sat:45,light:30,alpha:0.12,width:140},
+  {yBase:0.72,amplitude:30,wavelength:700,speed:0.0000175,hue:200,sat:40,light:35,alpha:0.09,width:100},
+  {yBase:0.85,amplitude:45,wavelength:550,speed:0.000025,hue:170,sat:55,light:32,alpha:0.10,width:80},
+];
+function drawAurora(t){
+aCtx.clearRect(0,0,aCanvas.width,aCanvas.height);
+const cx=aCanvas.width/2;const cy=aCanvas.height/2+40;
+auroraStreams.forEach(s=>{
+aCtx.beginPath();
+const baseY=aCanvas.height*s.yBase;
+for(let x=0;x<aCanvas.width;x+=3){
+const dx=x-cx;const dy=baseY-cy;
+const dist=Math.sqrt(dx*dx+dy*dy);
+const distFade=Math.max(0,1-dist/(Math.min(aCanvas.width,aCanvas.height)*0.55));
+const wave=Math.sin((x+t*s.speed*1000)/s.wavelength*Math.PI*2)*s.amplitude;
+const wave2=Math.sin((x+t*s.speed*700)/s.wavelength*1.7*Math.PI*2)*s.amplitude*0.4;
+const y=baseY+wave+wave2;
+if(x===0)aCtx.moveTo(x,y);else aCtx.lineTo(x,y);
+}
+const grad=aCtx.createLinearGradient(0,aCanvas.height*s.yBase-s.width,0,aCanvas.height*s.yBase+s.width);
+grad.addColorStop(0,`hsla(${s.hue},${s.sat}%,${s.light}%,0)`);
+grad.addColorStop(0.3,`hsla(${s.hue},${s.sat}%,${s.light}%,${s.alpha})`);
+grad.addColorStop(0.5,`hsla(${s.hue},${s.sat}%,${s.light+5}%,${s.alpha*1.3})`);
+grad.addColorStop(0.7,`hsla(${s.hue},${s.sat}%,${s.light}%,${s.alpha})`);
+grad.addColorStop(1,`hsla(${s.hue},${s.sat}%,${s.light}%,0)`);
+aCtx.strokeStyle=grad;aCtx.lineWidth=s.width;aCtx.stroke();
+});
+requestAnimationFrame(drawAurora);
+}
+requestAnimationFrame(drawAurora);
+window.addEventListener('resize',()=>{initAurora();});
+
+const DATA={"characters":["Andrew","Robert","James","Jeff","Mark","Jason","Ashley","Sayuri","Sumire","Noah","Kojo","Jayne","April","Amy","Caleb","Silas","Chloe","Lena","Vancleve","Brandon","Layla","Elizabeth","Brent"],"relationships":[{"source":"Andrew","target":"Robert","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Andrew","target":"James","category":"family","detail":"Cousin","type_ab":"Cousin","type_ba":"Cousin"},{"source":"Andrew","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Jason","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Ashley","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Sayuri","category":"family","detail":"Andrew: Parent, Sayuri: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Andrew","target":"Sumire","category":"family","detail":"Andrew: Parent, Sumire: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Andrew","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Jayne","category":"family","detail":"Andrew: Cousin, Jayne: Relative","type_ab":"Cousin","type_ba":"Relative"},{"source":"Andrew","target":"April","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Vancleve","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Layla","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"James","category":"family","detail":"Cousin","type_ab":"Cousin","type_ba":"Cousin"},{"source":"Robert","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Jason","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Ashley","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Sayuri","category":"family","detail":"Robert: Uncle, Sayuri: Niece","type_ab":"Uncle","type_ba":"Niece"},{"source":"Robert","target":"Sumire","category":"family","detail":"Robert: Uncle, Sumire: Niece","type_ab":"Uncle","type_ba":"Niece"},{"source":"Robert","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Kojo","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Jayne","category":"family","detail":"Robert: Cousin, Jayne: Relative","type_ab":"Cousin","type_ba":"Relative"},{"source":"Robert","target":"April","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Jason","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Ashley","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Sayuri","category":"family","detail":"James: Second Cousin, Sayuri: Relative","type_ab":"Second Cousin","type_ba":"Relative"},{"source":"James","target":"Sumire","category":"family","detail":"James: Second Cousin, Sumire: Relative","type_ab":"Second Cousin","type_ba":"Relative"},{"source":"James","target":"Kojo","category":"family","detail":"In-Law","type_ab":"In-Law","type_ba":"In-Law"},{"source":"James","target":"Jayne","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"James","target":"April","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Vancleve","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"James","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Jason","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Ashley","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Sayuri","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Jayne","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"April","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Jason","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Ashley","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Sayuri","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Sumire","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Jayne","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Layla","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jason","target":"Ashley","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Jason","target":"Lena","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jason","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Ashley","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Ashley","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Ashley","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Ashley","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Sayuri","target":"Sumire","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Sayuri","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Jayne","category":"family","detail":"Relative","type_ab":"Relative","type_ba":"Relative"},{"source":"Sayuri","target":"Amy","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Elizabeth","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Brent","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sumire","target":"Jayne","category":"family","detail":"Relative","type_ab":"Relative","type_ba":"Relative"},{"source":"Noah","target":"Layla","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Noah","target":"Elizabeth","category":"family","detail":"Noah: Son, Elizabeth: Parent","type_ab":"Son","type_ba":"Parent"},{"source":"Noah","target":"Brent","category":"family","detail":"Son","type_ab":"Son","type_ba":"Son"},{"source":"Noah","target":"Brandon","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Kojo","target":"Jayne","category":"family","detail":"Spouse","type_ab":"Spouse","type_ba":"Spouse"},{"source":"Jayne","target":"April","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jayne","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jayne","target":"Brandon","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jayne","target":"Elizabeth","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jayne","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"April","target":"Vancleve","category":"family","detail":"Spouse","type_ab":"Spouse","type_ba":"Spouse"},{"source":"April","target":"Brent","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Amy","target":"Caleb","category":"family","detail":"Amy: Parent, Caleb: Son","type_ab":"Parent","type_ba":"Son"},{"source":"Amy","target":"Silas","category":"family","detail":"Amy: Parent, Silas: Son","type_ab":"Parent","type_ba":"Son"},{"source":"Amy","target":"Chloe","category":"family","detail":"Amy: Parent, Chloe: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Caleb","target":"Chloe","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Caleb","target":"Silas","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Silas","target":"Chloe","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Vancleve","target":"Layla","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Brandon","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Brandon","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Layla","target":"Elizabeth","category":"family","detail":"Layla: Daughter, Elizabeth: Parent","type_ab":"Daughter","type_ba":"Parent"},{"source":"Layla","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Jayne","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"}]};
+
+const MAIN_CIRCLE=['Andrew','Robert','James','Jeff','Mark','Brent','Brandon'];
+const W=()=>window.innerWidth;const H=()=>window.innerHeight;const CX=()=>W()/2;const CY=()=>H()/2+40;
+const nodes={};DATA.characters.forEach(name=>{const isMain=MAIN_CIRCLE.includes(name);nodes[name]={name,x:CX(),y:CY(),tx:0,ty:0,r:isMain?7:5,isMain,connections:0};});
+DATA.relationships.forEach(r=>{nodes[r.source].connections++;nodes[r.target].connections++;});
+
+function getConnected(name){const c=[];DATA.relationships.forEach(r=>{if(r.source===name&&!c.includes(r.target))c.push(r.target);else if(r.target===name&&!c.includes(r.source))c.push(r.source);});return c;}
+function getSecondary(centerName,primaryNames){const s=new Set();primaryNames.forEach(p=>{getConnected(p).forEach(n=>{if(n!==centerName&&!primaryNames.includes(n))s.add(n);});});return[...s];}
+
+let selectedNode=null;let animating=false;
+
+function layoutCircle(){
+const mainR=Math.min(W(),H())*0.18;const outerR=Math.min(W(),H())*0.38;
+const others=DATA.characters.filter(n=>!MAIN_CIRCLE.includes(n));
+MAIN_CIRCLE.forEach((name,i)=>{const a=(i/MAIN_CIRCLE.length)*Math.PI*2-Math.PI/2;nodes[name].tx=CX()+Math.cos(a)*mainR;nodes[name].ty=CY()+Math.sin(a)*mainR;});
+others.forEach((name,i)=>{const a=(i/others.length)*Math.PI*2-Math.PI/2;nodes[name].tx=CX()+Math.cos(a)*outerR;nodes[name].ty=CY()+Math.sin(a)*outerR;});
+}
+
+function layoutFocused(centerName){
+const connected=getConnected(centerName);const secondary=getSecondary(centerName,connected);
+const unconnected=DATA.characters.filter(n=>n!==centerName&&!connected.includes(n)&&!secondary.includes(n));
+nodes[centerName].tx=CX();nodes[centerName].ty=CY();
+const orbitR=Math.min(W(),H())*0.22;
+connected.forEach((name,i)=>{const a=(i/connected.length)*Math.PI*2-Math.PI/2;nodes[name].tx=CX()+Math.cos(a)*orbitR;nodes[name].ty=CY()+Math.sin(a)*orbitR;});
+const secR=Math.min(W(),H())*0.40;
+secondary.forEach((name,i)=>{const a=(i/secondary.length)*Math.PI*2-Math.PI/3;nodes[name].tx=CX()+Math.cos(a)*secR;nodes[name].ty=CY()+Math.sin(a)*secR;});
+const edgeR=Math.min(W(),H())*0.50;
+unconnected.forEach((name,i)=>{const a=(i/Math.max(unconnected.length,1))*Math.PI*2;nodes[name].tx=CX()+Math.cos(a)*edgeR;nodes[name].ty=CY()+Math.sin(a)*edgeR;});
+}
+
+function layoutNodes(){if(selectedNode)layoutFocused(selectedNode);else layoutCircle();}
+
+// Wormhole
+const whCanvas=document.getElementById('wh-canvas');const whCtx=whCanvas.getContext('2d');const whDiv=document.getElementById('wormhole');
+function playWormhole(fromX,fromY,toX,toY,cb){
+whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
+const dur=600;const st=performance.now();const pts=[];
+for(let i=0;i<40;i++)pts.push({t:Math.random(),ox:(Math.random()-0.5)*60,oy:(Math.random()-0.5)*60,sz:Math.random()*2+0.5,sp:Math.random()*0.3+0.7});
+function draw(now){
+const el=now-st;const pr=Math.min(el/dur,1);const ease=1-Math.pow(1-pr,3);
+whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+whCtx.beginPath();whCtx.moveTo(fromX,fromY);
+const mx=(fromX+toX)/2+(fromY-toY)*0.2;const my=(fromY+toY)/2+(toX-fromX)*0.2;
+whCtx.quadraticCurveTo(mx,my,fromX+(toX-fromX)*ease,fromY+(toY-fromY)*ease);
+whCtx.strokeStyle=`rgba(140,180,220,${0.3*(1-pr*0.5)})`;whCtx.lineWidth=2;whCtx.stroke();
+pts.forEach(p=>{const pt=p.t*ease*p.sp;if(pt>1)return;const px=fromX+(toX-fromX)*pt+p.ox*(1-pt);const py=fromY+(toY-fromY)*pt+p.oy*(1-pt);const al=Math.sin(pt*Math.PI)*0.6;whCtx.beginPath();whCtx.arc(px,py,p.sz,0,Math.PI*2);whCtx.fillStyle=`rgba(160,200,240,${al})`;whCtx.fill();});
+if(pr<1)requestAnimationFrame(draw);else{setTimeout(()=>{whDiv.style.opacity='0';},100);if(cb)cb();}
+}requestAnimationFrame(draw);
+}
+
+function animate(){let moving=false;Object.values(nodes).forEach(n=>{const dx=n.tx-n.x;const dy=n.ty-n.y;if(Math.abs(dx)>0.3||Math.abs(dy)>0.3){n.x+=dx*0.065;n.y+=dy*0.065;moving=true;}else{n.x=n.tx;n.y=n.ty;}});render();if(moving)requestAnimationFrame(animate);else animating=false;}
+function startAnimation(){if(!animating){animating=true;animate();}}
+
+
+// Sparkle effect
+var spCanvas=document.createElement('canvas');
+spCanvas.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none';
+document.body.appendChild(spCanvas);
+var spCtx=spCanvas.getContext('2d');
+spCanvas.width=W();spCanvas.height=H();
+window.addEventListener('resize',function(){spCanvas.width=W();spCanvas.height=H();});
+var sparkles=[];
+function emitSparkle(x,y){
+for(var i=0;i<45;i++){
+var angle=Math.random()*Math.PI*2;
+var speed=Math.random()*5.25+1.5;
+var life=Math.random()*90+60;
+var delay=Math.random()*12;
+sparkles.push({
+x:x,y:y,
+vx:Math.cos(angle)*speed,
+vy:Math.sin(angle)*speed,
+life:life,maxLife:life,
+size:Math.random()*4.5+1.2,
+hue:190+Math.random()*50,
+light:65+Math.random()*20,
+delay:delay,
+wobble:Math.random()*0.45-0.225,
+wobbleSpeed:Math.random()*0.2+0.05,
+drag:0.96+Math.random()*0.025,
+wobbleOff:Math.random()*Math.PI*2,
+wobbleOff2:Math.random()*Math.PI*2,
+wobbleRatio:0.5+Math.random()*1.5,
+driftX:(Math.random()-0.5)*0.08,
+driftY:(Math.random()-0.5)*0.08,
+superBright:Math.random()<0.05,
+twinklePhase:Math.random()*Math.PI*2,
+twinkleSpeed:Math.random()*0.3+0.1
+});
+}
+for(var j=0;j<12;j++){
+var a2=Math.random()*Math.PI*2;
+var sp2=Math.random()*1.8+0.45;
+sparkles.push({
+x:x,y:y,
+vx:Math.cos(a2)*sp2,vy:Math.sin(a2)*sp2,
+life:135+Math.random()*60,maxLife:195,
+size:Math.random()*2.25+0.45,
+hue:210+Math.random()*30,light:80,
+delay:Math.random()*20,
+wobble:Math.random()*0.75-0.375,
+wobbleSpeed:Math.random()*0.08+0.02,
+drag:0.992,
+wobbleOff:Math.random()*Math.PI*2,
+wobbleOff2:Math.random()*Math.PI*2,
+wobbleRatio:0.3+Math.random()*2.0,
+driftX:(Math.random()-0.5)*0.04,
+driftY:(Math.random()-0.5)*0.04,
+superBright:Math.random()<0.05,
+twinklePhase:Math.random()*Math.PI*2,
+twinkleSpeed:Math.random()*0.15+0.05
+});
+}}
+function drawSparkles(){
+spCtx.clearRect(0,0,spCanvas.width,spCanvas.height);
+sparkles=sparkles.filter(function(p){
+if(p.delay>0){p.delay--;return true;}
+p.vx+=p.wobble*Math.sin(p.life*p.wobbleSpeed+p.wobbleOff);
+p.vy+=p.wobble*Math.cos(p.life*p.wobbleSpeed*p.wobbleRatio+p.wobbleOff2);
+p.vx+=p.driftX;p.vy+=p.driftY;p.x+=p.vx;p.y+=p.vy;
+p.vx*=p.drag;p.vy*=p.drag;
+p.life--;
+var t=Math.max(0,p.life/p.maxLife);
+var fadeT=t<0.3?t/0.3:1;
+var bright=p.superBright?2.5:1;
+var twinkle=0.6+0.4*Math.sin(p.life*p.twinkleSpeed+p.twinklePhase);
+var alpha=Math.min(1,fadeT*0.9*twinkle*bright);
+var sz=Math.max(0.1,p.size*(0.4+t*0.6)*(p.superBright?1.8:1));
+spCtx.beginPath();spCtx.arc(p.x,p.y,sz,0,Math.PI*2);
+var pLight=p.superBright?Math.min(100,p.light+25):p.light;
+spCtx.fillStyle='hsla('+p.hue+','+(p.superBright?'30':'65')+'%,'+pLight+'%,'+alpha+')';spCtx.fill();
+var glowSz=Math.max(0.1,sz*4.5);
+spCtx.beginPath();spCtx.arc(p.x,p.y,glowSz,0,Math.PI*2);
+spCtx.fillStyle='hsla('+p.hue+',50%,'+p.light+'%,'+(alpha*0.18)+')';spCtx.fill();
+if(t>0.5&&twinkle>0.85){
+var spkLen=sz*3.75;
+spCtx.strokeStyle='hsla('+p.hue+',60%,85%,'+(alpha*0.4)+')';
+spCtx.lineWidth=0.5;
+spCtx.beginPath();spCtx.moveTo(p.x-spkLen,p.y);spCtx.lineTo(p.x+spkLen,p.y);spCtx.stroke();
+spCtx.beginPath();spCtx.moveTo(p.x,p.y-spkLen);spCtx.lineTo(p.x,p.y+spkLen);spCtx.stroke();
+}
+return p.life>0;});
+if(sparkles.length>0)requestAnimationFrame(drawSparkles);
+}
+
+const svg=document.getElementById('svg');const NS='http://www.w3.org/2000/svg';
+
+function render(){
+svg.innerHTML='';const linkG=document.createElementNS(NS,'g');const nodeG=document.createElementNS(NS,'g');
+const connected=selectedNode?getConnected(selectedNode):[];const secondary=selectedNode?getSecondary(selectedNode,connected):[];
+
+DATA.relationships.forEach((r,i)=>{
+const s=nodes[r.source];const t=nodes[r.target];const line=document.createElementNS(NS,'line');
+line.setAttribute('x1',s.x);line.setAttribute('y1',s.y);line.setAttribute('x2',t.x);line.setAttribute('y2',t.y);
+line.classList.add('link');line.setAttribute('stroke',COLORS[r.category]);
+if(selectedNode){
+const isPri=r.source===selectedNode||r.target===selectedNode;
+const isSec=!isPri&&((connected.includes(r.source)&&(connected.includes(r.target)||secondary.includes(r.target)))||(connected.includes(r.target)&&(connected.includes(r.source)||secondary.includes(r.source))));
+if(isPri){line.setAttribute('stroke-width',r.category==='family'?2.5:1.5);line.setAttribute('stroke-opacity','0.85');}
+else if(isSec){line.setAttribute('stroke-width',0.6);line.setAttribute('stroke-opacity','0.18');}
+else{line.setAttribute('stroke-width',0.3);line.setAttribute('stroke-opacity','0.02');}
+}else{line.setAttribute('stroke-width',r.category==='family'?1.8:1);line.setAttribute('stroke-opacity',r.category==='known'?'0.4':'0.55');}
+line.addEventListener('click',e=>{e.stopPropagation();showLinkTooltip(r,e);});linkG.appendChild(line);});
+
+DATA.characters.forEach(name=>{
+const n=nodes[name];const g=document.createElementNS(NS,'g');g.classList.add('node');
+if(selectedNode){const isPri=selectedNode===name||connected.includes(name);const isSec=secondary.includes(name);if(!isPri&&!isSec)g.classList.add('dimmed');else if(isSec)g.classList.add('secondary');}
+if(selectedNode===name)g.classList.add('selected');
+const glow=document.createElementNS(NS,'circle');glow.setAttribute('cx',n.x);glow.setAttribute('cy',n.y);
+glow.setAttribute('r',selectedNode===name?n.r*4:n.r*2.5);
+glow.setAttribute('fill',`rgba(140,170,210,${selectedNode===name?0.1:n.isMain?0.05:0.025})`);g.appendChild(glow);
+const circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',n.x);circle.setAttribute('cy',n.y);
+circle.setAttribute('r',selectedNode===name?n.r*1.6:n.r);circle.setAttribute('fill',n.isMain?'#8aaac8':'#607888');
+circle.setAttribute('stroke',n.isMain?'rgba(140,180,220,0.5)':'rgba(100,140,170,0.35)');
+circle.setAttribute('stroke-width',selectedNode===name?'2':'1');g.appendChild(circle);
+const text=document.createElementNS(NS,'text');text.setAttribute('x',n.x);
+text.setAttribute('y',n.y-(selectedNode===name?n.r*1.6:n.r)-8);
+text.setAttribute('font-size',selectedNode===name?'18':n.isMain?'15':'12');text.textContent=name;g.appendChild(text);
+g.addEventListener('click',e=>{e.stopPropagation();
+if(selectedNode===name){emitSparkle(n.x,n.y);requestAnimationFrame(drawSparkles);selectedNode=null;layoutNodes();startAnimation();}
+else{emitSparkle(n.x,n.y);requestAnimationFrame(drawSparkles);playWormhole(n.x,n.y,CX(),CY(),()=>{});selectedNode=name;layoutNodes();startAnimation();}
+document.getElementById('reset-btn').classList.toggle('visible',!!selectedNode);hideTooltip();});
+nodeG.appendChild(g);});
+svg.appendChild(linkG);svg.appendChild(nodeG);
+}
+
+const tooltip=document.getElementById('tooltip');const ttName=tooltip.querySelector('.tt-name');const ttDetail=tooltip.querySelector('.tt-detail');
+function showNodeTooltip(name,e){
+const conns=DATA.relationships.filter(r=>r.source===name||r.target===name);
+const fc=conns.filter(r=>r.category==='family').length;const wc=conns.filter(r=>r.category==='well-known').length;const kc=conns.filter(r=>r.category==='known').length;
+ttName.textContent=name;let d=[];if(fc)d.push(fc+' family');if(wc)d.push(wc+' well-known');if(kc)d.push(kc+' known');
+ttDetail.textContent=conns.length+' connections: '+d.join(', ');positionTooltip(e);}
+function showLinkTooltip(r,e){ttName.textContent=r.source+' \u2014 '+r.target;
+if(r.type_ab!==r.type_ba)ttDetail.textContent=r.source+': '+r.type_ab+', '+r.target+': '+r.type_ba;
+else ttDetail.textContent=r.type_ab;positionTooltip(e);}
+function positionTooltip(e){let x=e.clientX+16;let y=e.clientY-10;if(x+260>W())x=e.clientX-270;if(y+80>H())y=e.clientY-80;tooltip.style.left=x+'px';tooltip.style.top=y+'px';tooltip.style.opacity='1';}
+function hideTooltip(){tooltip.style.opacity='0';}
+
+document.getElementById('reset-btn').addEventListener('click',()=>{selectedNode=null;layoutNodes();startAnimation();document.getElementById('reset-btn').classList.remove('visible');hideTooltip();});
+document.getElementById('svg').addEventListener('click',()=>{if(selectedNode){selectedNode=null;layoutNodes();startAnimation();document.getElementById('reset-btn').classList.remove('visible');hideTooltip();}});
+
+layoutCircle();Object.values(nodes).forEach(n=>{n.x=n.tx;n.y=n.ty;});render();
+
+</script>
+
+<div id="info-panel" style="position:fixed;top:105px;right:20px;z-index:15;background:rgba(12,18,28,0.95);border:1px solid rgba(74,144,217,0.25);border-radius:10px;padding:20px 26px;max-width:380px;backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:all 0.4s ease;box-shadow:0 0 30px rgba(74,144,217,0.08)">
+<div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#8aaac8;margin-bottom:10px;letter-spacing:0.06em">A Note to the Reader</div>
+<div style="font-family:'EB Garamond',serif;font-size:14px;color:#7888a0;line-height:1.6">Our Council is not a simple circle! While reading the Covenant of the Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world social links is thereby provided as your lamp in the storm. There are many other names and appearances in the Covenant of the Flowers. You must discover them yourself.</div>
+<div style="font-family:'EB Garamond',serif;font-size:13px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">Additionally, all links are limited to the author's understanding of each relationship at the time of writing.</div>
+</div>
+
+<button id="infobtn" style="position:fixed;bottom:110px;left:20px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.4);background:rgba(10,14,20,0.8);color:#4a90d9;font-family:serif;font-size:16px;font-weight:bold;font-style:italic;cursor:pointer;opacity:0.5" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">i</button>
+<div id="infopanel" style="display:none;position:fixed;bottom:150px;left:20px;z-index:100;background:rgba(12,18,28,0.95);border:1px solid rgba(74,144,217,0.25);border-radius:10px;padding:20px 26px;max-width:380px;backdrop-filter:blur(12px);box-shadow:0 0 30px rgba(74,144,217,0.08)">
+<div style="font-family:Cormorant Garamond,serif;font-size:17px;font-weight:600;color:#8aaac8;margin-bottom:10px;letter-spacing:0.06em">A Note to the Reader</div>
+<div style="font-family:EB Garamond,serif;font-size:14px;color:#7888a0;line-height:1.6">Our Council is not a simple circle! While reading the Covenant of the Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world social links is thereby provided as your lamp in the storm. There are many other names and appearances in the Covenant of the Flowers. You must discover them yourself.</div>
+<div style="font-family:EB Garamond,serif;font-size:13px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">Additionally, all links are limited to the author's understanding of each relationship at the time of writing.</div>
+</div>
+<script>
+var ib=document.getElementById("infobtn");
+var ip=document.getElementById("infopanel");
+ib.onclick=function(ev){ev.stopPropagation();if(ip.style.display==="none"){ip.style.display="block";}else{ip.style.display="none";}};
+ip.onclick=function(ev){ev.stopPropagation();};
+</script>
+<audio id="bgm-web" src="life_is_reason.mp3" autoplay loop></audio>
+<button id="musicbtn" style="position:fixed;bottom:110px;left:55px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.4);background:rgba(10,14,20,0.8);color:#4a90d9;font-family:serif;font-size:14px;cursor:pointer;opacity:0.5;display:flex;align-items:center;justify-content:center" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">&#9654;</button>
+<div style="position:fixed;bottom:92px;left:20px;z-index:100;font-family:EB Garamond,serif;font-size:10px;color:#506878;font-style:italic;opacity:0.4">Life is Reason &mdash; Daniel Pemberton</div>
+<script>
+var mbtn=document.getElementById("musicbtn");
+var aud=document.getElementById("bgm-web");
+var mPlaying=false;
+mbtn.onclick=function(ev){
+ev.stopPropagation();
+if(mPlaying){aud.pause();mbtn.innerHTML="&#9654;";mPlaying=false;}
+else{aud.play().catch(function(){});mbtn.innerHTML="&#9208;";mPlaying=true;}
+};
+aud.addEventListener('play',function(){mPlaying=true;mbtn.innerHTML="&#9208;";});
+aud.addEventListener('pause',function(){mPlaying=false;mbtn.innerHTML="&#9654;";});
+aud.play().catch(function(){});
+</script>
+</body></html>
