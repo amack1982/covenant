@@ -74,6 +74,11 @@ const auroraStreams=[
   {yBase:0.82,amplitude:35,wavelength:900,speed:0.0000125,hue:140,sat:45,light:30,alpha:0.12,width:140},
   {yBase:0.72,amplitude:30,wavelength:700,speed:0.0000175,hue:200,sat:40,light:35,alpha:0.09,width:100},
   {yBase:0.85,amplitude:45,wavelength:550,speed:0.000025,hue:170,sat:55,light:32,alpha:0.10,width:80},
+  {yBase:0.15,amplitude:40,wavelength:800,speed:0.000015,hue:160,sat:60,light:35,alpha:0.15,width:120},
+  {yBase:0.18,amplitude:55,wavelength:600,speed:0.0000225,hue:180,sat:50,light:40,alpha:0.10,width:90},
+  {yBase:0.22,amplitude:35,wavelength:900,speed:0.0000125,hue:140,sat:45,light:30,alpha:0.12,width:140},
+  {yBase:0.12,amplitude:30,wavelength:700,speed:0.0000175,hue:200,sat:40,light:35,alpha:0.09,width:100},
+  {yBase:0.25,amplitude:45,wavelength:550,speed:0.000025,hue:170,sat:55,light:32,alpha:0.10,width:80},
 ];
 function drawAurora(t){
 aCtx.clearRect(0,0,aCanvas.width,aCanvas.height);
@@ -338,7 +343,7 @@ var mPlaying=false;
 mbtn.onclick=function(ev){
 ev.stopPropagation();
 if(mPlaying){aud.pause();mbtn.innerHTML="&#9654;";mPlaying=false;}
-else{aud.play().catch(function(){});mbtn.innerHTML="&#9208;";mPlaying=true;}
+else{aud.volume=0;aud.play().then(function(){var fi=setInterval(function(){if(aud.volume<0.95){aud.volume=Math.min(1,aud.volume+1/80);}else{aud.volume=1;clearInterval(fi);}},100);}).catch(function(){aud.volume=1;});mbtn.innerHTML="&#9208;";mPlaying=true;}
 };
 aud.addEventListener('play',function(){mPlaying=true;mbtn.innerHTML="&#9208;";});
 aud.addEventListener('pause',function(){mPlaying=false;mbtn.innerHTML="&#9654;";});
