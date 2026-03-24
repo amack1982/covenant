@@ -69,38 +69,37 @@ const aCanvas=document.getElementById('aurora');const aCtx=aCanvas.getContext('2
 function initAurora(){aCanvas.width=window.innerWidth;aCanvas.height=window.innerHeight;}
 initAurora();
 const auroraStreams=[
-  {yBase:0.85,amplitude:40,wavelength:800,speed:0.0000105,hue:160,sat:65,light:50,alpha:0.28,width:120},
-  {yBase:0.88,amplitude:55,wavelength:600,speed:0.00001575,hue:180,sat:55,light:55,alpha:0.20,width:90},
-  {yBase:0.92,amplitude:35,wavelength:900,speed:0.00000875,hue:140,sat:50,light:45,alpha:0.24,width:140},
-  {yBase:0.82,amplitude:30,wavelength:700,speed:0.00001225,hue:200,sat:45,light:50,alpha:0.18,width:100},
-  {yBase:0.95,amplitude:45,wavelength:550,speed:0.00001225,hue:170,sat:60,light:48,alpha:0.20,width:80},
-  {yBase:0.05,amplitude:40,wavelength:800,speed:0.0000105,hue:160,sat:65,light:50,alpha:0.28,width:120},
-  {yBase:0.08,amplitude:55,wavelength:600,speed:0.00001575,hue:180,sat:55,light:55,alpha:0.20,width:90},
-  {yBase:0.12,amplitude:35,wavelength:900,speed:0.00000875,hue:140,sat:50,light:45,alpha:0.24,width:140},
-  {yBase:0.02,amplitude:30,wavelength:700,speed:0.00001225,hue:200,sat:45,light:50,alpha:0.18,width:100},
-  {yBase:0.15,amplitude:45,wavelength:550,speed:0.00001225,hue:170,sat:60,light:48,alpha:0.20,width:80},
+  {yBase:0.85,amplitude:20,wavelength:800,speed:0.0000084,hue:160,sat:65,light:50,alpha:0.28,width:120,flip:false,tOff:0},
+  {yBase:0.88,amplitude:28,wavelength:600,speed:0.0000126,hue:180,sat:55,light:55,alpha:0.20,width:90,flip:false,tOff:0},
+  {yBase:0.92,amplitude:18,wavelength:900,speed:0.000007,hue:140,sat:50,light:45,alpha:0.24,width:140,flip:false,tOff:0},
+  {yBase:0.82,amplitude:15,wavelength:700,speed:0.0000098,hue:200,sat:45,light:50,alpha:0.18,width:100,flip:false,tOff:0},
+  {yBase:0.95,amplitude:23,wavelength:550,speed:0.0000098,hue:170,sat:60,light:48,alpha:0.20,width:80,flip:false,tOff:0},
+  {yBase:0.05,amplitude:20,wavelength:800,speed:0.0000084,hue:160,sat:65,light:50,alpha:0.28,width:120,flip:false,tOff:0,xOff:370},
+  {yBase:0.08,amplitude:28,wavelength:600,speed:0.0000126,hue:180,sat:55,light:55,alpha:0.20,width:90,flip:false,tOff:0,xOff:210},
+  {yBase:0.12,amplitude:18,wavelength:900,speed:0.000007,hue:140,sat:50,light:45,alpha:0.24,width:140,flip:false,tOff:0,xOff:520},
+  {yBase:0.02,amplitude:15,wavelength:700,speed:0.0000098,hue:200,sat:45,light:50,alpha:0.18,width:100,flip:false,tOff:0,xOff:150},
+  {yBase:0.15,amplitude:23,wavelength:550,speed:0.0000098,hue:170,sat:60,light:48,alpha:0.20,width:80,flip:false,tOff:0,xOff:440},
 ];
 function drawAurora(t){
 aCtx.clearRect(0,0,aCanvas.width,aCanvas.height);
-const cx=aCanvas.width/2;const cy=aCanvas.height/2+40;
-auroraStreams.forEach(s=>{
+auroraStreams.forEach(function(s){
 aCtx.beginPath();
-const baseY=aCanvas.height*s.yBase;
-for(let x=-100;x<aCanvas.width+100;x+=3){
-const dx=x-cx;const dy=baseY-cy;
-const dist=Math.sqrt(dx*dx+dy*dy);
-const distFade=Math.max(0,1-dist/(Math.min(aCanvas.width,aCanvas.height)*0.55));
-const wave=Math.sin((x+t*s.speed*1000)/s.wavelength*Math.PI*2)*s.amplitude;
-const wave2=Math.sin((x+t*s.speed*700)/s.wavelength*1.7*Math.PI*2)*s.amplitude*0.4;
-const y=baseY+wave+wave2;
-if(x===0)aCtx.moveTo(x,y);else aCtx.lineTo(x,y);
+var baseY=aCanvas.height*s.yBase;
+var tt=t;
+var xo=s.xOff||0;
+for(var x=-100;x<aCanvas.width+100;x+=3){
+var breathe=1+0.08*Math.sin(tt*s.speed*60+s.wavelength);var px=x+xo;
+var wave=Math.sin((px+tt*s.speed*1000)/s.wavelength*Math.PI*2)*s.amplitude*breathe;
+var wave2=Math.sin((px+tt*s.speed*700)/s.wavelength*1.7*Math.PI*2)*s.amplitude*0.4*breathe;
+var y=baseY+wave+wave2;
+if(x===-100)aCtx.moveTo(x,y);else aCtx.lineTo(x,y);
 }
-const grad=aCtx.createLinearGradient(0,aCanvas.height*s.yBase-s.width,0,aCanvas.height*s.yBase+s.width);
-grad.addColorStop(0,`hsla(${s.hue},${s.sat}%,${s.light}%,0)`);
-grad.addColorStop(0.3,`hsla(${s.hue},${s.sat}%,${s.light}%,${s.alpha})`);
-grad.addColorStop(0.5,`hsla(${s.hue},${s.sat}%,${s.light+5}%,${s.alpha*1.3})`);
-grad.addColorStop(0.7,`hsla(${s.hue},${s.sat}%,${s.light}%,${s.alpha})`);
-grad.addColorStop(1,`hsla(${s.hue},${s.sat}%,${s.light}%,0)`);
+var grad=aCtx.createLinearGradient(0,baseY-s.width,0,baseY+s.width);
+grad.addColorStop(0,'hsla('+s.hue+','+s.sat+'%,'+s.light+'%,0)');
+grad.addColorStop(0.3,'hsla('+s.hue+','+s.sat+'%,'+s.light+'%,'+s.alpha+')');
+grad.addColorStop(0.5,'hsla('+s.hue+','+s.sat+'%,'+(s.light+5)+'%,'+(s.alpha*1.3)+')');
+grad.addColorStop(0.7,'hsla('+s.hue+','+s.sat+'%,'+s.light+'%,'+s.alpha+')');
+grad.addColorStop(1,'hsla('+s.hue+','+s.sat+'%,'+s.light+'%,0)');
 aCtx.strokeStyle=grad;aCtx.lineWidth=s.width;aCtx.stroke();
 });
 requestAnimationFrame(drawAurora);
