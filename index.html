@@ -164,6 +164,7 @@ const auroraStreams=[
   {yBase:-0.04,amplitude:15,wavelength:700,speed:0.0000098,hue:200,sat:45,light:50,alpha:0.18,width:100,flip:false,tOff:0,xOff:150},
   {yBase:0.123,amplitude:23,wavelength:550,speed:0.0000098,hue:170,sat:60,light:48,alpha:0.20,width:80,flip:false,tOff:0,xOff:440},
 ];
+if(window.matchMedia('(pointer:coarse)').matches){for(var i=0;i<5;i++){auroraStreams[i].yBase-=0.03;}for(var i=5;i<10;i++){auroraStreams[i].yBase+=0.03;}}
 function drawAurora(t){
 aCtx.clearRect(0,0,aCanvas.width,aCanvas.height);
 auroraStreams.forEach(function(s){
