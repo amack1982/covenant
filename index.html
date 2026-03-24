@@ -114,7 +114,7 @@ animation:marqueeScroll 6s linear infinite;
 
 @media(max-width:600px){
 #quote-text{font-size:15px!important}
-#opening-line2 div{font-size:12px!important}
+#opening-line2 div{font-size:15px!important}
 }
 </style>
 </head>
@@ -1041,9 +1041,9 @@ layoutCircle();Object.values(nodes).forEach(n=>{n.x=n.tx;n.y=n.ty;});render();
 <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#8aaac8;margin-bottom:10px;letter-spacing:0.06em">A Note to the Visitor</div>
 <div style="font-family:'EB Garamond',serif;font-size:14px;color:#7888a0;line-height:1.6">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided as your lamp in the storm. </div>
 <div style="font-family:EB Garamond,serif;font-size:15px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">There are many other names and appearances in The Covenant of The Flowers. You must discover them yourself.</div>
-<div style="font-family:'EB Garamond',serif;font-size:13px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">Additionally, all links are limited to the author's understanding of each relationship at the time of writing.</div>
 <div style="display:flex;justify-content:center;gap:14px;margin-top:14px">
-<button id="info-bgm-toggle" style="background:rgba(74,144,217,0.12);border:1px solid rgba(74,144,217,0.35);color:#8aaac8;font-family:EB Garamond,serif;font-size:13px;padding:6px 18px;border-radius:20px;cursor:pointer;transition:all 0.3s" onmouseover="this.style.background='rgba(74,144,217,0.25)'" onmouseout="this.style.background='rgba(74,144,217,0.12)'">&#9654; BGM</button>
+<button id="info-bgm-on" style="background:rgba(74,144,217,0.12);border:1px solid rgba(74,144,217,0.35);color:#8aaac8;font-family:EB Garamond,serif;font-size:14px;padding:8px 24px;border-radius:20px;cursor:pointer;transition:all 0.3s" onmouseover="this.style.background='rgba(74,144,217,0.25)'" onmouseout="this.style.background='rgba(74,144,217,0.12)'">BGM</button>
+<button id="info-bgm-off" style="background:rgba(74,144,217,0.12);border:1px solid rgba(74,144,217,0.35);color:#8aaac8;font-family:EB Garamond,serif;font-size:14px;padding:8px 24px;border-radius:20px;cursor:pointer;transition:all 0.3s" onmouseover="this.style.background='rgba(74,144,217,0.25)'" onmouseout="this.style.background='rgba(74,144,217,0.12)'">No BGM</button>
 </div>
 </div>
 
@@ -1065,10 +1065,13 @@ ev.stopPropagation();
 if(mPlaying){aud.pause();mbtn.innerHTML="&#9654;";mPlaying=false;}
 else{aud.volume=0;aud.play().then(function(){var fi=setInterval(function(){if(aud.volume<0.9){aud.volume=Math.min(1,aud.volume+0.1);}else{aud.volume=1;clearInterval(fi);}},100);}).catch(function(){aud.volume=1;});mbtn.innerHTML="&#9208;";mPlaying=true;}
 };
-aud.addEventListener('play',function(){mPlaying=true;mbtn.innerHTML="&#9208;";var ib=document.getElementById('info-bgm-toggle');if(ib)ib.innerHTML="&#9208; BGM";});
-aud.addEventListener('pause',function(){mPlaying=false;mbtn.innerHTML="&#9654;";var ib=document.getElementById('info-bgm-toggle');if(ib)ib.innerHTML="&#9654; BGM";});
-var infoBgm=document.getElementById('info-bgm-toggle');
-if(infoBgm){infoBgm.onclick=function(ev){ev.stopPropagation();mbtn.click();};}
+aud.addEventListener('play',function(){mPlaying=true;mbtn.innerHTML="&#9208;";});
+aud.addEventListener('pause',function(){mPlaying=false;mbtn.innerHTML="&#9654;";});
+function dismissInfoPanel(){var ip=document.getElementById('info-panel');ip.style.opacity='0';ip.style.pointerEvents='none';}
+var infoBgmOn=document.getElementById('info-bgm-on');
+var infoBgmOff=document.getElementById('info-bgm-off');
+if(infoBgmOn){infoBgmOn.onclick=function(ev){ev.stopPropagation();if(!mPlaying){aud.volume=0;aud.play().then(function(){var fi=setInterval(function(){if(aud.volume<0.9){aud.volume=Math.min(1,aud.volume+0.1);}else{aud.volume=1;clearInterval(fi);}},100);}).catch(function(){aud.volume=1;});}dismissInfoPanel();};}
+if(infoBgmOff){infoBgmOff.onclick=function(ev){ev.stopPropagation();if(mPlaying){aud.pause();}dismissInfoPanel();};}
 
 </script>
 
@@ -4501,7 +4504,7 @@ var secondLine=document.createElement('div');
 secondLine.id='opening-line2';
 secondLine.style.cssText='position:fixed;top:35%;left:0;right:0;z-index:200;text-align:center;pointer-events:none;padding:0 10px';
 var inner=document.createElement('div');
-inner.style.cssText='font-family:Cormorant Garamond,serif;font-size:17px;font-style:italic;font-weight:400;color:rgba(180,160,210,0.85);letter-spacing:-0.01em;display:inline-block;max-width:90vw;margin:0 auto;clip-path:inset(0 100% 0 0)';
+inner.style.cssText='font-family:Cormorant Garamond,serif;font-size:20px;font-style:italic;font-weight:400;color:rgba(180,160,210,0.85);letter-spacing:-0.01em;display:inline-block;max-width:90vw;margin:0 auto;clip-path:inset(0 100% 0 0)';
 inner.textContent='WHEN EVEN THE EARTH HIDES HER FACE';
 secondLine.appendChild(inner);
 document.body.appendChild(secondLine);
