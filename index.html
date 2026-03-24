@@ -113,7 +113,7 @@ animation:marqueeScroll 6s linear infinite;
 
 
 @media(max-width:600px){
-#quote-text{font-size:12px!important}
+#quote-text{font-size:15px!important}
 #opening-line2 div{font-size:12px!important}
 }
 </style>
@@ -126,7 +126,7 @@ animation:marqueeScroll 6s linear infinite;
 <div id="wormhole"><canvas id="wh-canvas"></canvas></div>
 
 <div id="travel-quote" style="position:fixed;top:28%;left:0;right:0;z-index:200;text-align:center;pointer-events:none;opacity:0;transition:opacity 0.8s">
-<div id="quote-text" style="font-family:Cormorant Garamond,serif;font-size:17px;font-style:italic;font-weight:400;color:rgba(180,160,210,0.85);letter-spacing:-0.01em;display:inline-block">
+<div id="quote-text" style="font-family:Cormorant Garamond,serif;font-size:20px;font-style:italic;font-weight:400;color:rgba(180,160,210,0.85);letter-spacing:-0.01em;display:inline-block">
 <span id="quote-inner" style="display:inline-block;white-space:pre-line"></span>
 </div>
 </div>
@@ -465,7 +465,7 @@ svg.appendChild(clLG);svg.appendChild(clG);
 
 function travelBackAnim(){
 travelState='traveling';
-showTravelQuote('\u201CColor raked across the sky.\nGreens, purples, flowing like an open leyvein.\u201D',3750);
+showTravelQuote('\u201CColor raked across the sky.\nGreens, purples, flowing from an open leyvein.\u201D',3750);
 var titleElR=document.querySelector('#title-bar h1');
 var subElR=document.querySelector('#title-bar .sub');
 titleElR.style.opacity='0';subElR.style.opacity='0';
@@ -1042,6 +1042,9 @@ layoutCircle();Object.values(nodes).forEach(n=>{n.x=n.tx;n.y=n.ty;});render();
 <div style="font-family:'EB Garamond',serif;font-size:14px;color:#7888a0;line-height:1.6">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided as your lamp in the storm. </div>
 <div style="font-family:EB Garamond,serif;font-size:15px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">There are many other names and appearances in The Covenant of The Flowers. You must discover them yourself.</div>
 <div style="font-family:'EB Garamond',serif;font-size:13px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">Additionally, all links are limited to the author's understanding of each relationship at the time of writing.</div>
+<div style="display:flex;justify-content:center;gap:14px;margin-top:14px">
+<button id="info-bgm-toggle" style="background:rgba(74,144,217,0.12);border:1px solid rgba(74,144,217,0.35);color:#8aaac8;font-family:EB Garamond,serif;font-size:13px;padding:6px 18px;border-radius:20px;cursor:pointer;transition:all 0.3s" onmouseover="this.style.background='rgba(74,144,217,0.25)'" onmouseout="this.style.background='rgba(74,144,217,0.12)'">&#9654; BGM</button>
+</div>
 </div>
 
 
@@ -1049,7 +1052,7 @@ layoutCircle();Object.values(nodes).forEach(n=>{n.x=n.tx;n.y=n.ty;});render();
 
 
 
-<button id="infobtn" onclick="event.stopPropagation();var ip=document.getElementById('infopanel');if(ip.style.display==='none'||ip.style.display===''){ip.style.display='block';}else{ip.style.display='none';}" style="position:fixed;bottom:110px;left:55px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:16px;font-weight:bold;font-style:italic;cursor:pointer;opacity:0.7" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">i</button>
+<button id="infobtn" onclick="event.stopPropagation();var ip=document.getElementById('info-panel');if(ip.style.opacity==='0'){ip.style.opacity='1';ip.style.pointerEvents='auto';}else{ip.style.opacity='0';ip.style.pointerEvents='none';}" style="position:fixed;bottom:110px;left:55px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:16px;font-weight:bold;font-style:italic;cursor:pointer;opacity:0.7" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">i</button>
 <audio id="bgm-web" src="life_is_reason.mp3" loop></audio>
 <button id="musicbtn" style="position:fixed;bottom:110px;left:20px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:14px;cursor:pointer;opacity:0.7;display:flex;align-items:center;justify-content:center" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">&#9654;</button>
 <div style="position:fixed;bottom:92px;left:20px;z-index:100;font-family:EB Garamond,serif;font-size:10px;color:#c8cdd4;font-style:italic;opacity:0.6">Life is Reason &mdash; Daniel Pemberton</div>
@@ -1062,8 +1065,10 @@ ev.stopPropagation();
 if(mPlaying){aud.pause();mbtn.innerHTML="&#9654;";mPlaying=false;}
 else{aud.volume=0;aud.play().then(function(){var fi=setInterval(function(){if(aud.volume<0.9){aud.volume=Math.min(1,aud.volume+0.1);}else{aud.volume=1;clearInterval(fi);}},100);}).catch(function(){aud.volume=1;});mbtn.innerHTML="&#9208;";mPlaying=true;}
 };
-aud.addEventListener('play',function(){mPlaying=true;mbtn.innerHTML="&#9208;";});
-aud.addEventListener('pause',function(){mPlaying=false;mbtn.innerHTML="&#9654;";});
+aud.addEventListener('play',function(){mPlaying=true;mbtn.innerHTML="&#9208;";var ib=document.getElementById('info-bgm-toggle');if(ib)ib.innerHTML="&#9208; BGM";});
+aud.addEventListener('pause',function(){mPlaying=false;mbtn.innerHTML="&#9654;";var ib=document.getElementById('info-bgm-toggle');if(ib)ib.innerHTML="&#9654; BGM";});
+var infoBgm=document.getElementById('info-bgm-toggle');
+if(infoBgm){infoBgm.onclick=function(ev){ev.stopPropagation();mbtn.click();};}
 
 </script>
 
