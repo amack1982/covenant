@@ -14,12 +14,12 @@ canvas{position:fixed;top:0;left:0;z-index:0}
 svg{width:100%;height:100%}
 .node{cursor:pointer;transition:opacity 0.6s ease}
 .node text{font-family:'Cormorant Garamond',serif;font-weight:600;fill:#c8cdd4;pointer-events:none;transition:opacity 0.6s ease;text-anchor:middle}
-.node.dimmed{opacity:0.06}
-.node.dimmed text{opacity:0}
+.node.dimmed{opacity:0.29}
+.node.dimmed text{opacity:0.22}
 .node:hover circle{filter:brightness(1.4)}
 .node.selected circle{filter:brightness(1.6)}
-.node.secondary{opacity:0.35}
-.node.secondary text{opacity:0.5}
+.node.secondary{opacity:0.65}
+.node.secondary text{opacity:0.86}
 .link{cursor:pointer}
 .link:hover{filter:brightness(1.8)}
 #tooltip{position:fixed;z-index:10;background:rgba(14,18,26,0.92);border:1px solid rgba(200,205,212,0.15);border-radius:6px;padding:10px 14px;font-family:'EB Garamond',serif;font-size:14px;color:#c8cdd4;pointer-events:none;opacity:0;transition:opacity 0.2s;max-width:260px;backdrop-filter:blur(8px)}
@@ -268,8 +268,8 @@ if(selectedNode){
 const isPri=r.source===selectedNode||r.target===selectedNode;
 const isSec=!isPri&&((connected.includes(r.source)&&(connected.includes(r.target)||secondary.includes(r.target)))||(connected.includes(r.target)&&(connected.includes(r.source)||secondary.includes(r.source))));
 if(isPri){line.setAttribute('stroke-width',r.category==='family'?2.5:1.5);line.setAttribute('stroke-opacity','0.85');}
-else if(isSec){line.setAttribute('stroke-width',0.6);line.setAttribute('stroke-opacity','0.18');}
-else{line.setAttribute('stroke-width',0.3);line.setAttribute('stroke-opacity','0.02');}
+else if(isSec){line.setAttribute('stroke','#8090a0');line.setAttribute('stroke-width',0.8);line.setAttribute('stroke-opacity','0.31');}
+else{line.setAttribute('stroke-width',0.3);line.setAttribute('stroke-opacity','0.18');}
 }else{line.setAttribute('stroke-width',r.category==='family'?1.8:1);line.setAttribute('stroke-opacity',r.category==='known'?'0.4':'0.55');}
 linkG.appendChild(line);});
 
