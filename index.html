@@ -3,52 +3,1079 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Historical Atlas — The Covenant of the Flowers</title>
+<title>The Covenant of The Flowers — Relationship Web</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0e14;color:#c8cdd4;font-family:'EB Garamond',serif;overflow:hidden;height:100vh;width:100vw}
+canvas{position:fixed;top:-10vh;left:-20vw;z-index:0;width:140vw;height:120vh}
+#aurora{z-index:0;top:-10vh;left:-20vw;width:140vw;height:120vh}
+#web{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1}
+svg{width:100%;height:100%}
+.node{cursor:pointer;transition:opacity 0.6s ease}
+.node text{font-family:'Cormorant Garamond',serif;font-weight:600;fill:#c8cdd4;pointer-events:none;transition:opacity 0.6s ease;text-anchor:middle}
+.node.dimmed{opacity:0.29}
+.node.dimmed text{opacity:0.22}
+.node:hover circle{filter:brightness(1.4)}
+.cluster-node:hover circle{filter:brightness(1.6)}
+.node.selected circle{filter:brightness(1.6)}
+.node.secondary{opacity:0.65}
+.node.secondary text{opacity:0.86}
+.link{cursor:pointer}
+.link:hover{filter:brightness(1.8)}
+#tooltip{position:fixed;z-index:10;background:rgba(14,18,26,0.92);border:1px solid rgba(200,205,212,0.15);border-radius:6px;padding:10px 14px;font-family:'EB Garamond',serif;font-size:14px;color:#c8cdd4;pointer-events:none;opacity:0;transition:opacity 0.2s;max-width:260px;backdrop-filter:blur(8px)}
+#tooltip .tt-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#e8ecf0;margin-bottom:4px}
+#tooltip .tt-detail{font-style:italic;color:#a0a8b4}
+#legend{position:fixed;bottom:20px;left:20px;z-index:5;font-size:13px;opacity:0.6;transition:opacity 1.5s}
+#legend:hover{opacity:1}
+.leg-row{display:flex;align-items:center;gap:8px;margin:4px 0}
+.leg-swatch{width:24px;height:3px;border-radius:2px}
+#title-bar{position:fixed;top:0;left:0;right:0;z-index:5;text-align:center;padding:18px 0 20px;background:linear-gradient(to bottom,rgba(10,14,20,0.9),transparent);pointer-events:none}
+#title-bar h1{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#8090a0;letter-spacing:0.15em;transition:opacity 0.8s}
+#title-bar .sub{font-size:13px;color:#8090a0;transition:opacity 0.8s;font-style:italic;margin-top:2px}
+
+
+
+#instructions{position:fixed;bottom:20px;right:20px;z-index:5;font-size:12px;color:#c8cdd4;text-align:right;opacity:0.6;transition:opacity 1.5s}
+#wormhole{position:fixed;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0;transition:opacity 0.3s}
+
+
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
-:root{
+#atlas-container {
 --parch:#f4efe4;--parch-dk:#e8e0d0;--ink:#2c2418;--ink-lt:#5c5040;--ink-ltr:#8a7e6c;
 --gold:#8b6914;--gold-lt:#c4a24c;--realm-bl:#2b5078;--realm-tl:#1d6e5a;
 --dawn-r:#8c2a2a;--dawn-g:#a07828;--bord:#3a3020;--cap:#6b5e48;
 --sea:#c2d0da;--land:#d4cbb8;--realm-f:#7db86e;--dawn-f:#c4a868;--kif-f:#4ab8a0;--flood:#7aaccc;
 --trade:#d4a84c;--science:#5c8cc4;--ally-stroke:#3a7030;--trade-stroke:#946010;--sci-stroke:#2a5090;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--parch);color:var(--ink);font-family:'EB Garamond',Georgia,serif;line-height:1.6}
-.w{max-width:1200px;margin:0 auto;padding:2rem 1rem 4rem}
-.hd{text-align:center;padding:2rem 1rem 1.5rem;border-bottom:2px solid var(--bord);margin-bottom:.5rem}
-.hd h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:2rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
-.hd .su{font-size:1rem;font-style:italic;color:var(--ink-lt);letter-spacing:.04em}
-.hd .ed{font-size:.8rem;color:var(--ink-ltr);margin-top:.4rem;letter-spacing:.06em}
-.tabs{display:flex;justify-content:center;border-bottom:1px solid var(--bord);margin-bottom:1.5rem}
-.tb{font-family:'Cormorant Garamond',Georgia,serif;font-size:.95rem;font-weight:500;letter-spacing:.06em;padding:.7rem 1.5rem;cursor:pointer;border:1px solid transparent;border-bottom:none;background:transparent;color:var(--ink-lt);transition:all .2s;position:relative;top:1px}
-.tb:hover{color:var(--ink);background:var(--parch-dk)}
-.tb.on{color:var(--ink);background:var(--parch);border-color:var(--bord);border-bottom-color:var(--parch);font-weight:600}
-.pn{display:none}.pn.on{display:block}
-.mt{text-align:center;margin-bottom:1rem}
-.mt h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:600;letter-spacing:.05em}
-.mt .dt{font-size:.88rem;color:var(--cap);font-style:italic}
-.mc{position:relative;width:100%;border:2px solid var(--bord);overflow:hidden;background:var(--sea)}
-.mc svg{width:100%;height:auto;display:block}
-.tt{display:none;position:absolute;background:var(--parch);border:1px solid var(--bord);padding:.4rem .6rem;font-size:.78rem;max-width:240px;line-height:1.4;color:var(--ink);pointer-events:none;z-index:10;box-shadow:2px 2px 6px rgba(0,0,0,.15)}
-.tt .tn{font-weight:600;font-size:.82rem;margin-bottom:2px}
-.lg{display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:center;padding:.6rem .8rem;border:1px solid var(--bord);border-top:none;background:var(--parch-dk);font-size:.75rem;color:var(--ink-lt)}
-.li{display:flex;align-items:center;gap:.3rem}
-.ls{width:12px;height:8px;border:.5px solid var(--ink-ltr)}
-.cm{font-size:.78rem;margin-top:1.2rem;padding:1rem 1.2rem;border-left:3px solid var(--gold-lt);background:rgba(196,162,76,.06);line-height:1.65;color:var(--ink-lt);font-style:italic}
-.cm .at{display:block;text-align:right;margin-top:.4rem;font-size:.76rem;color:var(--ink-ltr);font-style:normal;letter-spacing:.04em}
-.pnum{text-align:center;font-size:.72rem;color:var(--ink-ltr);letter-spacing:.1em;margin-top:.8rem;text-transform:uppercase}
-.city-g{cursor:pointer}
-.city-g:hover circle,.city-g:hover rect{filter:brightness(1.2)}
+#atlas-container{background:var(--parch);color:var(--ink);font-family:'EB Garamond',Georgia,serif;line-height:1.6}
+#atlas-container .w{max-width:1200px;margin:0 auto;padding:2rem 1rem 4rem}
+#atlas-container .hd{text-align:center;padding:2rem 1rem 1.5rem;border-bottom:2px solid var(--bord);margin-bottom:.5rem}
+#atlas-container .hd h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:2rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+#atlas-container .hd .su{font-size:1rem;font-style:italic;color:var(--ink-lt);letter-spacing:.04em}
+#atlas-container .hd .ed{font-size:.8rem;color:var(--ink-ltr);margin-top:.4rem;letter-spacing:.06em}
+#atlas-container .tabs{display:flex;justify-content:center;border-bottom:1px solid var(--bord);margin-bottom:1.5rem}
+#atlas-container .tb{font-family:'Cormorant Garamond',Georgia,serif;font-size:.95rem;font-weight:500;letter-spacing:.06em;padding:.7rem 1.5rem;cursor:pointer;border:1px solid transparent;border-bottom:none;background:transparent;color:var(--ink-lt);transition:all .2s;position:relative;top:1px}
+#atlas-container .tb:hover{color:var(--ink);background:var(--parch-dk)}
+#atlas-container .tb.on{color:var(--ink);background:var(--parch);border-color:var(--bord);border-bottom-color:var(--parch);font-weight:600}
+#atlas-container .pn{display:none}#atlas-container .pn.on{display:block}
+#atlas-container .mt{text-align:center;margin-bottom:1rem}
+#atlas-container .mt h2{font-family:'Cormorant Garamond',Georgia,serif;font-size:1.4rem;font-weight:600;letter-spacing:.05em}
+#atlas-container .mt .dt{font-size:.88rem;color:var(--cap);font-style:italic}
+#atlas-container .mc{position:relative;width:100%;border:2px solid var(--bord);overflow:hidden;background:var(--sea)}
+#atlas-container .mc svg{width:100%;height:auto;display:block}
+#atlas-container .tt{display:none;position:absolute;background:var(--parch);border:1px solid var(--bord);padding:.4rem .6rem;font-size:.78rem;max-width:240px;line-height:1.4;color:var(--ink);pointer-events:auto;z-index:10;box-shadow:2px 2px 6px rgba(0,0,0,.15)}
+#atlas-container .transit-link{cursor:pointer;display:block;margin-top:6px;padding-top:5px;border-top:1px solid var(--ink-ltr);color:var(--gold);font-size:.85rem;text-align:center}
+#atlas-container .transit-link .transit-marquee{margin-top:0;padding-top:0;border-top:none}
+#atlas-container .transit-link .transit-marquee-inner{color:var(--gold)}
+#atlas-container .tt .tn{font-weight:600;font-size:.82rem;margin-bottom:2px}
+#atlas-container .lg{display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:center;padding:.6rem .8rem;border:1px solid var(--bord);border-top:none;background:var(--parch-dk);font-size:.75rem;color:var(--ink-lt)}
+#atlas-container .li{display:flex;align-items:center;gap:.3rem}
+#atlas-container .ls{width:12px;height:8px;border:.5px solid var(--ink-ltr)}
+#atlas-container .cm{font-size:.78rem;margin-top:1.2rem;padding:1rem 1.2rem;border-left:3px solid var(--gold-lt);background:rgba(196,162,76,.06);line-height:1.65;color:var(--ink-lt);font-style:italic}
+#atlas-container .cm .at{display:block;text-align:right;margin-top:.4rem;font-size:.76rem;color:var(--ink-ltr);font-style:normal;letter-spacing:.04em}
+#atlas-container .pnum{text-align:center;font-size:.72rem;color:var(--ink-ltr);letter-spacing:.1em;margin-top:.8rem;text-transform:uppercase}
+#atlas-container .city-g{cursor:pointer;pointer-events:all}
+#atlas-container .city-g[data-transit]{cursor:pointer;pointer-events:bounding-box}
+#atlas-container .city-g[data-transit]{cursor:pointer}
+#atlas-container .city-g:hover circle,#atlas-container .city-g:hover rect{filter:brightness(1.2)}
 @media(max-width:700px){.hd h1{font-size:1.3rem}.tb{font-size:.8rem;padding:.5rem .8rem}.lg{font-size:.65rem}}
+
+#atlas-container{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;overflow-y:auto;background:var(--parch)}
+#seam-left,#seam-right{position:fixed;top:0;width:50%;height:100%;z-index:51;background:#0a0e14;transition:transform 1.2s cubic-bezier(0.65,0,0.35,1);display:none}
+#seam-left{left:0}
+#seam-right{right:0}
+#seam-left.open{transform:translateX(-100%)}
+#seam-right.open{transform:translateX(100%)}
+
+@keyframes marqueeScroll{
+0%{transform:translateX(0)}
+100%{transform:translateX(-50%)}
+}
+#atlas-container .transit-marquee{
+overflow:hidden;margin-top:6px;padding-top:5px;border-top:1px solid var(--ink-ltr);
+}
+#atlas-container .transit-marquee-inner{
+display:inline-block;white-space:nowrap;
+animation:marqueeScroll 6s linear infinite;
+}
+
+
+
+
+
+@media (pointer:coarse){
+.landscape-hint{display:block!important}
+#atlas-touch-return{display:flex!important}
+}
+
+
+
+
+@media(max-width:600px){
+#quote-text{font-size:12px!important}
+#opening-line2 div{font-size:12px!important}
+}
 </style>
 </head>
 <body>
+<div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
+<canvas id="stars"></canvas>
+<canvas id="aurora"></canvas>
+<div id="web"><svg id="svg"></svg></div>
+<div id="wormhole"><canvas id="wh-canvas"></canvas></div>
+
+<div id="travel-quote" style="position:fixed;top:28%;left:0;right:0;z-index:200;text-align:center;pointer-events:none;opacity:0;transition:opacity 0.8s">
+<div id="quote-text" style="font-family:Cormorant Garamond,serif;font-size:17px;font-style:italic;font-weight:400;color:rgba(180,160,210,0.85);letter-spacing:-0.01em;display:inline-block">
+<span id="quote-inner" style="display:inline-block;white-space:pre-line"></span>
+</div>
+</div>
+<div id="title-bar"><h1>RELATIONSHIP WEB</h1><div class="sub">The Covenant of The Flowers</div></div>
+<div id="tooltip"><div class="tt-name"></div><div class="tt-detail"></div></div>
+
+<div id="legend">
+<div class="leg-row"><div class="leg-swatch" style="background:#e05050"></div> Relative</div>
+<div class="leg-row"><div class="leg-swatch" style="background:#50c878"></div> Well-Known</div>
+<div class="leg-row"><div class="leg-swatch" style="background:#4a90d9"></div> Known</div>
+</div>
+<div id="instructions">Click a node to focus<br>Click empty space to reset</div>
+<script>
+const COLORS={family:'#e05050','well-known':'#50c878',known:'#4a90d9'};
+const canvas=document.getElementById('stars');const ctx=canvas.getContext('2d');let starParticles=[];
+function initStars(){canvas.width=window.innerWidth*1.4;canvas.height=window.innerHeight*1.2;starParticles=[];for(let i=0;i<300;i++){starParticles.push({x:Math.random()*(canvas.width+400)-200,y:Math.random()*canvas.height,r:Math.random()*1.2+0.2,a:Math.random()*0.5+0.1,speed:Math.random()*0.0008+0.0002,phase:Math.random()*Math.PI*2,bright:Math.random()<0.1,speed2:Math.random()*0.0008+0.0006});}}
+function drawStars(t){ctx.clearRect(0,0,canvas.width,canvas.height);starParticles.forEach(s=>{const spd=s.bright?s.speed2:s.speed;const f1=Math.sin(t*spd*400+s.phase);const f2=Math.sin(t*spd*170+s.phase*2.7);const f3=Math.sin(t*spd*80+s.phase*0.4);const f=(f1*0.19+f2*0.115+f3*0.075+0.625);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);var ba=s.bright?Math.min(1,s.a*f*1.8):s.a*f;ctx.fillStyle=`rgba(${s.bright?'220,235,255':'180,195,220'},${ba})`;ctx.fill();});requestAnimationFrame(drawStars);}
+initStars();requestAnimationFrame(drawStars);
+window.addEventListener('resize',()=>{initStars();layoutNodes();render();});
+
+
+// Aurora
+const aCanvas=document.getElementById('aurora');const aCtx=aCanvas.getContext('2d');
+function initAurora(){aCanvas.width=window.innerWidth;aCanvas.height=window.innerHeight;}
+initAurora();
+const auroraStreams=[
+  {yBase:0.85,amplitude:20,wavelength:800,speed:0.0000084,hue:160,sat:65,light:50,alpha:0.28,width:120,flip:false,tOff:0},
+  {yBase:0.88,amplitude:28,wavelength:600,speed:0.0000126,hue:180,sat:55,light:55,alpha:0.20,width:90,flip:false,tOff:0},
+  {yBase:0.92,amplitude:18,wavelength:900,speed:0.000007,hue:140,sat:50,light:45,alpha:0.24,width:140,flip:false,tOff:0},
+  {yBase:0.82,amplitude:15,wavelength:700,speed:0.0000098,hue:200,sat:45,light:50,alpha:0.18,width:100,flip:false,tOff:0},
+  {yBase:0.95,amplitude:23,wavelength:550,speed:0.0000098,hue:170,sat:60,light:48,alpha:0.20,width:80,flip:false,tOff:0},
+  {yBase:0.05,amplitude:20,wavelength:800,speed:0.0000084,hue:160,sat:65,light:50,alpha:0.28,width:120,flip:false,tOff:0,xOff:370},
+  {yBase:0.08,amplitude:28,wavelength:600,speed:0.0000126,hue:180,sat:55,light:55,alpha:0.20,width:90,flip:false,tOff:0,xOff:210},
+  {yBase:0.12,amplitude:18,wavelength:900,speed:0.000007,hue:140,sat:50,light:45,alpha:0.24,width:140,flip:false,tOff:0,xOff:520},
+  {yBase:0.02,amplitude:15,wavelength:700,speed:0.0000098,hue:200,sat:45,light:50,alpha:0.18,width:100,flip:false,tOff:0,xOff:150},
+  {yBase:0.15,amplitude:23,wavelength:550,speed:0.0000098,hue:170,sat:60,light:48,alpha:0.20,width:80,flip:false,tOff:0,xOff:440},
+];
+function drawAurora(t){
+aCtx.clearRect(0,0,aCanvas.width,aCanvas.height);
+auroraStreams.forEach(function(s){
+aCtx.beginPath();
+var baseY=aCanvas.height*s.yBase;
+var tt=t;
+var xo=s.xOff||0;
+for(var x=-100;x<aCanvas.width+100;x+=3){
+var breathe=1+0.08*Math.sin(tt*s.speed*60+s.wavelength);var px=x+xo;
+var wave=Math.sin((px+tt*s.speed*1000)/s.wavelength*Math.PI*2)*s.amplitude*breathe;
+var wave2=Math.sin((px+tt*s.speed*700)/s.wavelength*1.7*Math.PI*2)*s.amplitude*0.4*breathe;
+var y=baseY+wave+wave2;
+if(x===-100)aCtx.moveTo(x,y);else aCtx.lineTo(x,y);
+}
+var grad=aCtx.createLinearGradient(0,baseY-s.width,0,baseY+s.width);
+grad.addColorStop(0,'hsla('+s.hue+','+s.sat+'%,'+s.light+'%,0)');
+grad.addColorStop(0.3,'hsla('+s.hue+','+s.sat+'%,'+s.light+'%,'+s.alpha+')');
+grad.addColorStop(0.5,'hsla('+s.hue+','+s.sat+'%,'+(s.light+5)+'%,'+(s.alpha*1.3)+')');
+grad.addColorStop(0.7,'hsla('+s.hue+','+s.sat+'%,'+s.light+'%,'+s.alpha+')');
+grad.addColorStop(1,'hsla('+s.hue+','+s.sat+'%,'+s.light+'%,0)');
+aCtx.strokeStyle=grad;aCtx.lineWidth=s.width;aCtx.stroke();
+});
+requestAnimationFrame(drawAurora);
+}
+requestAnimationFrame(drawAurora);
+window.addEventListener('resize',()=>{initAurora();});
+
+const DATA={"characters":["Andrew","Robert","James","Jeff","Mark","Charles Jr.","Dinah","Sayuri","Sumire","Noah","Kojo","Hepatica","Madam-E","Amy","Caleb","Silas","Chloe","Lena","Vancleve","Brandon","Layla","Elizabeth","Brent","Gateway","To Halcyon Fold"],"relationships":[{"source":"Andrew","target":"Robert","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Andrew","target":"James","category":"family","detail":"Cousin","type_ab":"Cousin","type_ba":"Cousin"},{"source":"Andrew","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Sayuri","category":"family","detail":"Andrew: Parent, Sayuri: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Andrew","target":"Sumire","category":"family","detail":"Andrew: Parent, Sumire: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Andrew","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Hepatica","category":"family","detail":"Andrew: Cousin, Jayne: Relative","type_ab":"Cousin","type_ba":"Relative"},{"source":"Andrew","target":"Madam-E","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Vancleve","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Layla","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"James","category":"family","detail":"Cousin","type_ab":"Cousin","type_ba":"Cousin"},{"source":"Robert","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Sayuri","category":"family","detail":"Robert: Uncle, Sayuri: Niece","type_ab":"Uncle","type_ba":"Niece"},{"source":"Robert","target":"Sumire","category":"family","detail":"Robert: Uncle, Sumire: Niece","type_ab":"Uncle","type_ba":"Niece"},{"source":"Robert","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Kojo","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Hepatica","category":"family","detail":"Robert: Cousin, Jayne: Relative","type_ab":"Cousin","type_ba":"Relative"},{"source":"Robert","target":"Madam-E","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Sayuri","category":"family","detail":"James: Second Cousin, Sayuri: Relative","type_ab":"Second Cousin","type_ba":"Relative"},{"source":"James","target":"Sumire","category":"family","detail":"James: Second Cousin, Sumire: Relative","type_ab":"Second Cousin","type_ba":"Relative"},{"source":"James","target":"Kojo","category":"family","detail":"In-Law","type_ab":"In-Law","type_ba":"In-Law"},{"source":"James","target":"Hepatica","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"James","target":"Madam-E","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Vancleve","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"James","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Sayuri","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Hepatica","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Madam-E","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Charles Jr.","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Sayuri","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Sumire","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Hepatica","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Layla","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Charles Jr.","target":"Dinah","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Charles Jr.","target":"Lena","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Charles Jr.","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Sayuri","target":"Sumire","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Sayuri","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Hepatica","category":"family","detail":"Relative","type_ab":"Relative","type_ba":"Relative"},{"source":"Sayuri","target":"Amy","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Elizabeth","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Brent","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sumire","target":"Hepatica","category":"family","detail":"Relative","type_ab":"Relative","type_ba":"Relative"},{"source":"Noah","target":"Layla","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Noah","target":"Elizabeth","category":"family","detail":"Noah: Son, Elizabeth: Parent","type_ab":"Son","type_ba":"Parent"},{"source":"Noah","target":"Brent","category":"family","detail":"Son","type_ab":"Son","type_ba":"Son"},{"source":"Noah","target":"Brandon","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Kojo","target":"Hepatica","category":"family","detail":"Spouse","type_ab":"Spouse","type_ba":"Spouse"},{"source":"Hepatica","target":"Madam-E","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Hepatica","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Hepatica","target":"Brandon","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Hepatica","target":"Elizabeth","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Hepatica","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Madam-E","target":"Vancleve","category":"family","detail":"Spouse","type_ab":"Spouse","type_ba":"Spouse"},{"source":"Madam-E","target":"Brent","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Amy","target":"Caleb","category":"family","detail":"Amy: Parent, Caleb: Son","type_ab":"Parent","type_ba":"Son"},{"source":"Amy","target":"Silas","category":"family","detail":"Amy: Parent, Silas: Son","type_ab":"Parent","type_ba":"Son"},{"source":"Amy","target":"Chloe","category":"family","detail":"Amy: Parent, Chloe: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Caleb","target":"Chloe","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Caleb","target":"Silas","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Silas","target":"Chloe","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Brandon","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Brandon","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Elizabeth","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Layla","target":"Elizabeth","category":"family","detail":"Layla: Daughter, Elizabeth: Parent","type_ab":"Daughter","type_ba":"Parent"},{"source":"Layla","target":"Brent","category":"family","detail":"Layla: Daughter, Brent: Parent","type_ab":"Daughter","type_ba":"Parent"},{"source":"Lena","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Hepatica","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Gateway","target":"To Halcyon Fold","category":"known","detail":"","type_ab":"","type_ba":""}]};
+
+const MAIN_CIRCLE=['Andrew','Robert','James','Jeff','Mark','Brent','Brandon'];
+const W=()=>window.innerWidth;const H=()=>window.innerHeight;const CX=()=>W()/2;const CY=()=>H()/2+40;
+const nodes={};DATA.characters.forEach(name=>{const isMain=MAIN_CIRCLE.includes(name);nodes[name]={name,x:CX(),y:CY(),tx:0,ty:0,r:isMain?7:5,isMain,connections:0};});
+DATA.relationships.forEach(r=>{nodes[r.source].connections++;nodes[r.target].connections++;});
+
+function getConnected(name){const c=[];DATA.relationships.forEach(r=>{if(r.source===name&&!c.includes(r.target))c.push(r.target);else if(r.target===name&&!c.includes(r.source))c.push(r.source);});return c;}
+function getSecondary(centerName,primaryNames){const s=new Set();primaryNames.forEach(p=>{getConnected(p).forEach(n=>{if(n!==centerName&&!primaryNames.includes(n))s.add(n);});});return[...s];}
+
+let selectedNode=null;let animating=false;var travelState='web';var camOX=0;var camOY=0;var travelStartTime=0;
+var clusterAngle=Math.PI*7/6;var clusterDist=0;
+var secondCluster=[{name:'Atlas'},{name:'Roadmap'},{name:'Relationship Web'}];
+
+function layoutCircle(){
+const mainR=Math.min(W(),H())*0.18;const outerR=Math.min(W(),H())*0.38;
+const others=DATA.characters.filter(n=>!MAIN_CIRCLE.includes(n)&&n!=='Gateway'&&n!=='To Halcyon Fold');
+MAIN_CIRCLE.forEach((name,i)=>{const a=(i/MAIN_CIRCLE.length)*Math.PI*2-Math.PI/2;nodes[name].tx=CX()+Math.cos(a)*mainR;nodes[name].ty=CY()+Math.sin(a)*mainR;});
+others.forEach((name,i)=>{const a=(i/others.length)*Math.PI*2-Math.PI/2;nodes[name].tx=CX()+Math.cos(a)*outerR;nodes[name].ty=CY()+Math.sin(a)*outerR;});
+if(nodes['Gateway']){nodes['Gateway'].tx=CX();nodes['Gateway'].ty=CY();}
+if(nodes['To Halcyon Fold']){nodes['To Halcyon Fold'].tx=CX()-W()*0.8;nodes['To Halcyon Fold'].ty=CY()-H()*0.3;}
+}
+
+function layoutFocused(centerName){
+const connected=getConnected(centerName);const secondary=getSecondary(centerName,connected);
+const unconnected=DATA.characters.filter(n=>n!==centerName&&!connected.includes(n)&&!secondary.includes(n));
+nodes[centerName].tx=CX();nodes[centerName].ty=CY();
+const orbitR=Math.min(W(),H())*0.22;
+connected.forEach((name,i)=>{const a=(i/connected.length)*Math.PI*2-Math.PI/2;nodes[name].tx=CX()+Math.cos(a)*orbitR;nodes[name].ty=CY()+Math.sin(a)*orbitR;});
+const secR=Math.min(W(),H())*0.40;
+secondary.forEach((name,i)=>{const a=(i/secondary.length)*Math.PI*2-Math.PI/3;nodes[name].tx=CX()+Math.cos(a)*secR;nodes[name].ty=CY()+Math.sin(a)*secR;});
+const edgeR=Math.min(W(),H())*0.50;
+if(centerName==='Gateway'&&nodes['To Halcyon Fold']){var hfDist=Math.min(W(),H())*0.28;nodes['To Halcyon Fold'].tx=CX()+Math.cos(Math.PI*7/6)*hfDist;nodes['To Halcyon Fold'].ty=CY()+Math.sin(Math.PI*7/6)*hfDist;}
+unconnected.forEach((name,i)=>{const a=(i/Math.max(unconnected.length,1))*Math.PI*2;nodes[name].tx=CX()+Math.cos(a)*edgeR;nodes[name].ty=CY()+Math.sin(a)*edgeR;});
+}
+
+function layoutNodes(){if(selectedNode)layoutFocused(selectedNode);else layoutCircle();}
+
+// Wormhole
+const whCanvas=document.getElementById('wh-canvas');const whCtx=whCanvas.getContext('2d');const whDiv=document.getElementById('wormhole');
+function playWormhole(fromX,fromY,toX,toY,cb){
+whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
+const dur=600;const st=performance.now();const pts=[];
+for(let i=0;i<40;i++)pts.push({t:Math.random(),ox:(Math.random()-0.5)*60,oy:(Math.random()-0.5)*60,sz:Math.random()*2+0.5,sp:Math.random()*0.3+0.7});
+function draw(now){
+const el=now-st;const pr=Math.min(el/dur,1);const ease=1-Math.pow(1-pr,3);
+whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+whCtx.beginPath();whCtx.moveTo(fromX,fromY);
+const mx=(fromX+toX)/2+(fromY-toY)*0.2;const my=(fromY+toY)/2+(toX-fromX)*0.2;
+whCtx.quadraticCurveTo(mx,my,fromX+(toX-fromX)*ease,fromY+(toY-fromY)*ease);
+whCtx.strokeStyle=`rgba(140,180,220,${0.3*(1-pr*0.5)})`;whCtx.lineWidth=2;whCtx.stroke();
+pts.forEach(p=>{const pt=p.t*ease*p.sp;if(pt>1)return;const px=fromX+(toX-fromX)*pt+p.ox*(1-pt);const py=fromY+(toY-fromY)*pt+p.oy*(1-pt);const al=Math.sin(pt*Math.PI)*0.6;whCtx.beginPath();whCtx.arc(px,py,p.sz,0,Math.PI*2);whCtx.fillStyle=`rgba(160,200,240,${al})`;whCtx.fill();});
+if(pr<1)requestAnimationFrame(draw);else{setTimeout(()=>{whDiv.style.opacity='0';},100);if(cb)cb();}
+}requestAnimationFrame(draw);
+}
+
+
+
+
+// Travel quotes
+var quoteEl=document.getElementById('travel-quote');
+var quoteInner=document.getElementById('quote-inner');
+var quoteText=document.getElementById('quote-text');
+
+var quoteHideTimer=null;
+function showTravelQuote(text,duration){
+if(quoteHideTimer){clearTimeout(quoteHideTimer);quoteHideTimer=null;}
+quoteEl.style.transition='none';
+quoteEl.style.opacity='0';
+quoteInner.textContent=text;
+quoteText.style.clipPath='inset(0 100% 0 0)';
+void quoteEl.offsetWidth;
+quoteEl.style.transition='opacity 0.8s';
+quoteEl.style.opacity='1';
+var startTime=performance.now();
+var revealDur=750;
+function revealStep(now){
+var el=now-startTime;
+var pr=Math.min(el/revealDur,1);
+var ease=1-Math.pow(1-pr,2);
+var clipRight=100-(ease*100);
+quoteText.style.clipPath='inset(0 '+clipRight+'% 0 0)';
+if(pr<1)requestAnimationFrame(revealStep);
+}
+requestAnimationFrame(revealStep);
+quoteHideTimer=setTimeout(function(){rollAwayQuote();quoteHideTimer=null;},duration);
+}
+
+function rollAwayQuote(){
+var startTime=performance.now();
+var rollDur=750;
+function rollStep(now){
+var el=now-startTime;
+var pr=Math.min(el/rollDur,1);
+var ease=pr*pr;
+quoteText.style.clipPath='inset(0 0 0 '+(ease*100)+'%)';
+if(pr<1){requestAnimationFrame(rollStep);}
+else{quoteEl.style.opacity='0';quoteText.style.clipPath='inset(0 100% 0 0)';}
+}
+requestAnimationFrame(rollStep);
+}
+
+function hideTravelQuote(){
+if(quoteHideTimer){clearTimeout(quoteHideTimer);quoteHideTimer=null;}
+rollAwayQuote();
+}
+
+// Travel to second cluster
+function travelToCluster(){
+travelState='traveling';travelStartTime=Date.now();
+var titleEl=document.querySelector('#title-bar h1');
+var subEl=document.querySelector('#title-bar .sub');
+titleEl.style.opacity='0';subEl.style.opacity='0';
+setTimeout(function(){titleEl.textContent='HALCYON FOLD';subEl.textContent='The Covenant of The Flowers';titleEl.style.opacity='1';subEl.style.opacity='1';},800);
+showTravelQuote('\u201CIt was to be our greatest gift to man.\nOur Promethean Fire.\u201D',3750);
+document.getElementById('legend').style.opacity='0';
+document.getElementById('instructions').style.opacity='0';
+document.getElementById('infobtn').style.opacity='0';document.getElementById('infobtn').style.pointerEvents='none';
+var hf=nodes['To Halcyon Fold'];
+hf.x=hf.tx;hf.y=hf.ty;
+clusterDist=Math.max(W(),H())*0.9;
+var destX=hf.x+Math.cos(clusterAngle)*clusterDist;
+var destY=hf.y+Math.sin(clusterAngle)*clusterDist;
+var startCamX=camOX;var startCamY=camOY;
+var endCamX=destX-CX();var endCamY=destY-CY();
+secondCluster[2].wx=destX;secondCluster[2].wy=destY;
+secondCluster[0].wx=destX-70;secondCluster[0].wy=destY-60;
+secondCluster[1].wx=destX+70;secondCluster[1].wy=destY-60;
+whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
+var dur=3750;var st=performance.now();
+var trailPts=[];
+for(var i=0;i<400;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*30,oy:(Math.random()-0.5)*30,sz:Math.random()*2.5+0.5,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*20+5,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
+function drawTravel(now){
+var el=now-st;var pr=Math.min(el/dur,1);
+var ease=pr<0.5?2*pr*pr:(1-Math.pow(-2*pr+2,2)/2);
+camOX=startCamX+(endCamX-startCamX)*ease;
+camOY=startCamY+(endCamY-startCamY)*ease;
+starOffX=camOX;starOffY=camOY;
+render();
+whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+var lineStartX=nodes['To Halcyon Fold'].x-camOX;var lineStartY=nodes['To Halcyon Fold'].y-camOY;
+var lineEndX=destX-camOX;var lineEndY=destY-camOY;
+var dx=lineEndX-lineStartX;var dy=lineEndY-lineStartY;
+var lineLen=Math.sqrt(dx*dx+dy*dy);
+var perpX=-dy/lineLen;var perpY=dx/lineLen;
+trailPts.forEach(function(p){
+var headPos=ease;
+var pt=headPos*p.sp*p.t;
+if(pt>1)return;
+var baseX=lineStartX+(lineEndX-lineStartX)*pt;
+var baseY=lineStartY+(lineEndY-lineStartY)*pt;
+var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
+var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
+var px=baseX+perpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
+var py=baseY+perpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
+var distFromHead=Math.abs(pt-headPos);
+var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI);
+var flare=p.bright?2.2:1;
+var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
+whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
+whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
+whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*3),0,Math.PI*2);
+whCtx.fillStyle='rgba(160,140,220,'+(al*0.12)+')';whCtx.fill();
+});
+
+if(pr<1){requestAnimationFrame(drawTravel);}else{
+travelState='cluster';
+render();
+var scatterStart=performance.now();
+var scatterPts=trailPts.map(function(p){
+var pt=p.sp*p.t;if(pt>1)pt=1;
+var baseX=lineStartX+(lineEndX-lineStartX)*pt;
+var baseY=lineStartY+(lineEndY-lineStartY)*pt;
+var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
+var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
+var perpXl=-dy/lineLen;var perpYl=dx/lineLen;
+return{x:baseX+perpXl*Math.sin(helixAngle)*hr,y:baseY+perpYl*Math.sin(helixAngle)*hr,
+vx:(Math.random()-0.5)*3,vy:(Math.random()-0.5)*3,
+life:Math.random()*40+20,maxLife:60,sz:p.sz,bright:p.bright,
+drag:0.94+Math.random()*0.04};
+});
+function drawScatter(now2){
+var el2=now2-scatterStart;
+whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+var alive=false;
+scatterPts.forEach(function(sp){
+if(sp.life<=0)return;
+sp.x+=sp.vx;sp.y+=sp.vy;sp.vx*=sp.drag;sp.vy*=sp.drag;sp.life--;
+var t=Math.max(0,sp.life/sp.maxLife);
+var al=t*0.6;
+var sz=Math.max(0.1,sp.sz*t);
+whCtx.beginPath();whCtx.arc(sp.x,sp.y,sz,0,Math.PI*2);
+whCtx.fillStyle='rgba('+(sp.bright?'200,180,255':'160,140,220')+','+al+')';whCtx.fill();
+alive=true;
+});
+if(alive){requestAnimationFrame(drawScatter);}
+else{whDiv.style.opacity='0';}
+}
+requestAnimationFrame(drawScatter);
+}}
+requestAnimationFrame(drawTravel);
+}
+
+function renderCluster(){
+svg.innerHTML='';
+var nodeG=document.createElementNS(NS,'g');
+var linkG=document.createElementNS(NS,'g');
+var positions=[];
+secondCluster.forEach(function(sc){
+var cx=sc.wx-camOX;var cy=sc.wy-camOY;
+sc.screenX=cx;sc.screenY=cy;
+positions.push({x:cx,y:cy});
+var g=document.createElementNS(NS,'g');g.style.cursor='pointer';
+var glow=document.createElementNS(NS,'circle');glow.setAttribute('cx',cx);glow.setAttribute('cy',cy);glow.setAttribute('r',20);glow.setAttribute('fill','rgba(128,112,176,0.06)');g.appendChild(glow);
+var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',cx);circle.setAttribute('cy',cy);circle.setAttribute('r',7);circle.setAttribute('fill','#8070b0');circle.setAttribute('stroke','rgba(128,112,176,0.6)');circle.setAttribute('stroke-width','1.5');g.appendChild(circle);
+var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-16);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.textContent=sc.name;g.appendChild(text);
+g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(cx,cy);requestAnimationFrame(drawSparkles);
+if(sc.name==='Atlas'){showAtlas();}
+else if(sc.name==='Relationship Web'){travelBackAnim();}
+else if(sc.name==='Roadmap'){showRoadmap();}
+});
+nodeG.appendChild(g);
+});
+for(var i=0;i<positions.length;i++){for(var j=i+1;j<positions.length;j++){
+var l=document.createElementNS(NS,'line');
+l.setAttribute('x1',positions[i].x);l.setAttribute('y1',positions[i].y);
+l.setAttribute('x2',positions[j].x);l.setAttribute('y2',positions[j].y);
+l.setAttribute('stroke','#8070a0');l.setAttribute('stroke-width','0.8');l.setAttribute('stroke-opacity','0.3');
+linkG.appendChild(l);
+}}
+svg.appendChild(linkG);svg.appendChild(nodeG);
+if(travelState==='traveling'||travelState==='cluster'){
+var hfNode=nodes['To Halcyon Fold'];
+if(hfNode&&secondCluster[2].wx){
+var tLine=document.createElementNS(NS,'line');
+tLine.setAttribute('x1',hfNode.x-camOX);tLine.setAttribute('y1',hfNode.y-camOY);
+tLine.setAttribute('x2',secondCluster[2].wx-camOX);tLine.setAttribute('y2',secondCluster[2].wy-camOY);
+tLine.setAttribute('stroke','#8070a0');tLine.setAttribute('stroke-width','1');tLine.setAttribute('stroke-opacity','0.35');
+svg.appendChild(tLine);
+}
+var clG=document.createElementNS(NS,'g');
+var clLG=document.createElementNS(NS,'g');
+var clAlpha=(travelState==='cluster')?1:Math.min(1,Math.max(0,(Date.now()-travelStartTime)/(5000*0.7)));
+for(var ci=0;ci<secondCluster.length;ci++){for(var cj=ci+1;cj<secondCluster.length;cj++){
+var cl=document.createElementNS(NS,'line');
+cl.setAttribute('x1',secondCluster[ci].wx-camOX);cl.setAttribute('y1',secondCluster[ci].wy-camOY);
+cl.setAttribute('x2',secondCluster[cj].wx-camOX);cl.setAttribute('y2',secondCluster[cj].wy-camOY);
+cl.setAttribute('stroke','#8070a0');cl.setAttribute('stroke-width','0.8');cl.setAttribute('stroke-opacity',clAlpha*0.3);
+clLG.appendChild(cl);
+}}
+secondCluster.forEach(function(sc){
+var cx=sc.wx-camOX;var cy=sc.wy-camOY;
+var g=document.createElementNS(NS,'g');g.classList.add('cluster-node');g.style.opacity=clAlpha;g.style.cursor='pointer';
+var glow=document.createElementNS(NS,'circle');glow.setAttribute('cx',cx);glow.setAttribute('cy',cy);glow.setAttribute('r',20);glow.setAttribute('fill','rgba(128,112,176,0.06)');g.appendChild(glow);
+var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',cx);circle.setAttribute('cy',cy);circle.setAttribute('r',7);circle.setAttribute('fill','#8070b0');circle.setAttribute('stroke','rgba(128,112,176,0.6)');circle.setAttribute('stroke-width','1.5');g.appendChild(circle);
+var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-16);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.textContent=sc.name;g.appendChild(text);
+if(travelState==='cluster'){
+(function(name,px,py){
+g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(px,py);requestAnimationFrame(drawSparkles);
+if(name==='Atlas'){showAtlas();}
+else if(name==='Relationship Web'){travelBackAnim();}
+else if(name==='Roadmap'){showRoadmap();}
+});
+})(sc.name,cx,cy);
+}
+clG.appendChild(g);
+});
+svg.appendChild(clLG);svg.appendChild(clG);
+}
+}
+
+function travelBackAnim(){
+travelState='traveling';
+showTravelQuote('\u201CColor raked across the sky.\nGreens, purples, flowing like an open leyvein.\u201D',3750);
+var titleElR=document.querySelector('#title-bar h1');
+var subElR=document.querySelector('#title-bar .sub');
+titleElR.style.opacity='0';subElR.style.opacity='0';
+setTimeout(function(){titleElR.textContent='RELATIONSHIP WEB';subElR.textContent='The Covenant of The Flowers';titleElR.style.opacity='1';subElR.style.opacity='1';},2500);
+var startCamX=camOX;var startCamY=camOY;
+whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
+var dur=3750;var st=performance.now();
+var trailPts=[];
+for(var i=0;i<400;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*30,oy:(Math.random()-0.5)*30,sz:Math.random()*2.5+0.5,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*20+5,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
+drawReturn._headerFaded=false;
+function drawReturn(now){
+var el=now-st;var pr=Math.min(el/dur,1);
+var ease=pr<0.5?2*pr*pr:(1-Math.pow(-2*pr+2,2)/2);
+camOX=startCamX*(1-ease);
+camOY=startCamY*(1-ease);
+starOffX=camOX;starOffY=camOY;
+render();
+whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+var hf=nodes['To Halcyon Fold'];
+var destX=hf.x;var destY=hf.y;
+var fromX=secondCluster[2].wx-camOX;var fromY=secondCluster[2].wy-camOY;
+var toX=destX-camOX;var toY=destY-camOY;
+
+var rdx=toX-fromX;var rdy=toY-fromY;
+var rLen=Math.sqrt(rdx*rdx+rdy*rdy)||1;
+var rpX=-rdy/rLen;var rpY=rdx/rLen;
+trailPts.forEach(function(p){
+var headPos=ease;
+var pt=headPos*p.sp*p.t;
+if(pt>1)return;
+var baseX=fromX+(toX-fromX)*pt;
+var baseY=fromY+(toY-fromY)*pt;
+var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
+var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
+var px=baseX+rpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
+var py=baseY+rpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
+var distFromHead=Math.abs(pt-headPos);
+var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI);
+var flare=p.bright?2.2:1;
+var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
+whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
+whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
+whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*3),0,Math.PI*2);
+whCtx.fillStyle='rgba(160,140,220,'+(al*0.12)+')';whCtx.fill();
+});
+
+if(pr>0.6&&!drawReturn._headerFaded){
+drawReturn._headerFaded=true;
+var te=document.querySelector('#title-bar h1');
+var se=document.querySelector('#title-bar .sub');
+te.style.opacity='0';se.style.opacity='0';
+setTimeout(function(){te.textContent='RELATIONSHIP WEB';se.textContent='The Covenant of The Flowers';te.style.opacity='1';se.style.opacity='1';
+document.getElementById('legend').style.opacity='0.6';
+document.getElementById('instructions').style.opacity='0.6';
+document.getElementById('infobtn').style.opacity='0.7';document.getElementById('infobtn').style.pointerEvents='auto';
+},800);
+}
+if(pr<1){requestAnimationFrame(drawReturn);}else{
+camOX=0;camOY=0;
+selectedNode='Gateway';
+layoutFocused('Gateway');
+Object.values(nodes).forEach(function(n){n.x=n.tx;n.y=n.ty;});
+render();
+setTimeout(function(){whDiv.style.opacity='0';},200);
+}}
+requestAnimationFrame(drawReturn);
+}
+
+function travelBack(){
+travelState='web';selectedNode=null;camOX=0;camOY=0;
+whDiv.style.opacity='0';
+layoutNodes();
+Object.values(nodes).forEach(function(n){n.x=n.tx;n.y=n.ty;});
+render();
+}
+
+function animate(){let moving=false;Object.values(nodes).forEach(n=>{const dx=n.tx-n.x;const dy=n.ty-n.y;if(Math.abs(dx)>0.3||Math.abs(dy)>0.3){n.x+=dx*0.065;n.y+=dy*0.065;moving=true;}else{n.x=n.tx;n.y=n.ty;}});render();if(moving)requestAnimationFrame(animate);else animating=false;}
+function startAnimation(){if(!animating){animating=true;animate();}}
+
+
+// Sparkle effect
+var spCanvas=document.createElement('canvas');
+spCanvas.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:3;pointer-events:none';
+document.body.appendChild(spCanvas);
+var spCtx=spCanvas.getContext('2d');
+spCanvas.width=W();spCanvas.height=H();
+window.addEventListener('resize',function(){spCanvas.width=W();spCanvas.height=H();});
+var sparkles=[];
+function emitSparkle(x,y){
+for(var i=0;i<45;i++){
+var angle=Math.random()*Math.PI*2;
+var speed=Math.random()*5.25+1.5;
+var life=Math.random()*90+60;
+var delay=Math.random()*12;
+sparkles.push({
+x:x,y:y,
+vx:Math.cos(angle)*speed,
+vy:Math.sin(angle)*speed,
+life:life,maxLife:life,
+size:Math.random()*4.5+1.2,
+hue:190+Math.random()*50,
+light:65+Math.random()*20,
+delay:delay,
+wobble:Math.random()*0.45-0.225,
+wobbleSpeed:Math.random()*0.2+0.05,
+drag:0.96+Math.random()*0.025,
+wobbleOff:Math.random()*Math.PI*2,
+wobbleOff2:Math.random()*Math.PI*2,
+wobbleRatio:0.5+Math.random()*1.5,
+driftX:(Math.random()-0.5)*0.08,
+driftY:(Math.random()-0.5)*0.08,
+superBright:Math.random()<0.05,
+twinklePhase:Math.random()*Math.PI*2,
+twinkleSpeed:Math.random()*0.3+0.1
+});
+}
+for(var j=0;j<12;j++){
+var a2=Math.random()*Math.PI*2;
+var sp2=Math.random()*1.8+0.45;
+sparkles.push({
+x:x,y:y,
+vx:Math.cos(a2)*sp2,vy:Math.sin(a2)*sp2,
+life:135+Math.random()*60,maxLife:195,
+size:Math.random()*2.25+0.45,
+hue:210+Math.random()*30,light:80,
+delay:Math.random()*20,
+wobble:Math.random()*0.75-0.375,
+wobbleSpeed:Math.random()*0.08+0.02,
+drag:0.992,
+wobbleOff:Math.random()*Math.PI*2,
+wobbleOff2:Math.random()*Math.PI*2,
+wobbleRatio:0.3+Math.random()*2.0,
+driftX:(Math.random()-0.5)*0.04,
+driftY:(Math.random()-0.5)*0.04,
+superBright:Math.random()<0.05,
+twinklePhase:Math.random()*Math.PI*2,
+twinkleSpeed:Math.random()*0.15+0.05
+});
+}}
+function drawSparkles(){
+spCtx.clearRect(0,0,spCanvas.width,spCanvas.height);
+sparkles=sparkles.filter(function(p){
+if(p.delay>0){p.delay--;return true;}
+p.vx+=p.wobble*Math.sin(p.life*p.wobbleSpeed+p.wobbleOff);
+p.vy+=p.wobble*Math.cos(p.life*p.wobbleSpeed*p.wobbleRatio+p.wobbleOff2);
+p.vx+=p.driftX;p.vy+=p.driftY;p.x+=p.vx;p.y+=p.vy;
+p.vx*=p.drag;p.vy*=p.drag;
+p.life--;
+var t=Math.max(0,p.life/p.maxLife);
+var fadeT=t<0.3?t/0.3:1;
+var bright=p.superBright?2.5:1;
+var twinkle=0.6+0.4*Math.sin(p.life*p.twinkleSpeed+p.twinklePhase);
+var alpha=Math.min(1,fadeT*0.9*twinkle*bright);
+var sz=Math.max(0.1,p.size*(0.4+t*0.6)*(p.superBright?1.8:1));
+spCtx.beginPath();spCtx.arc(p.x,p.y,sz,0,Math.PI*2);
+var pLight=p.superBright?Math.min(100,p.light+25):p.light;
+spCtx.fillStyle='hsla('+p.hue+','+(p.superBright?'30':'65')+'%,'+pLight+'%,'+alpha+')';spCtx.fill();
+var glowSz=Math.max(0.1,sz*4.5);
+spCtx.beginPath();spCtx.arc(p.x,p.y,glowSz,0,Math.PI*2);
+spCtx.fillStyle='hsla('+p.hue+',50%,'+p.light+'%,'+(alpha*0.18)+')';spCtx.fill();
+if(t>0.5&&twinkle>0.85){
+var spkLen=sz*3.75;
+spCtx.strokeStyle='hsla('+p.hue+',60%,85%,'+(alpha*0.4)+')';
+spCtx.lineWidth=0.5;
+spCtx.beginPath();spCtx.moveTo(p.x-spkLen,p.y);spCtx.lineTo(p.x+spkLen,p.y);spCtx.stroke();
+spCtx.beginPath();spCtx.moveTo(p.x,p.y-spkLen);spCtx.lineTo(p.x,p.y+spkLen);spCtx.stroke();
+}
+return p.life>0;});
+if(sparkles.length>0)requestAnimationFrame(drawSparkles);
+}
+
+const svg=document.getElementById('svg');const NS='http://www.w3.org/2000/svg';
+
+function render(){
+var maxPan=Math.max(W(),H())*0.1;var panX=Math.max(-maxPan,Math.min(maxPan,-camOX*0.1));var panY=Math.max(-maxPan,Math.min(maxPan,-camOY*0.1));
+canvas.style.transform='translate('+panX+'px,'+panY+'px)';
+document.getElementById('aurora').style.transform='translate('+panX+'px,'+panY+'px)';
+svg.innerHTML='';var defs=document.createElementNS(NS,'defs');defs.innerHTML='<filter id="textshadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#0a0e14" flood-opacity="0.8"/></filter>';svg.appendChild(defs);const linkG=document.createElementNS(NS,'g');const nodeG=document.createElementNS(NS,'g');
+const connected=selectedNode?getConnected(selectedNode):[];const secondary=selectedNode?getSecondary(selectedNode,connected):[];
+
+DATA.relationships.forEach((r,i)=>{
+var isGatewayLink=(r.source==='Gateway'||r.target==='Gateway')||(r.source==='To Halcyon Fold'||r.target==='To Halcyon Fold');
+if(isGatewayLink&&selectedNode!=='Gateway'){return;}
+const s=nodes[r.source];const t=nodes[r.target];const line=document.createElementNS(NS,'line');
+line.setAttribute('x1',s.x-camOX);line.setAttribute('y1',s.y-camOY);line.setAttribute('x2',t.x-camOX);line.setAttribute('y2',t.y-camOY);
+line.classList.add('link');var isHFLink=(r.source==='To Halcyon Fold'||r.target==='To Halcyon Fold')||(r.source==='Gateway'&&r.target==='To Halcyon Fold')||(r.target==='Gateway'&&r.source==='To Halcyon Fold');
+line.setAttribute('stroke',isHFLink?'#8070a0':COLORS[r.category]);
+if(selectedNode){
+const isPri=r.source===selectedNode||r.target===selectedNode;
+const isSec=!isPri&&((connected.includes(r.source)&&(connected.includes(r.target)||secondary.includes(r.target)))||(connected.includes(r.target)&&(connected.includes(r.source)||secondary.includes(r.source))));
+if(isPri){line.setAttribute('stroke-width',r.category==='family'?2.5:1.5);line.setAttribute('stroke-opacity','0.80');}
+else if(isSec){line.setAttribute('stroke','#8090a0');line.setAttribute('stroke-width',0.8);line.setAttribute('stroke-opacity','0.31');}
+else{line.setAttribute('stroke-width',0.3);line.setAttribute('stroke-opacity','0.18');}
+}else{line.setAttribute('stroke-width',r.category==='family'?1.8:1);line.setAttribute('stroke-opacity',r.category==='known'?'0.4':'0.55');}
+linkG.appendChild(line);});
+
+DATA.characters.forEach(name=>{
+if(name==='Gateway'&&selectedNode&&selectedNode!=='Gateway'){return;}
+if(name==='To Halcyon Fold'&&selectedNode!=='Gateway'){return;}
+const n=nodes[name];const g=document.createElementNS(NS,'g');g.classList.add('node');
+if(selectedNode){const isPri=selectedNode===name||connected.includes(name);const isSec=secondary.includes(name);if(!isPri&&!isSec)g.classList.add('dimmed');else if(isSec)g.classList.add('secondary');}
+if(selectedNode===name)g.classList.add('selected');
+var nx=n.x-camOX;var ny=n.y-camOY;
+var isGW=name==='Gateway';var isHF=name==='To Halcyon Fold';var isSel=selectedNode===name;
+var baseR=isHF?n.r*1.4:isSel?n.r*1.6:n.r;
+var bloomR=isHF?n.r*6:isSel?n.r*5:n.isMain?n.r*4:n.r*3;
+var coreColor=isGW?'#a080c0':isHF?'#8070b0':n.isMain?'#c8ddf0':'#90a8c0';
+var glowColor=isGW?'rgba(160,128,192,':'rgba(140,180,220,';
+var glow3=document.createElementNS(NS,'circle');glow3.setAttribute('cx',nx);glow3.setAttribute('cy',ny);
+glow3.setAttribute('r',bloomR);glow3.setAttribute('fill',glowColor+(isSel?'0.06':'0.02')+')');g.appendChild(glow3);
+var glow2=document.createElementNS(NS,'circle');glow2.setAttribute('cx',nx);glow2.setAttribute('cy',ny);
+glow2.setAttribute('r',bloomR*0.6);glow2.setAttribute('fill',glowColor+(isSel?'0.1':'0.04')+')');g.appendChild(glow2);
+var glow1=document.createElementNS(NS,'circle');glow1.setAttribute('cx',nx);glow1.setAttribute('cy',ny);
+glow1.setAttribute('r',bloomR*0.3);glow1.setAttribute('fill',glowColor+(isSel?'0.15':'0.07')+')');g.appendChild(glow1);
+var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',nx);circle.setAttribute('cy',ny);
+circle.setAttribute('r',baseR);circle.setAttribute('fill',coreColor);
+circle.setAttribute('stroke',glowColor+'0.4)');circle.setAttribute('stroke-width',isSel?'1.5':'0.8');g.appendChild(circle);
+if(n.isMain&&!isGW&&!isHF){
+var spkLen=baseR*2.5;var spkOp=isSel?'0.25':'0.12';
+var h1=document.createElementNS(NS,'line');h1.setAttribute('x1',nx-spkLen);h1.setAttribute('y1',ny);h1.setAttribute('x2',nx+spkLen);h1.setAttribute('y2',ny);
+h1.setAttribute('stroke',glowColor+spkOp+')');h1.setAttribute('stroke-width','0.5');g.appendChild(h1);
+var v1=document.createElementNS(NS,'line');v1.setAttribute('x1',nx);v1.setAttribute('y1',ny-spkLen);v1.setAttribute('x2',nx);v1.setAttribute('y2',ny+spkLen);
+v1.setAttribute('stroke',glowColor+spkOp+')');v1.setAttribute('stroke-width','0.5');g.appendChild(v1);
+}
+var glowRing=document.createElementNS(NS,'circle');glowRing.setAttribute('cx',nx);glowRing.setAttribute('cy',ny);
+glowRing.setAttribute('r',baseR*2);glowRing.setAttribute('fill','none');
+glowRing.setAttribute('stroke',glowColor+(n.isMain?'0.15':'0.08')+')');glowRing.setAttribute('stroke-width','0.5');g.appendChild(glowRing);
+var text=document.createElementNS(NS,'text');text.setAttribute('x',nx);
+text.setAttribute('y',ny-baseR-10);
+text.setAttribute('font-size',selectedNode===name?'18':name==='Gateway'?'16':n.isMain?'15':'12');text.setAttribute('filter','url(#textshadow)');text.textContent=name;g.appendChild(text);
+g.addEventListener('click',e=>{e.stopPropagation();
+if(selectedNode===name){emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);selectedNode=null;layoutNodes();if(nodes['Gateway']){nodes['Gateway'].x=CX();nodes['Gateway'].y=CY();}startAnimation();}
+else if(name==='To Halcyon Fold'){emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);travelToCluster();}
+else{emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);playWormhole(n.x-camOX,n.y-camOY,CX(),CY(),()=>{});selectedNode=name;layoutNodes();startAnimation();}
+hideTooltip();});
+nodeG.appendChild(g);});
+svg.appendChild(linkG);svg.appendChild(nodeG);
+if(travelState==='traveling'||travelState==='cluster'){
+var hfNode=nodes['To Halcyon Fold'];
+if(hfNode&&secondCluster[2].wx){
+var tLine=document.createElementNS(NS,'line');
+tLine.setAttribute('x1',hfNode.x-camOX);tLine.setAttribute('y1',hfNode.y-camOY);
+tLine.setAttribute('x2',secondCluster[2].wx-camOX);tLine.setAttribute('y2',secondCluster[2].wy-camOY);
+tLine.setAttribute('stroke','#8070a0');tLine.setAttribute('stroke-width','1');tLine.setAttribute('stroke-opacity','0.35');
+svg.appendChild(tLine);
+}
+var clG=document.createElementNS(NS,'g');
+var clLG=document.createElementNS(NS,'g');
+var clAlpha=(travelState==='cluster')?1:Math.min(1,Math.max(0,(Date.now()-travelStartTime)/(5000*0.7)));
+for(var ci=0;ci<secondCluster.length;ci++){for(var cj=ci+1;cj<secondCluster.length;cj++){
+var cl=document.createElementNS(NS,'line');
+cl.setAttribute('x1',secondCluster[ci].wx-camOX);cl.setAttribute('y1',secondCluster[ci].wy-camOY);
+cl.setAttribute('x2',secondCluster[cj].wx-camOX);cl.setAttribute('y2',secondCluster[cj].wy-camOY);
+cl.setAttribute('stroke','#8070a0');cl.setAttribute('stroke-width','0.8');cl.setAttribute('stroke-opacity',clAlpha*0.3);
+clLG.appendChild(cl);
+}}
+secondCluster.forEach(function(sc){
+var cx=sc.wx-camOX;var cy=sc.wy-camOY;
+var g=document.createElementNS(NS,'g');g.classList.add('cluster-node');g.style.opacity=clAlpha;g.style.cursor='pointer';
+var glow=document.createElementNS(NS,'circle');glow.setAttribute('cx',cx);glow.setAttribute('cy',cy);glow.setAttribute('r',20);glow.setAttribute('fill','rgba(128,112,176,0.06)');g.appendChild(glow);
+var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',cx);circle.setAttribute('cy',cy);circle.setAttribute('r',7);circle.setAttribute('fill','#8070b0');circle.setAttribute('stroke','rgba(128,112,176,0.6)');circle.setAttribute('stroke-width','1.5');g.appendChild(circle);
+var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-16);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.textContent=sc.name;g.appendChild(text);
+if(travelState==='cluster'){
+(function(name,px,py){
+g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(px,py);requestAnimationFrame(drawSparkles);
+if(name==='Atlas'){showAtlas();}
+else if(name==='Relationship Web'){travelBackAnim();}
+else if(name==='Roadmap'){showRoadmap();}
+});
+})(sc.name,cx,cy);
+}
+clG.appendChild(g);
+});
+svg.appendChild(clLG);svg.appendChild(clG);
+}
+}
+
+const tooltip=document.getElementById('tooltip');const ttName=tooltip.querySelector('.tt-name');const ttDetail=tooltip.querySelector('.tt-detail');
+function showNodeTooltip(name,e){
+const conns=DATA.relationships.filter(r=>r.source===name||r.target===name);
+const fc=conns.filter(r=>r.category==='family').length;const wc=conns.filter(r=>r.category==='well-known').length;const kc=conns.filter(r=>r.category==='known').length;
+ttName.textContent=name;let d=[];if(fc)d.push(fc+' family');if(wc)d.push(wc+' well-known');if(kc)d.push(kc+' known');
+ttDetail.textContent=conns.length+' connections: '+d.join(', ');positionTooltip(e);}
+function showLinkTooltip(r,e){ttName.textContent=r.source+' \u2014 '+r.target;
+if(r.type_ab!==r.type_ba)ttDetail.textContent=r.source+': '+r.type_ab+', '+r.target+': '+r.type_ba;
+else ttDetail.textContent=r.type_ab;positionTooltip(e);}
+function positionTooltip(e){let x=e.clientX+16;let y=e.clientY-10;if(x+260>W())x=e.clientX-270;if(y+80>H())y=e.clientY-80;tooltip.style.left=x+'px';tooltip.style.top=y+'px';tooltip.style.opacity='1';}
+function hideTooltip(){tooltip.style.opacity='0';}
+
+
+document.getElementById('svg').addEventListener('click',()=>{if(roadmapState!=='hidden'){document.getElementById('tooltip').style.opacity='0';if(selectedRmNode){selectedRmNode=null;layoutRmNodes();startRmAnim();}return;}if(travelState==='cluster'||travelState==='traveling'){return;}if(selectedNode){selectedNode=null;layoutNodes();if(nodes['Gateway']){nodes['Gateway'].x=CX();nodes['Gateway'].y=CY();}startAnimation();hideTooltip();}});
+
+
+// Roadmap System
+var roadmapState='hidden';
+var selectedRmNode=null;
+
+var chapters={
+prologue:[{num:'P',status:'draft1'}],
+act1:[{num:1,status:'draft1'},{num:2,status:'draft1'},{num:3,status:'draft1'},{num:4,status:'draft1'},{num:5,status:'draft1'},{num:6,status:'draft1'},{num:7,status:'draft1'},{num:8,status:'draft1'},{num:9,status:'draft1'},{num:10,status:'draft1'}],
+act2:[{num:11,status:'draft1'},{num:12,status:'draft1'},{num:13,status:'draft1'},{num:14,status:'draft1'},{num:15,status:'draft1'},{num:16,status:'draft1'},{num:17,status:'draft1'},{num:18,status:'draft1'},{num:19,status:'draft1'},{num:20,status:'draft1'},{num:21,status:'draft1'}],
+act3:[{num:22,status:'draft1'},{num:23,status:'draft1'},{num:24,status:'draft1'},{num:25,status:'draft1'},{num:26,status:'draft1'},{num:27,status:'unwritten'},{num:28,status:'unwritten'},{num:29,status:'unwritten'},{num:30,status:'unwritten'},{num:31,status:'unwritten'},{num:32,status:'unwritten'},{num:33,status:'unwritten'},{num:34,status:'unwritten'}],
+epilogue:[{num:35,status:'gold'}],
+glossary:[{num:'G',status:'unwritten'}],
+supplemental:[{num:'S',status:'draft1'}]
+};
+
+var statusColors={
+unwritten:{core:'rgba(60,70,90,0.6)',glow:'rgba(60,70,90,0.1)',bloom:0,label:'Unwritten'},
+draft1:{core:'rgba(140,170,220,0.8)',glow:'rgba(100,150,220,0.25)',bloom:8,label:'First Draft'},
+gold:{core:'rgba(200,180,120,0.9)',glow:'rgba(200,170,80,0.35)',bloom:14,label:'Gold Pass'},
+diamond:{core:'rgba(255,240,180,1)',glow:'rgba(255,230,140,0.7)',bloom:35,label:'Diamond Pass'}
+};
+
+var rmNodes={
+roadmap:{name:'Roadmap',x:0,y:0,tx:0,ty:0},
+act1:{name:'Act I',key:'act1',x:0,y:0,tx:0,ty:0},
+act2:{name:'Act II',key:'act2',x:0,y:0,tx:0,ty:0},
+act3:{name:'Act III',key:'act3',x:0,y:0,tx:0,ty:0},
+epilogue:{name:'Epilogue',key:'epilogue',x:0,y:0,tx:0,ty:0},
+prologue:{name:'Prologue',key:'prologue',x:0,y:0,tx:0,ty:0},
+glossary:{name:'Glossary',key:'glossary',x:0,y:0,tx:0,ty:0},
+supplemental:{name:'Commentary',key:'supplemental',x:0,y:0,tx:0,ty:0}
+};
+var rmLinks=[['roadmap','act1'],['roadmap','act2'],['roadmap','act3'],['roadmap','epilogue'],['roadmap','prologue'],['roadmap','glossary'],['roadmap','supplemental']];
+var rmChapterNodes=[];
+
+var bloomCanvas=document.createElement('canvas');
+bloomCanvas.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none;display:none';
+document.body.appendChild(bloomCanvas);
+var bloomCtx=bloomCanvas.getContext('2d');
+bloomCanvas.width=W();bloomCanvas.height=H();
+window.addEventListener('resize',function(){bloomCanvas.width=W();bloomCanvas.height=H();});
+
+function layoutRmDefault(){
+var r=Math.min(W(),H())*0.22;
+rmNodes.roadmap.tx=CX();rmNodes.roadmap.ty=CY();
+var all=['prologue','act1','act2','act3','epilogue','glossary','supplemental'];
+all.forEach(function(k,i){
+var a=(i/all.length)*Math.PI*2-Math.PI/2;
+rmNodes[k].tx=CX()+Math.cos(a)*r;
+rmNodes[k].ty=CY()+Math.sin(a)*r;
+});
+rmChapterNodes=[];
+}
+
+function layoutRmFocused(key){
+var nd=rmNodes[key];
+nd.tx=CX();nd.ty=CY();
+var chaps=chapters[key];
+var orbitR=Math.min(W(),H())*0.25;
+rmChapterNodes=[];
+chaps.forEach(function(ch,i){
+var a=(i/chaps.length)*Math.PI*2-Math.PI/2;
+rmChapterNodes.push({
+x:CX()+Math.cos(a)*orbitR,y:CY()+Math.sin(a)*orbitR,
+tx:CX()+Math.cos(a)*orbitR,ty:CY()+Math.sin(a)*orbitR,
+ch:ch
+});
+});
+var others=Object.keys(rmNodes).filter(function(k){return k!==key;});
+var edgeR=Math.min(W(),H())*0.40;
+others.forEach(function(k,i){
+var a=(i/others.length)*Math.PI*2;
+rmNodes[k].tx=CX()+Math.cos(a)*edgeR;
+rmNodes[k].ty=CY()+Math.sin(a)*edgeR;
+});
+}
+
+function layoutRmNodes(){
+if(selectedRmNode)layoutRmFocused(selectedRmNode);
+else{layoutRmDefault();rmChapterNodes=[];}
+}
+
+var rmAnimating=false;
+function animateRm(){
+var moving=false;
+Object.keys(rmNodes).forEach(function(k){
+var n=rmNodes[k];
+var dx=n.tx-n.x;var dy=n.ty-n.y;
+if(Math.abs(dx)>0.3||Math.abs(dy)>0.3){n.x+=dx*0.065;n.y+=dy*0.065;moving=true;}
+else{n.x=n.tx;n.y=n.ty;}
+});
+renderRoadmap();
+if(moving){requestAnimationFrame(animateRm);}else{rmAnimating=false;}
+}
+function startRmAnim(){if(!rmAnimating){rmAnimating=true;animateRm();}}
+
+var rmCooldown=false;
+function showRoadmap(){
+rmCooldown=true;
+setTimeout(function(){rmCooldown=false;},400);
+roadmapState='hub';
+selectedRmNode=null;
+bloomCanvas.style.display='block';
+layoutRmDefault();
+Object.keys(rmNodes).forEach(function(k){rmNodes[k].x=CX();rmNodes[k].y=CY();});
+var titleEl=document.querySelector('#title-bar h1');var subEl=document.querySelector('#title-bar .sub');
+titleEl.style.opacity='0';subEl.style.opacity='0';
+setTimeout(function(){titleEl.textContent='ROADMAP';subEl.textContent='The Covenant of The Flowers';titleEl.style.opacity='1';subEl.style.opacity='1';},400);
+startRmAnim();
+}
+
+function hideRoadmap(){
+document.getElementById('tooltip').style.opacity='0';
+roadmapState='hidden';
+selectedRmNode=null;
+rmChapterNodes=[];
+bloomCanvas.style.display='none';
+bloomCtx.clearRect(0,0,bloomCanvas.width,bloomCanvas.height);
+var titleEl=document.querySelector('#title-bar h1');var subEl=document.querySelector('#title-bar .sub');
+titleEl.style.opacity='0';subEl.style.opacity='0';
+setTimeout(function(){titleEl.textContent='HALCYON FOLD';subEl.textContent='The Covenant of The Flowers';titleEl.style.opacity='1';subEl.style.opacity='1';},400);
+travelState='cluster';
+render();
+}
+
+function renderRoadmap(){
+svg.innerHTML='';
+bloomCtx.clearRect(0,0,bloomCanvas.width,bloomCanvas.height);
+bloomCtx.globalCompositeOperation='lighter';
+
+var defs=document.createElementNS(NS,'defs');
+defs.innerHTML='<filter id="textshadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#0a0e14" flood-opacity="0.8"/></filter>';
+svg.appendChild(defs);
+var linkG=document.createElementNS(NS,'g');
+var nodeG=document.createElementNS(NS,'g');
+
+// Links between hub nodes
+rmLinks.forEach(function(lk){
+var a=rmNodes[lk[0]];var b=rmNodes[lk[1]];
+var line=document.createElementNS(NS,'line');
+line.setAttribute('x1',a.x);line.setAttribute('y1',a.y);
+line.setAttribute('x2',b.x);line.setAttribute('y2',b.y);
+var connected=!selectedRmNode||lk[0]===selectedRmNode||lk[1]===selectedRmNode;
+line.setAttribute('stroke','#8070a0');
+line.setAttribute('stroke-width',connected?'1.2':'0.4');
+line.setAttribute('stroke-opacity',connected?'0.78':'0.29');
+linkG.appendChild(line);
+});
+
+// Lines from focused act node to chapter stars
+if(selectedRmNode&&rmChapterNodes.length>0){
+rmChapterNodes.forEach(function(cn){
+var act=rmNodes[selectedRmNode];
+var line=document.createElementNS(NS,'line');
+line.setAttribute('x1',act.x);line.setAttribute('y1',act.y);
+line.setAttribute('x2',cn.x);line.setAttribute('y2',cn.y);
+line.setAttribute('stroke','#8070a0');line.setAttribute('stroke-width','0.6');line.setAttribute('stroke-opacity','0.80');
+linkG.appendChild(line);
+});
+// Lines between chapter stars for geometric patterns
+for(var ci=0;ci<rmChapterNodes.length;ci++){
+for(var cj=ci+1;cj<rmChapterNodes.length;cj++){
+if(cj-ci<=2||cj===rmChapterNodes.length-1&&ci===0){
+var cl=document.createElementNS(NS,'line');
+cl.setAttribute('x1',rmChapterNodes[ci].x);cl.setAttribute('y1',rmChapterNodes[ci].y);
+cl.setAttribute('x2',rmChapterNodes[cj].x);cl.setAttribute('y2',rmChapterNodes[cj].y);
+cl.setAttribute('stroke','#8070a0');cl.setAttribute('stroke-width','0.3');cl.setAttribute('stroke-opacity','0.43');
+linkG.appendChild(cl);
+}}}
+}
+// Inter-constellation lines in default view for background geometry
+if(!selectedRmNode){
+var allKeys=Object.keys(rmNodes).filter(function(k){return k!=='roadmap';});
+for(var ai=0;ai<allKeys.length;ai++){
+for(var aj=ai+1;aj<allKeys.length;aj++){
+var na=rmNodes[allKeys[ai]];var nb=rmNodes[allKeys[aj]];
+var cl2=document.createElementNS(NS,'line');
+cl2.setAttribute('x1',na.x);cl2.setAttribute('y1',na.y);
+cl2.setAttribute('x2',nb.x);cl2.setAttribute('y2',nb.y);
+cl2.setAttribute('stroke','#8070a0');cl2.setAttribute('stroke-width','0.3');cl2.setAttribute('stroke-opacity','0.29');
+linkG.appendChild(cl2);
+}}
+}
+
+// Hub nodes
+Object.keys(rmNodes).forEach(function(k){
+var n=rmNodes[k];
+var isSelected=selectedRmNode===k;
+var isConnected=!selectedRmNode||k==='roadmap'||k===selectedRmNode||rmLinks.some(function(lk){return(lk[0]===selectedRmNode&&lk[1]===k)||(lk[1]===selectedRmNode&&lk[0]===k);});
+var g=document.createElementNS(NS,'g');g.style.cursor='pointer';g.classList.add('cluster-node');
+if(!isConnected)g.style.opacity='0.20';
+var glow=document.createElementNS(NS,'circle');glow.setAttribute('cx',n.x);glow.setAttribute('cy',n.y);
+glow.setAttribute('r',isSelected?28:18);glow.setAttribute('fill','rgba(128,112,176,'+(isSelected?'0.1':'0.05')+')');g.appendChild(glow);
+var r=k==='roadmap'?8:isSelected?9:6;
+var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',n.x);circle.setAttribute('cy',n.y);circle.setAttribute('r',r);
+circle.setAttribute('fill',k==='roadmap'?'#a080c0':'#8070b0');circle.setAttribute('stroke','rgba(128,112,176,0.6)');circle.setAttribute('stroke-width',isSelected?'2':'1.5');g.appendChild(circle);
+var text=document.createElementNS(NS,'text');text.setAttribute('x',n.x);text.setAttribute('y',n.y-r-10);
+text.setAttribute('font-size',isSelected?'18':'15');text.setAttribute('text-anchor','middle');
+text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');
+text.setAttribute('filter','url(#textshadow)');text.textContent=n.name;g.appendChild(text);
+
+(function(key){
+g.addEventListener('click',function(e){e.stopPropagation();
+if(rmCooldown)return;
+emitSparkle(n.x,n.y);requestAnimationFrame(drawSparkles);
+if(key==='roadmap'){
+if(selectedRmNode){selectedRmNode=null;layoutRmNodes();startRmAnim();}
+else{hideRoadmap();}
+}else{
+if(selectedRmNode===key){selectedRmNode=null;}
+else{selectedRmNode=key;}
+document.getElementById('tooltip').style.opacity='0';
+layoutRmNodes();startRmAnim();
+}
+});
+})(k);
+nodeG.appendChild(g);
+});
+
+// Chapter stars
+rmChapterNodes.forEach(function(cn){
+var st=statusColors[cn.ch.status];
+var sx=cn.x;var sy=cn.y;
+
+if(st.bloom>0){
+var grad=bloomCtx.createRadialGradient(sx,sy,0,sx,sy,st.bloom*2);
+grad.addColorStop(0,st.glow);
+grad.addColorStop(1,'rgba(0,0,0,0)');
+bloomCtx.beginPath();bloomCtx.arc(sx,sy,st.bloom*2,0,Math.PI*2);
+bloomCtx.fillStyle=grad;bloomCtx.fill();
+}
+
+var g=document.createElementNS(NS,'g');g.style.cursor='pointer';
+var coreR=cn.ch.status==='unwritten'?2.5:cn.ch.status==='gold'?4.5:cn.ch.status==='diamond'?5.5:3.5;
+var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',sx);circle.setAttribute('cy',sy);circle.setAttribute('r',coreR);
+circle.setAttribute('fill',st.core);
+if(st.bloom>10){circle.setAttribute('stroke','rgba(255,240,180,0.3)');circle.setAttribute('stroke-width','1');}
+g.appendChild(circle);
+
+if(cn.ch.status!=='unwritten'){
+var glowRing=document.createElementNS(NS,'circle');glowRing.setAttribute('cx',sx);glowRing.setAttribute('cy',sy);
+glowRing.setAttribute('r',coreR*2.5);glowRing.setAttribute('fill','none');glowRing.setAttribute('stroke',st.glow);glowRing.setAttribute('stroke-width','0.5');
+g.appendChild(glowRing);
+}
+
+var text=document.createElementNS(NS,'text');text.setAttribute('x',sx);text.setAttribute('y',sy-coreR-8);
+text.setAttribute('font-size','11');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#8090a0');
+text.setAttribute('font-family','EB Garamond,serif');text.setAttribute('filter','url(#textshadow)');
+text.textContent=(typeof cn.ch.num==='number'?'Ch. ':'')+cn.ch.num;g.appendChild(text);
+
+(function(ch,px,py){
+g.addEventListener('mouseenter',function(){
+var tt=document.getElementById('tooltip');var tn=tt.querySelector('.tt-name');var td=tt.querySelector('.tt-detail');
+tn.textContent=(typeof ch.num==='number'?'Chapter ':'')+(ch.num==='P'?'Prologue':ch.num==='G'?'Glossary':ch.num==='S'?'Commentary':ch.num);td.textContent=statusColors[ch.status].label;
+tt.style.left=(px+16)+'px';tt.style.top=(py-10)+'px';tt.style.opacity='1';
+});
+g.addEventListener('mouseleave',function(){document.getElementById('tooltip').style.opacity='0';});
+})(cn.ch,sx,sy);
+nodeG.appendChild(g);
+});
+
+// Legend
+var legendItems=['unwritten','draft1','gold','diamond'];
+for(var li=0;li<legendItems.length;li++){
+var sk=legendItems[li];var sc=statusColors[sk];
+var lx=30;var ly=H()-84+li*18;
+var dot=document.createElementNS(NS,'circle');dot.setAttribute('cx',lx);dot.setAttribute('cy',ly);dot.setAttribute('r',3);dot.setAttribute('fill',sc.core);nodeG.appendChild(dot);
+var lt=document.createElementNS(NS,'text');lt.setAttribute('x',lx+12);lt.setAttribute('y',ly+4);lt.setAttribute('font-size','11');lt.setAttribute('fill','#8090a0');lt.setAttribute('font-family','EB Garamond,serif');lt.textContent=sc.label;nodeG.appendChild(lt);
+}
+
+svg.appendChild(linkG);svg.appendChild(nodeG);
+bloomCtx.globalCompositeOperation='source-over';
+}
+
+
+layoutCircle();Object.values(nodes).forEach(n=>{n.x=n.tx;n.y=n.ty;});render();
+
+</script>
+
+<div id="info-panel" style="position:fixed;top:105px;right:20px;z-index:15;background:rgba(12,18,28,0.95);border:1px solid rgba(74,144,217,0.25);border-radius:10px;padding:20px 26px;max-width:380px;backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:all 0.4s ease;box-shadow:0 0 30px rgba(74,144,217,0.08)">
+<div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#8aaac8;margin-bottom:10px;letter-spacing:0.06em">A Note to the Visitor</div>
+<div style="font-family:'EB Garamond',serif;font-size:14px;color:#7888a0;line-height:1.6">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided as your lamp in the storm. </div>
+<div style="font-family:EB Garamond,serif;font-size:15px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">There are many other names and appearances in The Covenant of The Flowers. You must discover them yourself.</div>
+<div style="font-family:'EB Garamond',serif;font-size:13px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">Additionally, all links are limited to the author's understanding of each relationship at the time of writing.</div>
+</div>
+
+
+
+
+
+
+<button id="infobtn" onclick="event.stopPropagation();var ip=document.getElementById('infopanel');if(ip.style.display==='none'||ip.style.display===''){ip.style.display='block';}else{ip.style.display='none';}" style="position:fixed;bottom:110px;left:55px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:16px;font-weight:bold;font-style:italic;cursor:pointer;opacity:0.7" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">i</button>
+<audio id="bgm-web" src="life_is_reason.mp3" loop></audio>
+<button id="musicbtn" style="position:fixed;bottom:110px;left:20px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:14px;cursor:pointer;opacity:0.7;display:flex;align-items:center;justify-content:center" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">&#9654;</button>
+<div style="position:fixed;bottom:92px;left:20px;z-index:100;font-family:EB Garamond,serif;font-size:10px;color:#c8cdd4;font-style:italic;opacity:0.6">Life is Reason &mdash; Daniel Pemberton</div>
+<script>
+var mbtn=document.getElementById("musicbtn");
+var aud=document.getElementById("bgm-web");
+var mPlaying=false;
+mbtn.onclick=function(ev){
+ev.stopPropagation();
+if(mPlaying){aud.pause();mbtn.innerHTML="&#9654;";mPlaying=false;}
+else{aud.volume=0;aud.play().then(function(){var fi=setInterval(function(){if(aud.volume<0.9){aud.volume=Math.min(1,aud.volume+0.1);}else{aud.volume=1;clearInterval(fi);}},100);}).catch(function(){aud.volume=1;});mbtn.innerHTML="&#9208;";mPlaying=true;}
+};
+aud.addEventListener('play',function(){mPlaying=true;mbtn.innerHTML="&#9208;";});
+aud.addEventListener('pause',function(){mPlaying=false;mbtn.innerHTML="&#9654;";});
+
+</script>
+
+
+<div id="fade-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:49;background:#0a0e14;opacity:0;pointer-events:none;transition:opacity 2.25s"></div>
+<div id="seam-left"></div>
+<div id="seam-right"></div>
+<div id="atlas-container"><div id="atlas-touch-return" onclick="event.stopPropagation();hideAtlas();setTimeout(function(){travelState='cluster';render();var t=document.querySelector('#title-bar h1');var s=document.querySelector('#title-bar .sub');t.style.opacity='0';s.style.opacity='0';setTimeout(function(){t.textContent='HALCYON FOLD';s.textContent='The Covenant of The Flowers';t.style.opacity='1';s.style.opacity='1';},400);},7500);" style="position:fixed;bottom:16px;right:16px;z-index:55;background:var(--parch);border:1px solid var(--ink-ltr);border-radius:20px;padding:8px 18px;font-family:EB Garamond,serif;font-size:13px;color:var(--ink-lt);cursor:pointer;opacity:0.7;transition:opacity 0.3s;display:none;align-items:center;gap:6px" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.7'">&#10038; Starmap</div>
 
 <div class="w">
 <div class="hd">
 <h1>A Historical Atlas of the Known World</h1>
-<div class="su">From the Charter of Ariy&aacute;hn&agrave; to our Current Age</div>
+<div class="su">From the Charter of Ariy&aacute;hn&agrave; to our Current Age<div class="landscape-hint" style="font-size:.75rem;color:var(--ink-ltr);margin-top:.3rem;font-style:italic;display:none">Best in Landscape View</div></div>
 
 </div>
 <div class="tabs">
@@ -646,28 +1673,28 @@ body{background:var(--parch);color:var(--ink);font-family:'EB Garamond',Georgia,
 <g class="city-g" data-n="Ariy&aacute;hn&agrave;" data-d="The unified capital of the Realm. City of Healing. Seat of the High Council Directorate. Hub of all leyline convergence.">
 <circle cx="790" cy="116" r="9" fill="var(--gold)" stroke="var(--ink)" stroke-width="1.5"/>
 <circle cx="790" cy="116" r="4" fill="var(--parch)"/>
-<text x="806" y="108" font-size="34" font-weight="600" fill="var(--ink)" font-family="Cormorant Garamond,serif">Ariy&aacute;hn&agrave;</text>
+<text x="806" y="108" font-size="48" font-weight="600" fill="var(--ink)" font-family="Cormorant Garamond,serif">Ariy&aacute;hn&agrave;</text>
 </g>
 <g class="city-g" data-n="Kifune" data-d="Sacred mountain sanctuary in Japan. Home of the Fount, the monastic order, and the forge where Sh&#363;ren was created.">
-<circle cx="1700" cy="265" r="8" fill="none" stroke="var(--realm-bl)" stroke-width="2.5"/>
-<circle cx="1700" cy="265" r="3.5" fill="var(--realm-bl)"/>
-<text x="1678" y="292" font-size="24" font-weight="600" fill="#0d4a3a" font-family="Cormorant Garamond,serif">Kifune</text>
+<circle cx="1700" cy="265" r="12" fill="none" stroke="var(--realm-bl)" stroke-width="2.5"/>
+<circle cx="1700" cy="265" r="5" fill="var(--realm-bl)"/>
+<text x="1678" y="292" font-size="36" font-weight="600" fill="#0d4a3a" font-family="Cormorant Garamond,serif">Kifune</text>
 </g>
-<g class="city-g" data-n="Celeste" data-d="Orbital station. Crown jewel of Realm engineering. Designed for cooperation, research, and peacekeeping. Positioned in geosynchronous orbit.">
-<circle cx="690" cy="180" r="6" fill="none" stroke="var(--realm-bl)" stroke-width="1.3"/>
-<circle cx="690" cy="180" r="2.5" fill="var(--realm-bl)"/>
+<g class="city-g" data-n="Celeste" data-transit="true" data-d="Orbital station. Crown jewel of Realm engineering. Designed for cooperation, research, and peacekeeping. Positioned in geosynchronous orbit.">
+<circle cx="690" cy="180" r="9" fill="none" stroke="var(--realm-bl)" stroke-width="1.3"/>
+<circle cx="690" cy="180" r="5" fill="var(--realm-bl)"/>
 <line x1="690" y1="187" x2="690" y2="200" stroke="var(--realm-bl)" stroke-width="0.7" stroke-dasharray="3 2"/>
-<text x="703" y="184" font-size="20" fill="var(--realm-bl)" font-style="italic" font-family="EB Garamond,serif">Celeste (orbital)</text>
+<text x="703" y="184" font-size="35" fill="var(--realm-bl)" font-style="italic" font-family="EB Garamond,serif">Celeste (orbital)</text>
 </g>
 <g class="city-g" data-n="Sungarde" data-d="Northern military installation and aerodrome. Spaceport with orbital launch capability via Aegistride craft. Located in the Realm's purchased territory of Nova Scotia.">
 <circle cx="650" cy="222" r="5" fill="var(--realm-bl)" stroke="var(--ink)" stroke-width="0.8"/>
-<text x="660" y="220" font-size="17" fill="var(--realm-bl)" font-family="EB Garamond,serif" font-style="italic">Sungarde</text>
+<text x="660" y="220" font-size="25" fill="var(--realm-bl)" font-family="EB Garamond,serif" font-style="italic">Sungarde</text>
 </g>
 <g class="city-g" data-n="Port Meridian" data-d="Principal maritime gateway of the Realm. Trade hub connecting the Atlantic provinces to the capital.">
-<circle cx="615" cy="387" r="4" fill="var(--realm-bl)" stroke="var(--ink)" stroke-width="0.8"/>
+<circle cx="615" cy="387" r="6" fill="var(--realm-bl)" stroke="var(--ink)" stroke-width="0.8"/>
 <line x1="619" y1="390" x2="645" y2="410" stroke="var(--ink-ltr)" stroke-width="0.8" stroke-dasharray="3 2"/>
 <circle cx="645" cy="410" r="2" fill="var(--ink-ltr)"/>
-<text x="652" y="414" font-size="17" fill="var(--realm-bl)" font-family="EB Garamond,serif" font-style="italic">Port Meridian</text>
+<text x="652" y="414" font-size="25" fill="var(--realm-bl)" font-family="EB Garamond,serif" font-style="italic">Port Meridian</text>
 </g>
 <g transform="translate(100,770)">
 <circle cx="0" cy="0" r="28" fill="var(--parch)" stroke="var(--ink-ltr)" stroke-width="0.5" opacity="0.9"/>
@@ -1689,27 +2716,27 @@ body{background:var(--parch);color:var(--ink);font-family:'EB Garamond',Georgia,
 <g class="city-g" data-n="Citadel &amp; Crown City" data-d="Imperial capital. Residence of the Emperor. Crown City: the surrounding megalopolis. Connected to the mainland by the western Causeway and serviced by the National Transit of the Crown (NTC Railways).">
 <circle cx="790" cy="116" r="9" fill="var(--gold)" stroke="var(--ink)" stroke-width="1.5"/>
 <circle cx="790" cy="116" r="4" fill="var(--parch)"/>
-<text x="806" y="108" font-size="34" font-weight="600" fill="var(--ink)" font-family="Cormorant Garamond,serif">Citadel</text>
+<text x="806" y="108" font-size="48" font-weight="600" fill="var(--ink)" font-family="Cormorant Garamond,serif">Citadel</text>
 </g>
-<g class="city-g" data-n="Testament" data-d="Formerly Celeste. Corsair Novas use the station as an orbital rally point, though most of it has gone dark. The hydroponic gardens have long failed, the food courts are unlit, the recreational centers sealed. Only a handful of shuttle bays and the communications array remain operational. Life support holds in two of seven sectors.">
-<circle cx="690" cy="180" r="6" fill="none" stroke="var(--dawn-r)" stroke-width="1.3"/>
-<circle cx="690" cy="180" r="2.5" fill="var(--dawn-r)"/>
+<g class="city-g" data-n="Testament" data-transit="true" data-d="Formerly Celeste. Corsair Novas use the station as an orbital rally point, though most of it has gone dark. The hydroponic gardens have long failed, the food courts are unlit, the recreational centers sealed. Only a handful of shuttle bays and the communications array remain operational. Life support holds in two of seven sectors.">
+<circle cx="690" cy="180" r="9" fill="none" stroke="var(--dawn-r)" stroke-width="1.3"/>
+<circle cx="690" cy="180" r="5" fill="var(--dawn-r)"/>
 <line x1="690" y1="187" x2="690" y2="200" stroke="var(--dawn-r)" stroke-width="0.7" stroke-dasharray="3 2"/>
-<text x="703" y="184" font-size="20" fill="var(--dawn-r)" font-style="italic" font-family="EB Garamond,serif">Testament (orbital)</text>
+<text x="703" y="184" font-size="35" fill="var(--dawn-r)" font-style="italic" font-family="EB Garamond,serif">Testament (orbital)</text>
 </g>
 <g class="city-g" data-n="Sungarde" data-d="Northern military installation and aerodrome. Spaceport with orbital launch capability via Corsair Nova craft. Imperial staging ground. Orbital launch facility for Testament resupply.">
 <circle cx="650" cy="222" r="5" fill="var(--realm-bl)" stroke="var(--ink)" stroke-width="0.8"/>
-<text x="660" y="220" font-size="16" fill="var(--gold)" font-family="EB Garamond,serif">Sungarde</text>
+<text x="660" y="220" font-size="24" fill="var(--gold)" font-family="EB Garamond,serif">Sungarde</text>
 </g>
 <g class="city-g" data-n="Historia" data-d="Province southwest of Sungarde. Gripped by the Thirst since the Third Cycle. Aquifers collapsed, farmland destroyed. Population reduced to scavenging.">
-<circle cx="545" cy="248" r="5" fill="var(--dawn-r)" stroke="var(--ink)" stroke-width="0.8"/>
-<text x="558" y="252" font-size="16" fill="var(--ink-lt)" font-family="EB Garamond,serif">Historia</text>
+<circle cx="545" cy="248" r="6" fill="var(--dawn-r)" stroke="var(--ink)" stroke-width="0.8"/>
+<text x="558" y="252" font-size="24" fill="var(--ink-lt)" font-family="EB Garamond,serif">Historia</text>
 </g>
 <g class="city-g" data-n="Port Meridian" data-d="Principal maritime gateway of the Empire. Trade hub connecting the Atlantic provinces to the capital.">
-<circle cx="615" cy="387" r="4" fill="var(--realm-bl)" stroke="var(--ink)" stroke-width="0.8"/>
+<circle cx="615" cy="387" r="6" fill="var(--realm-bl)" stroke="var(--ink)" stroke-width="0.8"/>
 <line x1="619" y1="390" x2="645" y2="410" stroke="var(--ink-ltr)" stroke-width="0.8" stroke-dasharray="3 2"/>
 <circle cx="645" cy="410" r="2" fill="var(--ink-ltr)"/>
-<text x="652" y="414" font-size="16" fill="var(--gold)" font-family="EB Garamond,serif">Port Meridian</text>
+<text x="652" y="414" font-size="24" fill="var(--gold)" font-family="EB Garamond,serif">Port Meridian</text>
 </g>
 <g transform="translate(100,770)">
 <circle cx="0" cy="0" r="28" fill="var(--parch)" stroke="var(--ink-ltr)" stroke-width="0.5" opacity="0.9"/>
@@ -2733,27 +3760,27 @@ body{background:var(--parch);color:var(--ink);font-family:'EB Garamond',Georgia,
 <g class="city-g" data-n="Citadel &amp; Crown City" data-d="Imperial capital. Residence of the Emperor. Crown City: the surrounding megalopolis. Connected to the mainland by the western Causeway and serviced by the National Transit of the Crown (NTC Railways).">
 <circle cx="790" cy="116" r="9" fill="var(--gold)" stroke="var(--ink)" stroke-width="1.5"/>
 <circle cx="790" cy="116" r="4" fill="var(--parch)"/>
-<text x="806" y="108" font-size="34" font-weight="600" fill="var(--ink)" font-family="Cormorant Garamond,serif">Citadel</text>
+<text x="806" y="108" font-size="48" font-weight="600" fill="var(--ink)" font-family="Cormorant Garamond,serif">Citadel</text>
 </g>
-<g class="city-g" data-n="Testament" data-d="Formerly Celeste. Corsair Novas use the station as an orbital rally point, though most of it has gone dark. The hydroponic gardens have long failed, the food courts are unlit, the recreational centers sealed. Only a handful of shuttle bays and the communications array remain operational. Life support holds in two of seven sectors.">
-<circle cx="690" cy="180" r="6" fill="none" stroke="var(--dawn-r)" stroke-width="1.3"/>
-<circle cx="690" cy="180" r="2.5" fill="var(--dawn-r)"/>
+<g class="city-g" data-n="Testament" data-transit="true" data-d="Formerly Celeste. Corsair Novas use the station as an orbital rally point, though most of it has gone dark. The hydroponic gardens have long failed, the food courts are unlit, the recreational centers sealed. Only a handful of shuttle bays and the communications array remain operational. Life support holds in two of seven sectors.">
+<circle cx="690" cy="180" r="9" fill="none" stroke="var(--dawn-r)" stroke-width="1.3"/>
+<circle cx="690" cy="180" r="5" fill="var(--dawn-r)"/>
 <line x1="690" y1="187" x2="690" y2="200" stroke="var(--dawn-r)" stroke-width="0.7" stroke-dasharray="3 2"/>
-<text x="703" y="184" font-size="20" fill="var(--dawn-r)" font-style="italic" font-family="EB Garamond,serif">Testament (orbital)</text>
+<text x="703" y="184" font-size="35" fill="var(--dawn-r)" font-style="italic" font-family="EB Garamond,serif">Testament (orbital)</text>
 </g>
 <g class="city-g" data-n="Sungarde" data-d="Northern military installation and aerodrome. Spaceport with orbital launch capability via Corsair Nova craft. Imperial staging ground. Orbital launch facility for Testament resupply.">
 <circle cx="650" cy="222" r="5" fill="var(--realm-bl)" stroke="var(--ink)" stroke-width="0.8"/>
-<text x="660" y="220" font-size="16" fill="var(--gold)" font-family="EB Garamond,serif">Sungarde</text>
+<text x="660" y="220" font-size="24" fill="var(--gold)" font-family="EB Garamond,serif">Sungarde</text>
 </g>
 <g class="city-g" data-n="Historia" data-d="Atoll city. The deluge drowned the province, leaving only a surviving remnant of land amid the floodwaters. Inhabitants rebuilt on what remained, surrounded by the stillwater sea that was once the heartland.">
-<circle cx="545" cy="248" r="5" fill="var(--dawn-r)" stroke="var(--ink)" stroke-width="0.8"/>
-<text x="558" y="252" font-size="16" fill="var(--ink-lt)" font-family="EB Garamond,serif">Historia</text>
+<circle cx="545" cy="248" r="6" fill="var(--dawn-r)" stroke="var(--ink)" stroke-width="0.8"/>
+<text x="558" y="252" font-size="24" fill="var(--ink-lt)" font-family="EB Garamond,serif">Historia</text>
 </g>
 <g class="city-g" data-n="Port Meridian" data-d="Principal maritime gateway of the Empire. Trade hub connecting the Atlantic provinces to the capital.">
-<circle cx="615" cy="387" r="4" fill="var(--realm-bl)" stroke="var(--ink)" stroke-width="0.8"/>
+<circle cx="615" cy="387" r="6" fill="var(--realm-bl)" stroke="var(--ink)" stroke-width="0.8"/>
 <line x1="619" y1="390" x2="645" y2="410" stroke="var(--ink-ltr)" stroke-width="0.8" stroke-dasharray="3 2"/>
 <circle cx="645" cy="410" r="2" fill="var(--ink-ltr)"/>
-<text x="652" y="414" font-size="16" fill="var(--gold)" font-family="EB Garamond,serif">Port Meridian</text>
+<text x="652" y="414" font-size="24" fill="var(--gold)" font-family="EB Garamond,serif">Port Meridian</text>
 </g>
 <g transform="translate(100,770)">
 <circle cx="0" cy="0" r="28" fill="var(--parch)" stroke="var(--ink-ltr)" stroke-width="0.5" opacity="0.9"/>
@@ -3259,43 +4286,43 @@ body{background:var(--parch);color:var(--ink);font-family:'EB Garamond',Georgia,
 <path d="M 1994.4 606 1994 606.4 1993.2 607.5 1992.9 607.6 1992.2 608 1992 608.6 1991.6 608.8 1991.4 609.1 1991.3 609.3 1991.6 609.4 1992.2 609.1 1992.3 609 1992.6 608.7 1992.8 608.4 1993.4 608.1 1993.7 607.8 1994.3 607.5 1994.3 607.8 1993.8 608.5 1993.6 608.6 1993.7 609.2 1993.4 609.5 1993.1 609.2 1992.7 609.2 1992.2 609.3 1991.8 609.6 1991.1 609.7 1990.1 609.7 1990.6 609.2 1990.2 609 1989.6 609.2 1989.2 609.4 1989.2 609.6 1988.9 609.7 1988.7 609.8 1988.6 610.2 1988.4 610.5 1988.1 610.4 1988.1 610.2 1987.7 610.1 1987.3 610.3 1987.1 610.8 1986.8 611 1986.5 611 1986.5 610.7 1986.5 610.3 1986.3 609.9 1986.4 609.7 1986.3 609.6 1985.7 609.8 1985.7 609.4 1986.1 609.1 1986.2 609.1 1986.1 608.6 1986.4 608.5 1986.9 608.8 1987.5 608.4 1987.7 608.4 1988 608.1 1988.2 608.1 1988.5 607.8 1988.5 607.6 1989.3 607.5 1990.2 607.2 1990.5 607.1 1990.9 607.2 1991.4 607 1991.6 606.6 1991.8 606.6 1992 606.2 1992.4 606.3 1992.5 606.1 1992.7 606.2 1993.7 605.7 1993.8 606 1994 605.9 1994.2 606 1994.5 605.7 1995 605.5 1995.1 605.6 1994.6 606 1994.4 606 Z" fill="#b0b5b8" stroke="#b0b5b8" stroke-width="1"/>
 
 <!-- Breakaway region labels -->
-<text x="1440" y="370" font-size="18" fill="#5a4a28" font-family="Cormorant Garamond,serif" font-weight="600" letter-spacing="0.06em">ASHOKAN</text>
-<text x="1442" y="387" font-size="12" fill="#5a4a28" font-family="EB Garamond,serif" font-style="italic">Free Confederacy</text>
+<text x="1440" y="370" font-size="36" fill="#5a4a28" font-family="Cormorant Garamond,serif" font-weight="600" letter-spacing="0.06em">ASHOKAN</text>
+<text x="1442" y="387" font-size="24" fill="#5a4a28" font-family="EB Garamond,serif" font-style="italic">Free Confederacy</text>
 
-<text x="1590" y="440" font-size="14" fill="#5a4a28" font-family="Cormorant Garamond,serif" font-weight="600">NUSANTARA</text>
-<text x="1598" y="455" font-size="10" fill="#5a4a28" font-family="EB Garamond,serif" font-style="italic">Republic</text>
+<text x="1590" y="440" font-size="28" fill="#5a4a28" font-family="Cormorant Garamond,serif" font-weight="600">NUSANTARA</text>
+<text x="1598" y="455" font-size="20" fill="#5a4a28" font-family="EB Garamond,serif" font-style="italic">Republic</text>
 
-<text x="640" y="560" font-size="18" fill="#5a4a28" font-family="Cormorant Garamond,serif" font-weight="600" letter-spacing="0.06em">MERIDIA</text>
-<text x="646" y="577" font-size="12" fill="#5a4a28" font-family="EB Garamond,serif" font-style="italic">Southern Alliance</text>
+<text x="640" y="560" font-size="36" fill="#5a4a28" font-family="Cormorant Garamond,serif" font-weight="600" letter-spacing="0.06em">MERIDIA</text>
+<text x="646" y="577" font-size="24" fill="#5a4a28" font-family="EB Garamond,serif" font-style="italic">Southern Alliance</text>
 
-<text x="1720" y="690" font-size="18" fill="#5a4a28" font-family="Cormorant Garamond,serif" font-weight="600" letter-spacing="0.06em">AOTERRA</text>
-<text x="1724" y="707" font-size="12" fill="#5a4a28" font-family="EB Garamond,serif" font-style="italic">Pacific Commonwealth</text>
+<text x="1720" y="690" font-size="36" fill="#5a4a28" font-family="Cormorant Garamond,serif" font-weight="600" letter-spacing="0.06em">AOTERRA</text>
+<text x="1724" y="707" font-size="24" fill="#5a4a28" font-family="EB Garamond,serif" font-style="italic">Pacific Commonwealth</text>
 
 <!-- Cities -->
 <g class="city-g" data-n="Citadel &amp; Crown City" data-d="World capital for nearly nine centuries.">
 <circle cx="790" cy="116" r="9" fill="var(--gold)" stroke="var(--ink)" stroke-width="1.5"/>
 <circle cx="790" cy="116" r="4" fill="var(--parch)"/>
-<text x="806" y="108" font-size="34" font-weight="600" fill="var(--ink)" font-family="Cormorant Garamond,serif">Citadel</text>
+<text x="806" y="108" font-size="48" font-weight="600" fill="var(--ink)" font-family="Cormorant Garamond,serif">Citadel</text>
 </g>
-<g class="city-g" data-n="Testament" data-d="Formerly Celeste. Still in orbit after nearly nine centuries.">
-<circle cx="690" cy="180" r="6" fill="none" stroke="var(--dawn-r)" stroke-width="1.3"/>
-<circle cx="690" cy="180" r="2.5" fill="var(--dawn-r)"/>
+<g class="city-g" data-n="Testament" data-transit="true" data-d="Formerly Celeste. Still in orbit after nearly nine centuries.">
+<circle cx="690" cy="180" r="9" fill="none" stroke="var(--dawn-r)" stroke-width="1.3"/>
+<circle cx="690" cy="180" r="5" fill="var(--dawn-r)"/>
 <line x1="690" y1="187" x2="690" y2="200" stroke="var(--dawn-r)" stroke-width="0.7" stroke-dasharray="3 2"/>
-<text x="703" y="184" font-size="20" fill="var(--dawn-r)" font-style="italic" font-family="EB Garamond,serif">Testament (orbital)</text>
+<text x="703" y="184" font-size="35" fill="var(--dawn-r)" font-style="italic" font-family="EB Garamond,serif">Testament (orbital)</text>
 </g>
 <g class="city-g" data-n="Sungarde" data-d="Expanded Imperial aerodrome.">
-<circle cx="650" cy="222" r="5" fill="var(--dawn-r)" stroke="var(--ink)" stroke-width="0.8"/>
-<text x="660" y="220" font-size="16" fill="var(--ink-lt)" font-family="EB Garamond,serif">Sungarde</text>
+<circle cx="650" cy="222" r="6" fill="var(--dawn-r)" stroke="var(--ink)" stroke-width="0.8"/>
+<text x="660" y="220" font-size="24" fill="var(--ink-lt)" font-family="EB Garamond,serif">Sungarde</text>
 </g>
 <g class="city-g" data-n="Historia" data-d="Flooded marshlands. The last survey expedition returned in the 740th Cycle with contradictory coordinates. Approximate location is charted but unverified.">
 <circle cx="549" cy="253" r="4" fill="var(--dawn-r)" stroke="var(--ink)" stroke-width="0.6"/>
-<text x="530" y="270" font-size="14" fill="var(--ink-lt)" font-family="EB Garamond,serif">Historia</text>
+<text x="530" y="270" font-size="24" fill="var(--ink-lt)" font-family="EB Garamond,serif">Historia</text>
 </g>
 <g class="city-g" data-n="Port Meridian" data-d="Imperial maritime hub.">
 <circle cx="615" cy="387" r="4" fill="var(--dawn-r)" stroke="var(--ink)" stroke-width="0.8"/>
 <line x1="619" y1="390" x2="645" y2="410" stroke="var(--ink-ltr)" stroke-width="0.8" stroke-dasharray="3 2"/>
 <circle cx="645" cy="410" r="2" fill="var(--ink-ltr)"/>
-<text x="652" y="414" font-size="16" fill="var(--ink-lt)" font-family="EB Garamond,serif">Port Meridian</text>
+<text x="652" y="414" font-size="24" fill="var(--ink-lt)" font-family="EB Garamond,serif">Port Meridian</text>
 </g>
 
 <!-- Compass -->
@@ -3332,14 +4359,25 @@ const m={realm:0,cp9:1,cp9post:2,cp890:3};
 document.querySelectorAll('.tb')[m[e]].classList.add('on');
 document.getElementById('p-'+e).classList.add('on');
 }
+document.querySelectorAll('#atlas-container .tt').forEach(function(tt){
+tt.addEventListener('mouseenter',function(){
+if(this._hideTimer){clearTimeout(this._hideTimer);this._hideTimer=null;}
+});
+tt.addEventListener('mouseleave',function(){
+var self=this;
+self._hideTimer=setTimeout(function(){self.style.display='none';},400);
+});
+});
 document.querySelectorAll('.city-g').forEach(mk=>{
+
 mk.addEventListener('mouseenter',function(ev){
 const pnl=this.closest('.pn');
 const ctr=pnl.querySelector('.mc');
 const tt=pnl.querySelector('.tt');
-const n=this.dataset.n,d=this.dataset.d;
+if(tt._hideTimer){clearTimeout(tt._hideTimer);tt._hideTimer=null;}
+const n=this.dataset.n,d=this.dataset.d,tr=this.dataset.transit;
 if(!n)return;
-tt.innerHTML='<div class="tn">'+n+'</div>'+d;
+tt.innerHTML='<div class="tn">'+n+'</div>'+d+(tr?'<div class="transit-link" onclick="event.stopPropagation();hideAtlas();setTimeout(function(){travelState=\'cluster\';render();var t=document.querySelector(\'#title-bar h1\');var s=document.querySelector(\'#title-bar .sub\');t.style.opacity=\'0\';s.style.opacity=\'0\';setTimeout(function(){t.textContent=\'HALCYON FOLD\';s.textContent=\'The Covenant of The Flowers\';t.style.opacity=\'1\';s.style.opacity=\'1\';},400);},7500);"><div class="transit-marquee"><span class="transit-marquee-inner">&#9678; Transit to Halcyon Fold \u00a0\u00a0\u00a0\u00a0\u00a0 &#9678; Transit to Halcyon Fold \u00a0\u00a0\u00a0\u00a0\u00a0 &#9678; Transit to Halcyon Fold \u00a0\u00a0\u00a0\u00a0\u00a0 &#9678; Transit to Halcyon Fold \u00a0\u00a0\u00a0\u00a0\u00a0 </span></div></div>':'');
 tt.style.display='block';
 const cr=ctr.getBoundingClientRect();
 const mr=this.getBoundingClientRect();
@@ -3350,32 +4388,154 @@ if(t<10)t=mr.bottom-cr.top+5;
 tt.style.left=l+'px';tt.style.top=t+'px';
 });
 mk.addEventListener('mouseleave',function(){
-this.closest('.pn').querySelector('.tt').style.display='none';
+var tt=this.closest('.pn').querySelector('.tt');
+tt._hideTimer=setTimeout(function(){
+if(!tt.matches(':hover'))tt.style.display='none';
+},400);
 });
 });
 </script>
-<audio id="bgm" src="evenstar.mp3" autoplay loop></audio>
-<div style="position:fixed;bottom:16px;right:16px;display:flex;gap:8px;z-index:100;align-items:center">
-<a href="starmap.html" style="background:var(--parch);border:1px solid var(--ink-ltr);border-radius:20px;padding:6px 14px;font-family:EB Garamond,serif;font-size:12px;color:var(--ink-lt);text-decoration:none;opacity:0.7;transition:opacity 0.3s;display:flex;align-items:center;gap:6px" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.7'">&#10038; Starmap</a>
-<a href="https://trello.com/b/lU60XIYP/project-luminaire" target="_blank" style="background:var(--parch);border:1px solid var(--ink-ltr);border-radius:20px;padding:6px 14px;font-family:EB Garamond,serif;font-size:12px;color:var(--ink-lt);text-decoration:none;opacity:0.7;transition:opacity 0.3s;display:flex;align-items:center;gap:6px" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.7'">&#9744; Roadmap</a>
-<div id="music-ctrl" style="background:var(--parch);border:1px solid var(--ink-ltr);border-radius:20px;padding:6px 14px;font-family:EB Garamond,serif;font-size:12px;color:var(--ink-lt);cursor:pointer;opacity:0.7;display:flex;align-items:center;gap:8px;transition:opacity 0.3s" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.7'">
-<span id="play-icon">&#9654;</span>
-<span style="font-style:italic">Evenstar &mdash; Eliott Tordo</span>
+
+
+
+
+
+<script>
+
+// Atlas reveal
+function showAtlas(){
+document.getElementById('infobtn').style.display='none';
+document.getElementById('musicbtn').style.display='none';
+var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)creditEl.style.display='none';
+var overlay=document.getElementById('fade-overlay');
+overlay.style.pointerEvents='auto';
+overlay.style.opacity='1';
+showTravelQuote('\u201CGuard your king. Never forget that. Guard him well.\u201D',5000);
+setTimeout(function(){
+rollAwayQuote();
+document.getElementById('seam-left').style.display='block';
+document.getElementById('seam-right').style.display='block';
+document.getElementById('atlas-container').style.display='block';
+void document.getElementById('atlas-container').offsetWidth;
+setTimeout(function(){
+overlay.style.opacity='0';
+overlay.style.pointerEvents='none';
+document.getElementById('seam-left').classList.add('open');
+document.getElementById('seam-right').classList.add('open');
+},100);
+},3000);
+}
+
+function hideAtlas(){
+if(quoteHideTimer){clearTimeout(quoteHideTimer);quoteHideTimer=null;}
+hideTravelQuote();
+document.getElementById('seam-left').classList.remove('open');
+document.getElementById('seam-right').classList.remove('open');
+setTimeout(function(){
+document.getElementById('atlas-container').style.display='none';
+document.getElementById('seam-left').style.display='none';
+document.getElementById('seam-right').style.display='none';
+var overlay=document.getElementById('fade-overlay');
+overlay.style.transition='none';
+overlay.style.opacity='1';
+overlay.style.pointerEvents='auto';
+void overlay.offsetWidth;
+showTravelQuote('\u201CA hundred tongues coexist here,\nbecause D\u00e4mmerung made the alternative unthinkable.\u201D',6000);
+setTimeout(function(){
+rollAwayQuote();
+setTimeout(function(){
+overlay.style.transition='opacity 2.25s';
+overlay.style.opacity='0';
+overlay.style.pointerEvents='none';
+document.getElementById('infobtn').style.display='';
+document.getElementById('musicbtn').style.display='';
+var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)creditEl.style.display='';
+},800);
+},3000);
+},1300);
+}
+
+
+</script>
+</div>
+</div>
+<div id="opening-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:198;background:#0a0e14;pointer-events:none"></div>
+<div id="infopanel" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:199;background:rgba(12,18,28,0.95);border:1px solid rgba(74,144,217,0.25);border-radius:10px;padding:28px 32px;max-width:520px;width:80vw;backdrop-filter:blur(12px);box-shadow:0 0 40px rgba(74,144,217,0.12)">
+<div style="font-family:Cormorant Garamond,serif;font-size:19px;font-weight:600;color:#8aaac8;margin-bottom:12px;letter-spacing:0.06em">A Note to the Visitor</div>
+<div style="font-family:EB Garamond,serif;font-size:15px;color:#7888a0;line-height:1.7">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided as your lamp in the storm. </div>
+<div style="font-family:EB Garamond,serif;font-size:15px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">There are many other names and appearances in The Covenant of The Flowers. You must discover them yourself.</div>
+<div style="display:flex;justify-content:center;gap:14px;margin-top:18px">
+<button id="bgmbtn" style="background:rgba(74,144,217,0.12);border:1px solid rgba(74,144,217,0.35);color:#8aaac8;font-family:EB Garamond,serif;font-size:14px;padding:8px 24px;border-radius:20px;cursor:pointer;transition:all 0.3s" onmouseover="this.style.background='rgba(74,144,217,0.25)'" onmouseout="this.style.background='rgba(74,144,217,0.12)'">BGM</button>
+<button id="nobgmbtn" style="background:rgba(74,144,217,0.12);border:1px solid rgba(74,144,217,0.35);color:#8aaac8;font-family:EB Garamond,serif;font-size:14px;padding:8px 24px;border-radius:20px;cursor:pointer;transition:all 0.3s" onmouseover="this.style.background='rgba(74,144,217,0.25)'" onmouseout="this.style.background='rgba(74,144,217,0.12)'">No BGM</button>
 </div>
 </div>
 <script>
-(function(){
-const a=document.getElementById('bgm');
-const btn=document.getElementById('music-ctrl');
-const icon=document.getElementById('play-icon');
-let playing=false;
-function updateIcon(){icon.textContent=playing?'\u23F8':'\u25B6';}
-a.addEventListener('play',function(){playing=true;updateIcon();});
-a.addEventListener('pause',function(){playing=false;updateIcon();});
-btn.addEventListener('click',function(){
-if(a.paused){a.play().catch(function(){});}else{a.pause();}
-});
-a.play().catch(function(){});
-})();
+
+
+function openingSequence(withMusic){
+var pc=document.getElementById('preload-cover');if(pc)pc.remove();
+document.getElementById("infopanel").style.display="none";
+if(withMusic){
+var aud=document.getElementById("bgm-web");
+aud.volume=0;
+aud.play().then(function(){
+var fi=setInterval(function(){
+if(aud.volume<0.9){aud.volume=Math.min(1,aud.volume+0.1);}
+else{aud.volume=1;clearInterval(fi);}
+},100);
+}).catch(function(){aud.volume=1;});
+var mb=document.getElementById("musicbtn");
+if(mb){mb.innerHTML="\u23F8";}
+}
+setTimeout(function(){
+showTravelQuote('WHO TRAVELS THE NIGHT WITH A LAMP IN SUCH STORMS',999999);
+if(quoteHideTimer){clearTimeout(quoteHideTimer);quoteHideTimer=null;}
+setTimeout(function(){
+var secondLine=document.createElement('div');
+secondLine.id='opening-line2';
+secondLine.style.cssText='position:fixed;top:35%;left:0;right:0;z-index:200;text-align:center;pointer-events:none;padding:0 10px';
+var inner=document.createElement('div');
+inner.style.cssText='font-family:Cormorant Garamond,serif;font-size:17px;font-style:italic;font-weight:400;color:rgba(180,160,210,0.85);letter-spacing:-0.01em;display:inline-block;max-width:90vw;margin:0 auto;clip-path:inset(0 100% 0 0)';
+inner.textContent='WHEN EVEN THE EARTH HIDES HER FACE';
+secondLine.appendChild(inner);
+document.body.appendChild(secondLine);
+var st2=performance.now();
+function reveal2(now){
+var el=now-st2;var pr=Math.min(el/750,1);
+var ease=1-Math.pow(1-pr,2);
+inner.style.clipPath='inset(0 '+(100-ease*100)+'% 0 0)';
+if(pr<1)requestAnimationFrame(reveal2);
+}
+requestAnimationFrame(reveal2);
+setTimeout(function(){
+rollAwayQuote();
+var st3=performance.now();
+function rollAway2(now){
+var el=now-st3;var pr=Math.min(el/750,1);
+var ease=pr*pr;
+inner.style.clipPath='inset(0 0 0 '+(ease*100)+'%)';
+if(pr<1){requestAnimationFrame(rollAway2);}
+else{secondLine.remove();}
+}
+requestAnimationFrame(rollAway2);
+setTimeout(function(){
+var ov=document.getElementById('opening-overlay');
+ov.style.transition='opacity 3.5s';
+ov.style.opacity='0';
+setTimeout(function(){ov.style.display='none';},4000);
+},1200);
+},3500);
+},1250);
+},1000);
+}
+document.getElementById("bgmbtn").onclick=function(ev){
+ev.stopPropagation();
+openingSequence(true);
+};
+document.getElementById("nobgmbtn").onclick=function(ev){
+ev.stopPropagation();
+openingSequence(false);
+};
+document.getElementById("infopanel").onclick=function(ev){ev.stopPropagation();};
 </script>
 </body></html>
