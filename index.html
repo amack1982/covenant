@@ -154,11 +154,11 @@ const aCanvas=document.getElementById('aurora');const aCtx=aCanvas.getContext('2
 function initAurora(){aCanvas.width=window.innerWidth;aCanvas.height=window.innerHeight;}
 initAurora();
 const auroraStreams=[
-  {yBase:0.98,amplitude:20,wavelength:800,speed:0.0000084,hue:160,sat:65,light:50,alpha:0.28,width:120,flip:false,tOff:0},
-  {yBase:0.894,amplitude:28,wavelength:600,speed:0.0000126,hue:180,sat:55,light:55,alpha:0.20,width:90,flip:false,tOff:0},
-  {yBase:0.92,amplitude:18,wavelength:900,speed:0.000007,hue:140,sat:50,light:45,alpha:0.24,width:140,flip:false,tOff:0},
-  {yBase:0.834,amplitude:15,wavelength:700,speed:0.0000098,hue:200,sat:45,light:50,alpha:0.18,width:100,flip:false,tOff:0},
-  {yBase:1.08,amplitude:23,wavelength:550,speed:0.0000098,hue:170,sat:60,light:48,alpha:0.20,width:80,flip:false,tOff:0},
+  {yBase:0.972,amplitude:20,wavelength:800,speed:0.0000084,hue:160,sat:65,light:50,alpha:0.28,width:120,flip:false,tOff:0},
+  {yBase:0.886,amplitude:28,wavelength:600,speed:0.0000126,hue:180,sat:55,light:55,alpha:0.20,width:90,flip:false,tOff:0},
+  {yBase:0.912,amplitude:18,wavelength:900,speed:0.000007,hue:140,sat:50,light:45,alpha:0.24,width:140,flip:false,tOff:0},
+  {yBase:0.826,amplitude:15,wavelength:700,speed:0.0000098,hue:200,sat:45,light:50,alpha:0.18,width:100,flip:false,tOff:0},
+  {yBase:1.072,amplitude:23,wavelength:550,speed:0.0000098,hue:170,sat:60,light:48,alpha:0.20,width:80,flip:false,tOff:0},
   {yBase:0.063,amplitude:20,wavelength:800,speed:0.0000084,hue:160,sat:65,light:50,alpha:0.28,width:120,flip:false,tOff:0,xOff:370},
   {yBase:0.089,amplitude:28,wavelength:600,speed:0.0000126,hue:180,sat:55,light:55,alpha:0.20,width:90,flip:false,tOff:0,xOff:210},
   {yBase:0.114,amplitude:18,wavelength:900,speed:0.000007,hue:140,sat:50,light:45,alpha:0.24,width:140,flip:false,tOff:0,xOff:520},
@@ -466,7 +466,7 @@ svg.appendChild(clLG);svg.appendChild(clG);
 
 function travelBackAnim(){
 travelState='traveling';
-showTravelQuote('\u201CColor raked across the sky.\nGreens, purples, flowing like an open leyvein.\u201D',3750);
+showTravelQuote('\u201CColor raked across the sky.\nGreens, purples, flowing from an open leyvein.\u201D',3750);
 var titleElR=document.querySelector('#title-bar h1');
 var subElR=document.querySelector('#title-bar .sub');
 titleElR.style.opacity='0';subElR.style.opacity='0';
@@ -1040,9 +1040,9 @@ layoutCircle();Object.values(nodes).forEach(n=>{n.x=n.tx;n.y=n.ty;});render();
 
 <div id="info-panel" style="position:fixed;top:105px;right:20px;z-index:15;background:rgba(12,18,28,0.95);border:1px solid rgba(74,144,217,0.25);border-radius:10px;padding:20px 26px;max-width:380px;backdrop-filter:blur(12px);opacity:0;pointer-events:none;transition:all 0.4s ease;box-shadow:0 0 30px rgba(74,144,217,0.08)">
 <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:#8aaac8;margin-bottom:10px;letter-spacing:0.06em">A Note to the Visitor</div>
-<div style="font-family:'EB Garamond',serif;font-size:14px;color:#7888a0;line-height:1.6">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided as your lamp in the storm. </div>
+<div style="font-family:'EB Garamond',serif;font-size:14px;color:#7888a0;line-height:1.6">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided. </div>
 <div style="font-family:EB Garamond,serif;font-size:15px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">There are many other names and appearances in The Covenant of The Flowers. You must discover them yourself.</div>
-<div style="font-family:'EB Garamond',serif;font-size:13px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">Additionally, all links are limited to the author's understanding of each relationship at the time of writing.</div>
+<div style="display:flex;justify-content:center;margin-top:14px"><button onclick="var ip=document.getElementById('info-panel');ip.style.opacity='0';ip.style.pointerEvents='none';" style="background:rgba(74,144,217,0.12);border:1px solid rgba(74,144,217,0.35);color:#8aaac8;font-family:EB Garamond,serif;font-size:14px;padding:8px 24px;border-radius:20px;cursor:pointer;transition:all 0.3s" onmouseover="this.style.background='rgba(74,144,217,0.25)'" onmouseout="this.style.background='rgba(74,144,217,0.12)'">Dismiss</button></div>
 </div>
 
 
@@ -1050,7 +1050,7 @@ layoutCircle();Object.values(nodes).forEach(n=>{n.x=n.tx;n.y=n.ty;});render();
 
 
 
-<button id="infobtn" onclick="event.stopPropagation();var ip=document.getElementById('infopanel');if(ip.style.display==='none'||ip.style.display===''){ip.style.display='block';}else{ip.style.display='none';}" style="position:fixed;bottom:110px;left:55px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:16px;font-weight:bold;font-style:italic;cursor:pointer;opacity:0.7" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">i</button>
+<button id="infobtn" onclick="event.stopPropagation();var ip=document.getElementById('info-panel');if(ip.style.opacity==='1'){ip.style.opacity='0';ip.style.pointerEvents='none';}else{ip.style.opacity='1';ip.style.pointerEvents='auto';}" style="position:fixed;bottom:110px;left:55px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:16px;font-weight:bold;font-style:italic;cursor:pointer;opacity:0.7" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">i</button>
 <audio id="bgm-web" src="life_is_reason.mp3" loop></audio>
 <button id="musicbtn" style="position:fixed;bottom:110px;left:20px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:14px;cursor:pointer;opacity:0.7;display:flex;align-items:center;justify-content:center" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">&#9654;</button>
 <div style="position:fixed;bottom:92px;left:20px;z-index:100;font-family:EB Garamond,serif;font-size:10px;color:#c8cdd4;font-style:italic;opacity:0.6">Life is Reason &mdash; Daniel Pemberton</div>
@@ -4464,7 +4464,7 @@ var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)cre
 <div id="opening-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:198;background:#0a0e14;pointer-events:none"></div>
 <div id="infopanel" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:199;background:rgba(12,18,28,0.95);border:1px solid rgba(74,144,217,0.25);border-radius:10px;padding:28px 32px;max-width:520px;width:80vw;backdrop-filter:blur(12px);box-shadow:0 0 40px rgba(74,144,217,0.12)">
 <div style="font-family:Cormorant Garamond,serif;font-size:19px;font-weight:600;color:#8aaac8;margin-bottom:12px;letter-spacing:0.06em">A Note to the Visitor</div>
-<div style="font-family:EB Garamond,serif;font-size:15px;color:#7888a0;line-height:1.7">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided as your lamp in the storm. </div>
+<div style="font-family:EB Garamond,serif;font-size:15px;color:#7888a0;line-height:1.7">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided. </div>
 <div style="font-family:EB Garamond,serif;font-size:15px;color:#506878;line-height:1.6;margin-top:10px;font-style:italic">There are many other names and appearances in The Covenant of The Flowers. You must discover them yourself.</div>
 <div style="display:flex;justify-content:center;gap:14px;margin-top:18px">
 <button id="bgmbtn" style="background:rgba(74,144,217,0.12);border:1px solid rgba(74,144,217,0.35);color:#8aaac8;font-family:EB Garamond,serif;font-size:14px;padding:8px 24px;border-radius:20px;cursor:pointer;transition:all 0.3s" onmouseover="this.style.background='rgba(74,144,217,0.25)'" onmouseout="this.style.background='rgba(74,144,217,0.12)'">BGM</button>
