@@ -126,10 +126,10 @@ animation:marqueeScroll 6s linear infinite;
 #cal-main.active{display:block;pointer-events:auto}
 #cal-sparkle{position:fixed;top:0;left:0;width:100%;height:100%;z-index:4;pointer-events:none;display:none}
 #cal-sparkle.active{display:block}
-#cal-cycle-labels{position:fixed;top:0;left:0;width:100%;height:100%;z-index:5;pointer-events:none;display:none}
+#cal-cycle-labels{position:fixed;top:0;left:0;width:100%;height:100%;z-index:8;pointer-events:none;display:none}
 .cal-cycle-label{
 position:absolute;font-family:'Cormorant Garamond',serif;font-weight:500;
-color:rgba(160,176,192,0.7);white-space:nowrap;
+color:rgba(190,200,215,0.85);white-space:nowrap;
 text-shadow:0 0 4px rgba(0,0,0,0.7),0 0 8px rgba(0,0,0,0.4);
 transform:translate(-50%,-50%);opacity:0;transition:opacity 0.3s;pointer-events:none
 }
@@ -148,7 +148,7 @@ transition:opacity 0.5s;opacity:0
 #cal-center-node .dot{display:none}
 #cal-return-label{position:fixed;z-index:6;text-align:center;font-family:'Cormorant Garamond',serif;font-size:11px;font-weight:500;letter-spacing:0.15em;color:rgba(255,235,180,0.35);pointer-events:none;transform:translate(-50%,0);opacity:0;text-transform:uppercase;white-space:nowrap}
 #cal-return-label.visible{opacity:1;clip-path:none}
-#cal-date-display{position:fixed;z-index:6;text-align:center;font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;letter-spacing:0.04em;color:rgba(170,195,215,0.9);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(170,195,215,0.4);pointer-events:none;opacity:0;transition:opacity 0.8s;transform:translate(-50%,-50%);white-space:nowrap}
+#cal-date-display{position:fixed;z-index:6;text-align:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;letter-spacing:0.04em;color:rgba(170,195,215,0.9);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(170,195,215,0.4);pointer-events:none;opacity:0;transition:opacity 0.8s;transform:translate(-50%,-50%);white-space:nowrap}
 #cal-date-display.visible{opacity:1}
 #cal-detail-panel{
 position:fixed;z-index:12;pointer-events:none;
@@ -180,7 +180,6 @@ transition:opacity 0.4s
 <canvas id="aurora"></canvas>
 <div id="web"><svg id="svg"></svg></div>
 <div id="wormhole"><canvas id="wh-canvas"></canvas></div>
-<div id="wipe-transition" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:45;opacity:0;pointer-events:none;background:linear-gradient(to right,#0a0e14 0%,#0a0e14 92%,rgba(100,130,180,0.08) 96%,rgba(140,170,220,0.04) 98%,transparent 100%)"></div>
 
 <div id="travel-quote" style="position:fixed;top:28%;left:0;right:0;z-index:200;text-align:center;pointer-events:none;opacity:0;transition:opacity 0.8s">
 <div id="quote-text" style="font-family:Cormorant Garamond,serif;font-size:23px;font-style:italic;font-weight:400;color:rgba(180,160,210,0.85);letter-spacing:-0.01em;display:inline-block">
@@ -194,6 +193,7 @@ transition:opacity 0.4s
 <div id="cal-center-node"><div class="dot"></div></div>
 <div id="cal-return-label">Return</div>
 <div id="cal-date-display"></div>
+<div id="cal-instructions" style="position:fixed;bottom:20px;right:20px;z-index:6;font-family:'EB Garamond',serif;font-size:12px;color:rgba(200,210,225,0.45);text-align:right;opacity:0;transition:opacity 1.5s;pointer-events:none;line-height:1.6">Click a cycle to view details<br>Click the center node to return</div>
 <div id="cal-detail-panel">
 <button class="close-btn" onclick="calClosePanel()">&times;</button>
 <div class="dp-name"></div>
@@ -1056,70 +1056,7 @@ text.setAttribute('filter','url(#textshadow)');text.textContent=n.name;g.appendC
 g.addEventListener('click',function(e){e.stopPropagation();
 emitSparkle(n.x,n.y);requestAnimationFrame(drawSparkles);
 if(key==='roadmap'){
-// Pull satellites inward toward center
-var rcx=rmNodes.roadmap.x;var rcy=rmNodes.roadmap.y;
-Object.keys(rmNodes).forEach(function(k){
-if(k!=='roadmap'){rmNodes[k].tx=rcx;rmNodes[k].ty=rcy;}
-});
-rmChapterNodes.forEach(function(cn){cn.tx=rcx;cn.ty=rcy;});
-// Fast collapse animation
-var collapseActive=true;
-function collapseStep(){
-if(!collapseActive)return;
-var moving=false;
-Object.keys(rmNodes).forEach(function(k){
-var nd=rmNodes[k];
-var dx=nd.tx-nd.x;var dy=nd.ty-nd.y;
-if(Math.abs(dx)>0.5||Math.abs(dy)>0.5){nd.x+=dx*0.12;nd.y+=dy*0.12;moving=true;}
-else{nd.x=nd.tx;nd.y=nd.ty;}
-});
-rmChapterNodes.forEach(function(cn){
-var dx=cn.tx-cn.x;var dy=cn.ty-cn.y;
-if(Math.abs(dx)>0.5||Math.abs(dy)>0.5){cn.x+=dx*0.12;cn.y+=dy*0.12;moving=true;}
-else{cn.x=cn.tx;cn.y=cn.ty;}
-});
-renderRoadmap();
-if(moving&&collapseActive)requestAnimationFrame(collapseStep);
-}
-requestAnimationFrame(collapseStep);
-// Launch wipe transition after a brief moment
-setTimeout(function(){
-var wipeEl=document.getElementById('wipe-transition');
-wipeEl.style.display='block';
-var wipeStart=performance.now();
-var wipeDur=420;
-var holdDur=80;
-var revealDur=320;
-var totalWipe=wipeDur+holdDur+revealDur;
-var switched=false;
-function wipeStep(now){
-var elapsed=now-wipeStart;
-var pr=Math.min(elapsed/totalWipe,1);
-if(elapsed<wipeDur){
-// Wipe in: leading edge moves left to right
-var wipePr=elapsed/wipeDur;
-var ease=wipePr<0.5?2*wipePr*wipePr:(1-Math.pow(-2*wipePr+2,2)/2);
-wipeEl.style.clipPath='inset(0 '+(100-ease*100)+'% 0 0)';
-wipeEl.style.opacity='1';
-} else if(elapsed<wipeDur+holdDur){
-// Hold: full coverage — do the switch here
-wipeEl.style.clipPath='inset(0 0 0 0)';
-if(!switched){
-switched=true;
-collapseActive=false;
 hideRoadmap();
-}
-} else {
-// Reveal: wipe exits to the right
-var revPr=(elapsed-wipeDur-holdDur)/revealDur;
-var revEase=revPr<0.5?2*revPr*revPr:(1-Math.pow(-2*revPr+2,2)/2);
-wipeEl.style.clipPath='inset(0 0 0 '+revEase*100+'%)';
-}
-if(pr<1){requestAnimationFrame(wipeStep);}
-else{wipeEl.style.display='none';wipeEl.style.clipPath='';wipeEl.style.opacity='0';}
-}
-requestAnimationFrame(wipeStep);
-},200);
 }else{
 if(rmCooldown)return;
 if(selectedRmNode===key){selectedRmNode=null;}
@@ -4563,40 +4500,40 @@ if(!tt.matches(':hover'))tt.style.display='none';
 // IMPERIAL CALENDAR (Orbital)
 // ============================================================
 var CAL_CYCLES=[
-{name:'The Aeon',days:35,color:'#a08860',ideal:'Redemption \u00B7 Reckoning \u00B7 Destiny',
+{name:'The Aeon',days:35,color:'#b8925a',ideal:'Redemption \u00B7 Reckoning \u00B7 Destiny',
 message:'Begin anew with purpose. Reflect on one\u2019s role in the Empire\u2019s destiny.',
 quote:'The year opens where the old one burned. Citizens write letters of intention, sealed and delivered to local magistrates. To name one\u2019s purpose is to bind oneself to it.'},
-{name:'The Chariot',days:35,color:'#7090b0',ideal:'Momentum \u00B7 Control \u00B7 Willpower',
+{name:'The Chariot',days:35,color:'#5a80a8',ideal:'Momentum \u00B7 Control \u00B7 Willpower',
 message:'Advance the Empire\u2019s cause. Strengthen resolve through service.',
 quote:'What the Aeon declares, the Chariot builds in the season of labor. Stone laid upon stone, by willing hands.'},
-{name:'The Hierophant',days:35,color:'#90a878',ideal:'Tradition \u00B7 Education \u00B7 Doctrine',
+{name:'The Hierophant',days:35,color:'#6a9460',ideal:'Tradition \u00B7 Education \u00B7 Doctrine',
 message:'Reaffirm doctrine. Teach what is proven, discard what is wanting.',
 quote:'Examinations are held and curriculums measured. What we teach our children is the truest confession of what we believe. Let it be worthy of them.'},
-{name:'The Hermit',days:35,color:'#6888a0',ideal:'Reflection \u00B7 Alignment \u00B7 Collective Wisdom',
+{name:'The Hermit',days:35,color:'#4a7088',ideal:'Reflection \u00B7 Alignment \u00B7 Collective Wisdom',
 message:'Seek alignment, not isolation. Serve the whole through introspection.',
 quote:'The lantern turns inward, and what the Hermit reveals is not always comfortable. Let its light be instructive in self-governance.'},
-{name:'The Lovers',days:35,color:'#c08888',ideal:'Harmony \u00B7 Choice \u00B7 Unity',
+{name:'The Lovers',days:35,color:'#a86070',ideal:'Harmony \u00B7 Choice \u00B7 Unity',
 message:'Build unity. Devotion to one another is devotion to the Empire.',
 quote:'Marriages performed during this cycle receive the state\u2019s blessing and a modest stipend. Divorce petitions are deferred until the cycle ends. Unity between two people is the Empire in miniature.'},
 {name:"The World's Holiday",days:7,color:'#c4a24c',holiday:true,ideal:'Completion \u00B7 Unity \u00B7 Fulfillment',
 message:'Mid-year celebration. Citizens reaffirm unity, retake oaths, and honor the Empire\u2019s realized harmony.',
 quote:'Seven days without labor. The midpoint of the year belongs to you and your covenant with each other. Celebrate what you have built together.'},
-{name:'The Moon',days:35,color:'#8878a8',ideal:'Illusion \u00B7 Intuition \u00B7 Inner Truth',
+{name:'The Moon',days:35,color:'#706090',ideal:'Illusion \u00B7 Intuition \u00B7 Inner Truth',
 message:'Accept uncertainty. Move forward in trust when light is hidden.',
 quote:'The Moon governs what cannot yet be seen. Move forward even when the way is unclear, trusting in the foundation beneath you, for faith is not the absence of doubt. It is the decision to walk regardless.'},
-{name:'The Magician',days:35,color:'#60a0a0',ideal:'Will \u00B7 Manifestation \u00B7 Talent',
+{name:'The Magician',days:35,color:'#408888',ideal:'Will \u00B7 Manifestation \u00B7 Talent',
 message:'Let ability shine. The Empire thrives on gifts properly offered.',
 quote:'Artisans, engineers, and scholars bring their work before the public eye. What is worthy receives patronage. What falls short receives guidance. There is no shame in either, only in the refusal to offer what you have.'},
-{name:'Justice',days:35,color:'#a0a080',ideal:'Fairness \u00B7 Truth \u00B7 Law',
+{name:'Justice',days:35,color:'#8a8a5a',ideal:'Fairness \u00B7 Truth \u00B7 Law',
 message:'Restore balance. Each action is a stone placed in the foundation of law.',
 quote:'What is owed is settled, for justice delayed is justice corrupted. The law does not wait, and neither shall those who uphold it. This cycle asks nothing of the innocent and demands much from the guilty.'},
-{name:'The Tower',days:35,color:'#a06060',ideal:'Collapse \u00B7 Revelation \u00B7 Reckoning',
+{name:'The Tower',days:35,color:'#904848',ideal:'Collapse \u00B7 Revelation \u00B7 Reckoning',
 message:'Tear down what fails. Rebirth is built on revealed weakness.',
 quote:'The Tower turns its gaze inward. Citizens are invited to bring grievances against the apparatus of the state itself. No institution is exempt. The Empire that refuses to hear its own failures has already begun to crumble.'},
-{name:'The Star',days:35,color:'#80a0c0',ideal:'Hope \u00B7 Renewal \u00B7 Future Vision',
+{name:'The Star',days:35,color:'#5888b0',ideal:'Hope \u00B7 Renewal \u00B7 Future Vision',
 message:'Look forward. Light returns through those who believe and act.',
 quote:'Promotions are conferred and the next year\u2019s works are announced. The Empire acts on what the Tower has revealed, and dawn is reborn.'},
-{name:"The Fool's Holiday",days:8,color:'#b8a070',holiday:true,ideal:'Rebirth \u00B7 Forgiveness \u00B7 Uncertainty',
+{name:"The Fool's Holiday",days:8,color:'#a08850',holiday:true,ideal:'Rebirth \u00B7 Forgiveness \u00B7 Uncertainty',
 message:'Year-end inversion. The Emperor charts new paths. Clemency is offered, grievances are forgiven.',
 quote:'Speak what has gone unsaid. Mend what has frayed. Old debts may be forgiven at the creditor\u2019s discretion. Carry not old grievances forward.'}
 ];
@@ -4653,13 +4590,13 @@ calCtx=mc.getContext('2d');calCtx.setTransform(dpr,0,0,dpr,0,0);
 var sp=document.getElementById('cal-sparkle');
 sp.width=innerWidth*dpr;sp.height=innerHeight*dpr;sp.style.width=innerWidth+'px';sp.style.height=innerHeight+'px';
 calSpCtx=sp.getContext('2d');calSpCtx.setTransform(dpr,0,0,dpr,0,0);
-calCX=innerWidth/2;calCY=innerHeight/2+30;calOuterR=Math.min(innerWidth,innerHeight)*0.25;calInnerR=calOuterR*0.38;calOrbitR=calInnerR+4;
+calCX=innerWidth/2;calCY=innerHeight/2+30;calOuterR=Math.min(innerWidth,innerHeight)*0.36;calInnerR=calOuterR*0.38;calOrbitR=calInnerR+4;
 }
 
 function calCreateLabelEls(){
 var container=document.getElementById('cal-cycle-labels');
 container.innerHTML='';calLabelEls=[];
-CAL_CYCLES.forEach(function(c){var el=document.createElement('div');el.className='cal-cycle-label'+(c.holiday?' holiday':'');el.style.fontSize=c.holiday?'10px':'11.5px';el.textContent=c.name;container.appendChild(el);calLabelEls.push(el);});
+CAL_CYCLES.forEach(function(c){var el=document.createElement('div');el.className='cal-cycle-label'+(c.holiday?' holiday':'');el.style.fontSize=c.holiday?'11px':'13px';el.textContent=c.name;container.appendChild(el);calLabelEls.push(el);});
 }
 function calPositionLabel(idx,angle,radius,alpha){
 var el=calLabelEls[idx];if(!el)return;
@@ -4857,9 +4794,29 @@ calCtx.beginPath();calCtx.arc(px,py,pR,0,Math.PI*2);calCtx.fillStyle='rgba(140,2
 calCtx.beginPath();calCtx.arc(px,py,pR+2.5,0,Math.PI*2);calCtx.strokeStyle='rgba(140,210,130,0.35)';calCtx.lineWidth=0.8;calCtx.stroke();
 calCtx.beginPath();calCtx.arc(px,py,pR+5,0,Math.PI*2);calCtx.strokeStyle='rgba(140,210,130,0.20)';calCtx.lineWidth=0.6;calCtx.stroke();
 }
-var labelR=oR+22;var labelAlpha=isCurrentCycle?1:isHovered?0.85:isSelected?0.85:1;
-calPositionLabel(i,a.mid,labelR,labelAlpha);
-var el=calLabelEls[i];if(el){el.classList.toggle('current',isCurrentCycle);el.classList.toggle('hovered',isHovered&&!isCurrentCycle);}
+var labelR=oR+28;var labelAlpha=isCurrentCycle?1:isHovered?0.85:isSelected?0.85:1;
+// Draw cycle name directly on the wedge face as canvas text
+if(i!==0&&i!==10&&i!==11){
+var textR=calInnerR+(oR-calInnerR)*0.52;
+var textAngle=a.mid;
+var textX=calCX+Math.cos(textAngle)*textR;
+var textY=calCY+Math.sin(textAngle)*textR;
+var deg=textAngle*180/Math.PI;
+if(deg>90||deg<-90)deg+=180;
+calCtx.save();
+calCtx.translate(textX,textY);
+calCtx.rotate(deg*Math.PI/180);
+var txtAlpha=isCurrentCycle?0.9:isHovered?0.8:0.6;
+var fontSize=CAL_CYCLES[i].holiday?9:11;
+calCtx.font=fontSize+'px Cormorant Garamond, serif';
+calCtx.textAlign='center';calCtx.textBaseline='middle';
+// Text shadow
+calCtx.shadowColor='rgba(0,0,0,0.8)';calCtx.shadowBlur=4;calCtx.shadowOffsetX=0;calCtx.shadowOffsetY=0;
+calCtx.fillStyle='rgba(200,210,225,'+txtAlpha+')';
+calCtx.fillText(CAL_CYCLES[i].name,0,0);
+calCtx.shadowColor='transparent';calCtx.shadowBlur=0;
+calCtx.restore();
+}
 }
 // Quarterly markers
 var quarterDays=[91,182,273];
@@ -5300,6 +5257,7 @@ calStartClockwork();
 var dateEl=document.getElementById('cal-date-display');dateEl.textContent=calGetDateString();
 var dateR=(calInnerR+calOuterR)/2;dateEl.style.left=calCX+'px';dateEl.style.top=(calCY-dateR+5)+'px';dateEl.classList.add('visible');
 calRevealReturnLabel();
+document.getElementById('cal-instructions').style.opacity='1';
 calEmitSparkle(calCX,calCY,80);
 function finalSparkle(){calSpCtx.clearRect(0,0,innerWidth,innerHeight);calDrawSparkles();if(calSparkles.length>0)requestAnimationFrame(finalSparkle);else calSpCtx.clearRect(0,0,innerWidth,innerHeight);}
 requestAnimationFrame(finalSparkle);
@@ -5316,9 +5274,13 @@ var centerEl=document.getElementById('cal-center-node');centerEl.classList.remov
 calClosePanel();calHoveredIdx=-1;calSelectedIdx=-1;
 document.getElementById('cal-date-display').classList.remove('visible');
 calHideReturnLabel();
+document.getElementById('cal-instructions').style.opacity='0';
 calSparkles=[];
 calRemoveCenterSvgNode();
 calExitClockwork();
+// Reset overlay lines/nodes to visible for reverse animation
+for(var ri=0;ri<calSvgLines.length;ri++){calSvgLines[ri].el.style.opacity='1';calSvgLines[ri].el.setAttribute('stroke-opacity','0.3');}
+for(var rn=0;rn<calSvgNodes.length;rn++){if(calSvgNodes[rn])calSvgNodes[rn].el.style.opacity='0';}
 var CAL_NODES=[{label:'Atlas',color:'#8070b0'},{label:'Roadmap',color:'#8070b0'},{label:'Imperial Calendar',color:'#a090c0'},{label:'Relationship Web',color:'#8070b0'}];
 // Mirror the forward durations
 var unmergeDur=800;var orbitDur=2500;var scatterDur=1200;var totalDur2=unmergeDur+orbitDur+scatterDur;
@@ -5503,7 +5465,8 @@ lx2=bx2+(endPositions[sj].x-bx2)*scatterEase;ly2=by2+(endPositions[sj].y-by2)*sc
 }
 sl.el.setAttribute('x1',lx1);sl.el.setAttribute('y1',ly1);
 sl.el.setAttribute('x2',lx2);sl.el.setAttribute('y2',ly2);
-sl.el.style.opacity=lineFade>0.05?lineFade:unmergePr>0?0.15*unmergeEase:0;
+sl.el.setAttribute('stroke-opacity','0.3');
+sl.el.style.opacity=unmergePr>0?1:0;
 }
 // Draw clockwork rings (exiting)
 var cwExitPr=calClockworkExiting?Math.min(1,(performance.now()-calClockworkExitStart)/calClockworkExitDur):0;
@@ -5592,7 +5555,7 @@ document.getElementById('cal-cycle-labels').style.display='';
 calResize();calCreateLabelEls();calInitInteraction();
 var titleEl=document.querySelector('#title-bar h1');var subEl=document.querySelector('#title-bar .sub');
 titleEl.style.opacity='0';subEl.style.opacity='0';
-setTimeout(function(){titleEl.textContent='THE CYCLES OF PARADISE';subEl.textContent='Imperial Calendar';titleEl.style.opacity='1';subEl.style.opacity='1';},300);
+setTimeout(function(){titleEl.textContent='THE CYCLES OF PARADISE';subEl.textContent='The Covenant of The Flowers';subEl.style.fontSize='15px';titleEl.style.opacity='1';subEl.style.opacity='1';},300);
 calBuildCalendar();
 }
 
@@ -5606,6 +5569,7 @@ document.getElementById('cal-cycle-labels').style.display='none';
 document.getElementById('cal-center-node').classList.remove('visible');
 document.getElementById('cal-date-display').classList.remove('visible');
 document.getElementById('cal-return-label').classList.remove('visible');
+document.getElementById('cal-instructions').style.opacity='0';
 // Hide overlay and restore real cluster nodes
 document.getElementById('cal-overlay-svg').style.display='none';
 document.querySelectorAll('.cluster-node').forEach(function(el){el.style.display='';});
@@ -5620,7 +5584,7 @@ var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)cre
 // Restore header
 var titleEl=document.querySelector('#title-bar h1');var subEl=document.querySelector('#title-bar .sub');
 titleEl.style.opacity='0';subEl.style.opacity='0';
-setTimeout(function(){titleEl.textContent='HALCYON FOLD';subEl.textContent='The Covenant of The Flowers';titleEl.style.opacity='1';subEl.style.opacity='1';},300);
+setTimeout(function(){titleEl.textContent='HALCYON FOLD';subEl.textContent='The Covenant of The Flowers';subEl.style.fontSize='';titleEl.style.opacity='1';subEl.style.opacity='1';},300);
 }
 
 // Center node click to reverse
@@ -5692,7 +5656,6 @@ var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)cre
 </div>
 </div>
 <div id="opening-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:198;background:#0a0e14;pointer-events:none"></div>
-<button id="skip-crawl" style="display:none;position:fixed;bottom:32px;right:32px;z-index:201;background:rgba(74,144,217,0.08);border:1px solid rgba(74,144,217,0.25);color:rgba(138,170,200,0.6);font-family:EB Garamond,serif;font-size:13px;padding:6px 20px;border-radius:16px;cursor:pointer;transition:all 0.4s;letter-spacing:0.08em" onmouseover="this.style.color='rgba(138,170,200,0.9)';this.style.borderColor='rgba(74,144,217,0.5)'" onmouseout="this.style.color='rgba(138,170,200,0.6)';this.style.borderColor='rgba(74,144,217,0.25)'">Skip</button>
 <div id="infopanel" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:199;background:rgba(12,18,28,0.95);border:1px solid rgba(74,144,217,0.25);border-radius:10px;padding:28px 32px;max-width:520px;width:80vw;backdrop-filter:blur(12px);box-shadow:0 0 40px rgba(74,144,217,0.12)">
 <div style="font-family:Cormorant Garamond,serif;font-size:19px;font-weight:600;color:#8aaac8;margin-bottom:12px;letter-spacing:0.06em">A Note to the Visitor</div>
 <div style="font-family:EB Garamond,serif;font-size:15px;color:#7888a0;line-height:1.7">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided. </div>
@@ -5705,31 +5668,9 @@ var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)cre
 <script>
 
 
-var openingTimers=[];
-var openingSkipped=false;
-function skipOpening(){
-if(openingSkipped)return;
-openingSkipped=true;
-document.getElementById('skip-crawl').style.display='none';
-openingTimers.forEach(function(t){clearTimeout(t);});
-openingTimers=[];
-rollAwayQuote();
-var qt=document.getElementById('quote-text');
-qt.classList.remove('crawl-mode');
-var sl=document.getElementById('opening-line2');if(sl)sl.remove();
-var ov=document.getElementById('opening-overlay');
-ov.style.transition='opacity 1.2s';
-ov.style.opacity='0';
-setTimeout(function(){ov.style.display='none';},1400);
-}
 function openingSequence(withMusic){
-openingSkipped=false;
 var pc=document.getElementById('preload-cover');if(pc)pc.remove();
 document.getElementById("infopanel").style.display="none";
-var skipBtn=document.getElementById('skip-crawl');
-skipBtn.style.display='block';skipBtn.style.opacity='0';
-setTimeout(function(){skipBtn.style.opacity='1';},400);
-skipBtn.onclick=function(ev){ev.stopPropagation();skipOpening();};
 if(withMusic){
 var aud=document.getElementById("bgm-web");
 aud.volume=0;
@@ -5742,14 +5683,12 @@ else{aud.volume=1;clearInterval(fi);}
 var mb=document.getElementById("musicbtn");
 if(mb){mb.innerHTML="\u23F8";}
 }
-openingTimers.push(setTimeout(function(){
-if(openingSkipped)return;
+setTimeout(function(){
 var qt=document.getElementById('quote-text');
 showTravelQuote('WHO TRAVELS THE NIGHT WITH A LAMP IN SUCH STORMS',999999);
 qt.classList.add('crawl-mode');
 if(quoteHideTimer){clearTimeout(quoteHideTimer);quoteHideTimer=null;}
-openingTimers.push(setTimeout(function(){
-if(openingSkipped)return;
+setTimeout(function(){
 var secondLine=document.createElement('div');
 secondLine.id='opening-line2';
 secondLine.style.cssText='position:fixed;top:35%;left:0;right:0;z-index:200;text-align:center;pointer-events:none;padding:0 10px';
@@ -5760,19 +5699,16 @@ secondLine.appendChild(inner);
 document.body.appendChild(secondLine);
 var st2=performance.now();
 function reveal2(now){
-if(openingSkipped)return;
 var el=now-st2;var pr=Math.min(el/750,1);
 var ease=1-Math.pow(1-pr,2);
 inner.style.clipPath='inset(0 '+(100-ease*100)+'% 0 0)';
 if(pr<1)requestAnimationFrame(reveal2);
 }
 requestAnimationFrame(reveal2);
-openingTimers.push(setTimeout(function(){
-if(openingSkipped)return;
+setTimeout(function(){
 rollAwayQuote();
 var st3=performance.now();
 function rollAway2(now){
-if(openingSkipped)return;
 var el=now-st3;var pr=Math.min(el/750,1);
 var ease=pr*pr;
 inner.style.clipPath='inset(0 0 0 '+(ease*100)+'%)';
@@ -5780,17 +5716,15 @@ if(pr<1){requestAnimationFrame(rollAway2);}
 else{secondLine.remove();}
 }
 requestAnimationFrame(rollAway2);
-openingTimers.push(setTimeout(function(){
-if(openingSkipped)return;
-document.getElementById('skip-crawl').style.display='none';
+setTimeout(function(){
 var ov=document.getElementById('opening-overlay');
 ov.style.transition='opacity 3.5s';
 ov.style.opacity='0';
 setTimeout(function(){ov.style.display='none';document.getElementById('quote-text').classList.remove('crawl-mode');},4000);
-},1200));
-},3500));
-},1250));
-},1000));
+},1200);
+},3500);
+},1250);
+},1000);
 }
 document.getElementById("bgmbtn").onclick=function(ev){
 ev.stopPropagation();
