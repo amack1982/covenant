@@ -118,6 +118,60 @@ animation:marqueeScroll 6s linear infinite;
 #quote-text.crawl-mode{font-size:12px!important}
 #opening-line2 div{font-size:12px!important}
 }
+
+/* Imperial Calendar (Orbital) */
+#cal-overlay-svg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none;display:none}
+#cal-overlay-svg svg{width:100%;height:100%}
+#cal-main{position:fixed;top:0;left:0;width:100%;height:100%;z-index:4;pointer-events:none;display:none}
+#cal-main.active{display:block;pointer-events:auto}
+#cal-sparkle{position:fixed;top:0;left:0;width:100%;height:100%;z-index:4;pointer-events:none;display:none}
+#cal-sparkle.active{display:block}
+#cal-cycle-labels{position:fixed;top:0;left:0;width:100%;height:100%;z-index:5;pointer-events:none;display:none}
+.cal-cycle-label{
+position:absolute;font-family:'Cormorant Garamond',serif;font-weight:500;
+color:rgba(160,176,192,0.7);white-space:nowrap;
+text-shadow:0 0 4px rgba(0,0,0,0.7),0 0 8px rgba(0,0,0,0.4);
+transform:translate(-50%,-50%);opacity:0;transition:opacity 0.3s;pointer-events:none
+}
+.cal-cycle-label.holiday{font-size:10px;color:rgba(170,180,192,0.8)}
+.cal-cycle-label.visible{opacity:1}
+.cal-cycle-label.current{color:rgba(170,230,150,0.9);font-weight:600}
+.cal-cycle-label.hovered{color:rgba(200,215,230,0.85)}
+#cal-center-node{
+position:fixed;z-index:6;pointer-events:auto;width:50px;height:50px;border-radius:50%;
+background:transparent;border:none;
+cursor:pointer;transform:translate(-50%,-50%);display:none;
+transition:opacity 0.5s;opacity:0
+}
+#cal-center-node:hover{transform:translate(-50%,-50%) scale(1.1)}
+#cal-center-node.visible{display:block;opacity:1}
+#cal-center-node .dot{display:none}
+#cal-return-label{position:fixed;z-index:6;text-align:center;font-family:'Cormorant Garamond',serif;font-size:11px;font-weight:500;letter-spacing:0.15em;color:rgba(255,235,180,0.35);pointer-events:none;transform:translate(-50%,0);opacity:0;text-transform:uppercase;white-space:nowrap}
+#cal-return-label.visible{opacity:1;clip-path:none}
+#cal-date-display{position:fixed;z-index:6;text-align:center;font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:300;letter-spacing:0.04em;color:rgba(170,195,215,0.9);text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(170,195,215,0.4);pointer-events:none;opacity:0;transition:opacity 0.8s;transform:translate(-50%,-50%);white-space:nowrap}
+#cal-date-display.visible{opacity:1}
+#cal-detail-panel{
+position:fixed;z-index:12;pointer-events:none;
+top:50%;left:50%;transform:translate(-50%,-50%);
+width:420px;max-width:88vw;
+background:rgba(10,14,20,0.94);
+border:1px solid rgba(100,130,170,0.12);
+border-radius:8px;padding:32px 34px 28px;
+backdrop-filter:blur(14px);
+box-shadow:0 0 60px rgba(40,60,100,0.08);
+opacity:0;pointer-events:none;
+transition:opacity 0.4s
+}
+#cal-detail-panel.visible{opacity:1;pointer-events:auto}
+#cal-detail-panel .dp-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:400;color:#b0c4d4;letter-spacing:0.05em;margin-bottom:4px}
+#cal-detail-panel .dp-days{font-family:'EB Garamond',serif;font-size:13px;color:#506878;font-style:italic;margin-bottom:14px}
+#cal-detail-panel .dp-ideal{font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:500;color:#708898;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px}
+#cal-detail-panel .dp-message{font-family:'EB Garamond',serif;font-size:15px;color:#8898a8;line-height:1.75;margin-bottom:14px}
+#cal-detail-panel .dp-quote{font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;color:#506878;line-height:1.65;padding-left:14px;border-left:2px solid rgba(100,130,170,0.15)}
+#cal-detail-panel .dp-current{font-family:'EB Garamond',serif;font-size:12px;color:rgba(160,220,140,0.6);margin-top:10px;font-style:italic}
+#cal-detail-panel .close-btn{position:absolute;top:14px;right:18px;font-family:'Cormorant Garamond',serif;font-size:18px;color:#506878;cursor:pointer;background:none;border:none;transition:color 0.3s}
+#cal-detail-panel .close-btn:hover{color:#8898a8}
+@media(max-width:600px){#cal-detail-panel{padding:24px 22px 22px}#cal-detail-panel .dp-name{font-size:20px}#cal-detail-panel .dp-message{font-size:14px}}
 </style>
 </head>
 <body>
@@ -126,11 +180,28 @@ animation:marqueeScroll 6s linear infinite;
 <canvas id="aurora"></canvas>
 <div id="web"><svg id="svg"></svg></div>
 <div id="wormhole"><canvas id="wh-canvas"></canvas></div>
+<div id="wipe-transition" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:45;opacity:0;pointer-events:none;background:linear-gradient(to right,#0a0e14 0%,#0a0e14 92%,rgba(100,130,180,0.08) 96%,rgba(140,170,220,0.04) 98%,transparent 100%)"></div>
 
 <div id="travel-quote" style="position:fixed;top:28%;left:0;right:0;z-index:200;text-align:center;pointer-events:none;opacity:0;transition:opacity 0.8s">
 <div id="quote-text" style="font-family:Cormorant Garamond,serif;font-size:23px;font-style:italic;font-weight:400;color:rgba(180,160,210,0.85);letter-spacing:-0.01em;display:inline-block">
 <span id="quote-inner" style="display:inline-block;white-space:pre-line"></span>
 </div>
+</div>
+<div id="cal-overlay-svg"><svg id="cal-svg"></svg></div>
+<canvas id="cal-main"></canvas>
+<canvas id="cal-sparkle"></canvas>
+<div id="cal-cycle-labels"></div>
+<div id="cal-center-node"><div class="dot"></div></div>
+<div id="cal-return-label">Return</div>
+<div id="cal-date-display"></div>
+<div id="cal-detail-panel">
+<button class="close-btn" onclick="calClosePanel()">&times;</button>
+<div class="dp-name"></div>
+<div class="dp-days"></div>
+<div class="dp-ideal"></div>
+<div class="dp-message"></div>
+<div class="dp-quote"></div>
+<div class="dp-current"></div>
 </div>
 <div id="title-bar"><h1>RELATIONSHIP WEB</h1><div class="sub">The Covenant of The Flowers</div></div>
 <div id="tooltip"><div class="tt-name"></div><div class="tt-detail"></div></div>
@@ -206,7 +277,7 @@ function getSecondary(centerName,primaryNames){const s=new Set();primaryNames.fo
 
 let selectedNode=null;let animating=false;var travelState='web';var camOX=0;var camOY=0;var travelStartTime=0;
 var clusterAngle=Math.PI*7/6;var clusterDist=0;
-var secondCluster=[{name:'Atlas'},{name:'Roadmap'},{name:'Relationship Web'}];
+var secondCluster=[{name:'Atlas'},{name:'Roadmap'},{name:'Relationship Web'},{name:'Imperial Calendar'}];
 
 function layoutCircle(){
 const mainR=Math.min(W(),H())*0.18;const outerR=Math.min(W(),H())*0.38;
@@ -321,8 +392,9 @@ var destY=hf.y+Math.sin(clusterAngle)*clusterDist;
 var startCamX=camOX;var startCamY=camOY;
 var endCamX=destX-CX();var endCamY=destY-CY();
 secondCluster[2].wx=destX;secondCluster[2].wy=destY;
-secondCluster[0].wx=destX-70;secondCluster[0].wy=destY-60;
-secondCluster[1].wx=destX+70;secondCluster[1].wy=destY-60;
+secondCluster[0].wx=destX-70;secondCluster[0].wy=destY-70;
+secondCluster[1].wx=destX+70;secondCluster[1].wy=destY-70;
+secondCluster[3].wx=destX;secondCluster[3].wy=destY+80;
 whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
 var dur=3750;var st=performance.now();
 var trailPts=[];
@@ -398,7 +470,24 @@ requestAnimationFrame(drawScatter);
 requestAnimationFrame(drawTravel);
 }
 
+
+// Render a cluster node in relationship-web style
+function renderClusterNodeSVG(g,cx,cy,nodeR){
+var bloomR=nodeR*4;
+var glowColor='rgba(140,180,220,';
+var coreColor='#c8ddf0';
+var g3=document.createElementNS(NS,'circle');g3.setAttribute('cx',cx);g3.setAttribute('cy',cy);g3.setAttribute('r',bloomR);g3.setAttribute('fill',glowColor+'0.03)');g.appendChild(g3);
+var g2=document.createElementNS(NS,'circle');g2.setAttribute('cx',cx);g2.setAttribute('cy',cy);g2.setAttribute('r',bloomR*0.6);g2.setAttribute('fill',glowColor+'0.06)');g.appendChild(g2);
+var g1=document.createElementNS(NS,'circle');g1.setAttribute('cx',cx);g1.setAttribute('cy',cy);g1.setAttribute('r',bloomR*0.3);g1.setAttribute('fill',glowColor+'0.10)');g.appendChild(g1);
+var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',cx);circle.setAttribute('cy',cy);circle.setAttribute('r',nodeR);circle.setAttribute('fill',coreColor);circle.setAttribute('stroke',glowColor+'0.4)');circle.setAttribute('stroke-width','0.8');g.appendChild(circle);
+var spkLen=nodeR*2.5;var spkOp='0.12';
+var h1=document.createElementNS(NS,'line');h1.setAttribute('x1',cx-spkLen);h1.setAttribute('y1',cy);h1.setAttribute('x2',cx+spkLen);h1.setAttribute('y2',cy);h1.setAttribute('stroke',glowColor+spkOp+')');h1.setAttribute('stroke-width','0.5');g.appendChild(h1);
+var v1=document.createElementNS(NS,'line');v1.setAttribute('x1',cx);v1.setAttribute('y1',cy-spkLen);v1.setAttribute('x2',cx);v1.setAttribute('y2',cy+spkLen);v1.setAttribute('stroke',glowColor+spkOp+')');v1.setAttribute('stroke-width','0.5');g.appendChild(v1);
+var glowRing=document.createElementNS(NS,'circle');glowRing.setAttribute('cx',cx);glowRing.setAttribute('cy',cy);glowRing.setAttribute('r',nodeR*2);glowRing.setAttribute('fill','none');glowRing.setAttribute('stroke',glowColor+'0.15)');glowRing.setAttribute('stroke-width','0.5');g.appendChild(glowRing);
+}
+
 function renderCluster(){
+if(calendarActive)return;
 svg.innerHTML='';
 var nodeG=document.createElementNS(NS,'g');
 var linkG=document.createElementNS(NS,'g');
@@ -408,13 +497,13 @@ var cx=sc.wx-camOX;var cy=sc.wy-camOY;
 sc.screenX=cx;sc.screenY=cy;
 positions.push({x:cx,y:cy});
 var g=document.createElementNS(NS,'g');g.style.cursor='pointer';
-var glow=document.createElementNS(NS,'circle');glow.setAttribute('cx',cx);glow.setAttribute('cy',cy);glow.setAttribute('r',20);glow.setAttribute('fill','rgba(128,112,176,0.06)');g.appendChild(glow);
-var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',cx);circle.setAttribute('cy',cy);circle.setAttribute('r',7);circle.setAttribute('fill','#8070b0');circle.setAttribute('stroke','rgba(128,112,176,0.6)');circle.setAttribute('stroke-width','1.5');g.appendChild(circle);
-var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-16);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.textContent=sc.name;g.appendChild(text);
+renderClusterNodeSVG(g,cx,cy,7);
+var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-22);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.setAttribute('filter','url(#textshadow)');text.textContent=sc.name;g.appendChild(text);
 g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(cx,cy);requestAnimationFrame(drawSparkles);
 if(sc.name==='Atlas'){showAtlas();}
 else if(sc.name==='Relationship Web'){travelBackAnim();}
 else if(sc.name==='Roadmap'){showRoadmap();}
+else if(sc.name==='Imperial Calendar'){showCalendar();}
 });
 nodeG.appendChild(g);
 });
@@ -448,15 +537,15 @@ clLG.appendChild(cl);
 secondCluster.forEach(function(sc){
 var cx=sc.wx-camOX;var cy=sc.wy-camOY;
 var g=document.createElementNS(NS,'g');g.classList.add('cluster-node');g.style.opacity=clAlpha;g.style.cursor='pointer';
-var glow=document.createElementNS(NS,'circle');glow.setAttribute('cx',cx);glow.setAttribute('cy',cy);glow.setAttribute('r',20);glow.setAttribute('fill','rgba(128,112,176,0.06)');g.appendChild(glow);
-var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',cx);circle.setAttribute('cy',cy);circle.setAttribute('r',7);circle.setAttribute('fill','#8070b0');circle.setAttribute('stroke','rgba(128,112,176,0.6)');circle.setAttribute('stroke-width','1.5');g.appendChild(circle);
-var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-16);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.textContent=sc.name;g.appendChild(text);
+renderClusterNodeSVG(g,cx,cy,7);
+var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-22);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.setAttribute('filter','url(#textshadow)');text.textContent=sc.name;g.appendChild(text);
 if(travelState==='cluster'){
 (function(name,px,py){
 g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(px,py);requestAnimationFrame(drawSparkles);
 if(name==='Atlas'){showAtlas();}
 else if(name==='Relationship Web'){travelBackAnim();}
 else if(name==='Roadmap'){showRoadmap();}
+else if(name==='Imperial Calendar'){showCalendar();}
 });
 })(sc.name,cx,cy);
 }
@@ -728,15 +817,15 @@ clLG.appendChild(cl);
 secondCluster.forEach(function(sc){
 var cx=sc.wx-camOX;var cy=sc.wy-camOY;
 var g=document.createElementNS(NS,'g');g.classList.add('cluster-node');g.style.opacity=clAlpha;g.style.cursor='pointer';
-var glow=document.createElementNS(NS,'circle');glow.setAttribute('cx',cx);glow.setAttribute('cy',cy);glow.setAttribute('r',20);glow.setAttribute('fill','rgba(128,112,176,0.06)');g.appendChild(glow);
-var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',cx);circle.setAttribute('cy',cy);circle.setAttribute('r',7);circle.setAttribute('fill','#8070b0');circle.setAttribute('stroke','rgba(128,112,176,0.6)');circle.setAttribute('stroke-width','1.5');g.appendChild(circle);
-var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-16);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.textContent=sc.name;g.appendChild(text);
+renderClusterNodeSVG(g,cx,cy,7);
+var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-22);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.setAttribute('filter','url(#textshadow)');text.textContent=sc.name;g.appendChild(text);
 if(travelState==='cluster'){
 (function(name,px,py){
 g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(px,py);requestAnimationFrame(drawSparkles);
 if(name==='Atlas'){showAtlas();}
 else if(name==='Relationship Web'){travelBackAnim();}
 else if(name==='Roadmap'){showRoadmap();}
+else if(name==='Imperial Calendar'){showCalendar();}
 });
 })(sc.name,cx,cy);
 }
@@ -967,7 +1056,70 @@ text.setAttribute('filter','url(#textshadow)');text.textContent=n.name;g.appendC
 g.addEventListener('click',function(e){e.stopPropagation();
 emitSparkle(n.x,n.y);requestAnimationFrame(drawSparkles);
 if(key==='roadmap'){
+// Pull satellites inward toward center
+var rcx=rmNodes.roadmap.x;var rcy=rmNodes.roadmap.y;
+Object.keys(rmNodes).forEach(function(k){
+if(k!=='roadmap'){rmNodes[k].tx=rcx;rmNodes[k].ty=rcy;}
+});
+rmChapterNodes.forEach(function(cn){cn.tx=rcx;cn.ty=rcy;});
+// Fast collapse animation
+var collapseActive=true;
+function collapseStep(){
+if(!collapseActive)return;
+var moving=false;
+Object.keys(rmNodes).forEach(function(k){
+var nd=rmNodes[k];
+var dx=nd.tx-nd.x;var dy=nd.ty-nd.y;
+if(Math.abs(dx)>0.5||Math.abs(dy)>0.5){nd.x+=dx*0.12;nd.y+=dy*0.12;moving=true;}
+else{nd.x=nd.tx;nd.y=nd.ty;}
+});
+rmChapterNodes.forEach(function(cn){
+var dx=cn.tx-cn.x;var dy=cn.ty-cn.y;
+if(Math.abs(dx)>0.5||Math.abs(dy)>0.5){cn.x+=dx*0.12;cn.y+=dy*0.12;moving=true;}
+else{cn.x=cn.tx;cn.y=cn.ty;}
+});
+renderRoadmap();
+if(moving&&collapseActive)requestAnimationFrame(collapseStep);
+}
+requestAnimationFrame(collapseStep);
+// Launch wipe transition after a brief moment
+setTimeout(function(){
+var wipeEl=document.getElementById('wipe-transition');
+wipeEl.style.display='block';
+var wipeStart=performance.now();
+var wipeDur=420;
+var holdDur=80;
+var revealDur=320;
+var totalWipe=wipeDur+holdDur+revealDur;
+var switched=false;
+function wipeStep(now){
+var elapsed=now-wipeStart;
+var pr=Math.min(elapsed/totalWipe,1);
+if(elapsed<wipeDur){
+// Wipe in: leading edge moves left to right
+var wipePr=elapsed/wipeDur;
+var ease=wipePr<0.5?2*wipePr*wipePr:(1-Math.pow(-2*wipePr+2,2)/2);
+wipeEl.style.clipPath='inset(0 '+(100-ease*100)+'% 0 0)';
+wipeEl.style.opacity='1';
+} else if(elapsed<wipeDur+holdDur){
+// Hold: full coverage — do the switch here
+wipeEl.style.clipPath='inset(0 0 0 0)';
+if(!switched){
+switched=true;
+collapseActive=false;
 hideRoadmap();
+}
+} else {
+// Reveal: wipe exits to the right
+var revPr=(elapsed-wipeDur-holdDur)/revealDur;
+var revEase=revPr<0.5?2*revPr*revPr:(1-Math.pow(-2*revPr+2,2)/2);
+wipeEl.style.clipPath='inset(0 0 0 '+revEase*100+'%)';
+}
+if(pr<1){requestAnimationFrame(wipeStep);}
+else{wipeEl.style.display='none';wipeEl.style.clipPath='';wipeEl.style.opacity='0';}
+}
+requestAnimationFrame(wipeStep);
+},200);
 }else{
 if(rmCooldown)return;
 if(selectedRmNode===key){selectedRmNode=null;}
@@ -4406,6 +4558,1082 @@ if(!tt.matches(':hover'))tt.style.display='none';
 
 <script>
 
+
+// ============================================================
+// IMPERIAL CALENDAR (Orbital)
+// ============================================================
+var CAL_CYCLES=[
+{name:'The Aeon',days:35,color:'#a08860',ideal:'Redemption \u00B7 Reckoning \u00B7 Destiny',
+message:'Begin anew with purpose. Reflect on one\u2019s role in the Empire\u2019s destiny.',
+quote:'The year opens where the old one burned. Citizens write letters of intention, sealed and delivered to local magistrates. To name one\u2019s purpose is to bind oneself to it.'},
+{name:'The Chariot',days:35,color:'#7090b0',ideal:'Momentum \u00B7 Control \u00B7 Willpower',
+message:'Advance the Empire\u2019s cause. Strengthen resolve through service.',
+quote:'What the Aeon declares, the Chariot builds in the season of labor. Stone laid upon stone, by willing hands.'},
+{name:'The Hierophant',days:35,color:'#90a878',ideal:'Tradition \u00B7 Education \u00B7 Doctrine',
+message:'Reaffirm doctrine. Teach what is proven, discard what is wanting.',
+quote:'Examinations are held and curriculums measured. What we teach our children is the truest confession of what we believe. Let it be worthy of them.'},
+{name:'The Hermit',days:35,color:'#6888a0',ideal:'Reflection \u00B7 Alignment \u00B7 Collective Wisdom',
+message:'Seek alignment, not isolation. Serve the whole through introspection.',
+quote:'The lantern turns inward, and what the Hermit reveals is not always comfortable. Let its light be instructive in self-governance.'},
+{name:'The Lovers',days:35,color:'#c08888',ideal:'Harmony \u00B7 Choice \u00B7 Unity',
+message:'Build unity. Devotion to one another is devotion to the Empire.',
+quote:'Marriages performed during this cycle receive the state\u2019s blessing and a modest stipend. Divorce petitions are deferred until the cycle ends. Unity between two people is the Empire in miniature.'},
+{name:"The World's Holiday",days:7,color:'#c4a24c',holiday:true,ideal:'Completion \u00B7 Unity \u00B7 Fulfillment',
+message:'Mid-year celebration. Citizens reaffirm unity, retake oaths, and honor the Empire\u2019s realized harmony.',
+quote:'Seven days without labor. The midpoint of the year belongs to you and your covenant with each other. Celebrate what you have built together.'},
+{name:'The Moon',days:35,color:'#8878a8',ideal:'Illusion \u00B7 Intuition \u00B7 Inner Truth',
+message:'Accept uncertainty. Move forward in trust when light is hidden.',
+quote:'The Moon governs what cannot yet be seen. Move forward even when the way is unclear, trusting in the foundation beneath you, for faith is not the absence of doubt. It is the decision to walk regardless.'},
+{name:'The Magician',days:35,color:'#60a0a0',ideal:'Will \u00B7 Manifestation \u00B7 Talent',
+message:'Let ability shine. The Empire thrives on gifts properly offered.',
+quote:'Artisans, engineers, and scholars bring their work before the public eye. What is worthy receives patronage. What falls short receives guidance. There is no shame in either, only in the refusal to offer what you have.'},
+{name:'Justice',days:35,color:'#a0a080',ideal:'Fairness \u00B7 Truth \u00B7 Law',
+message:'Restore balance. Each action is a stone placed in the foundation of law.',
+quote:'What is owed is settled, for justice delayed is justice corrupted. The law does not wait, and neither shall those who uphold it. This cycle asks nothing of the innocent and demands much from the guilty.'},
+{name:'The Tower',days:35,color:'#a06060',ideal:'Collapse \u00B7 Revelation \u00B7 Reckoning',
+message:'Tear down what fails. Rebirth is built on revealed weakness.',
+quote:'The Tower turns its gaze inward. Citizens are invited to bring grievances against the apparatus of the state itself. No institution is exempt. The Empire that refuses to hear its own failures has already begun to crumble.'},
+{name:'The Star',days:35,color:'#80a0c0',ideal:'Hope \u00B7 Renewal \u00B7 Future Vision',
+message:'Look forward. Light returns through those who believe and act.',
+quote:'Promotions are conferred and the next year\u2019s works are announced. The Empire acts on what the Tower has revealed, and dawn is reborn.'},
+{name:"The Fool's Holiday",days:8,color:'#b8a070',holiday:true,ideal:'Rebirth \u00B7 Forgiveness \u00B7 Uncertainty',
+message:'Year-end inversion. The Emperor charts new paths. Clemency is offered, grievances are forgiven.',
+quote:'Speak what has gone unsaid. Mend what has frayed. Old debts may be forgiven at the creditor\u2019s discretion. Carry not old grievances forward.'}
+];
+var calTotalDays=365;
+
+function calGetCurrentCycleInfo(){
+var now=new Date();
+var start=new Date(now.getFullYear(),0,1);
+var dayOfYear=Math.floor((now-start)/(1000*60*60*24))+1;
+var d=0;
+for(var i=0;i<CAL_CYCLES.length;i++){
+d+=CAL_CYCLES[i].days;
+if(dayOfYear<=d){
+var dayInCycle=dayOfYear-(d-CAL_CYCLES[i].days);
+return{index:i,dayInCycle:dayInCycle,dayOfYear:dayOfYear};
+}
+}
+return{index:CAL_CYCLES.length-1,dayInCycle:CAL_CYCLES[CAL_CYCLES.length-1].days,dayOfYear:dayOfYear};
+}
+var calCurrentCycle=calGetCurrentCycleInfo();
+
+function calOrdinal(n){var s=['th','st','nd','rd'];var v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
+function calGetDateString(){
+var c=CAL_CYCLES[calCurrentCycle.index];
+return 'The '+calOrdinal(calCurrentCycle.dayInCycle)+' of '+c.name;
+}
+
+var calHoveredIdx=-1,calSelectedIdx=-1;
+var calClusterScreenPos=[];
+var calSvgNodes=[];
+var calSvgLines=[];
+var calCtx,calSpCtx,calSctx;
+var calCX,calCY,calOuterR,calInnerR,calOrbitR;
+var calCalendarBuilt=false,calAnimRunning=false;
+var calendarActive=false;
+var calSparkles=[];
+var calLabelEls=[];
+var calStarArr=[];
+
+function calHexToRGBA(hex,a){var r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return'rgba('+r+','+g+','+b+','+a+')';}
+function calGetArcAngles(idx){var d=0;for(var i=0;i<idx;i++)d+=CAL_CYCLES[i].days;var s=(d/calTotalDays)*Math.PI*2-Math.PI/2;var sw=(CAL_CYCLES[idx].days/calTotalDays)*Math.PI*2;return{start:s,end:s+sw,mid:s+sw/2};}
+function calGetCycleStartAngle(idx){var d=0;for(var i=0;i<idx;i++)d+=CAL_CYCLES[i].days;return(d/calTotalDays)*Math.PI*2-Math.PI/2;}
+function calEaseInOut(t){return t<0.5?2*t*t:(1-Math.pow(-2*t+2,2)/2);}
+function calEaseOut(t){return 1-Math.pow(1-t,2.5);}
+
+function calInitStars(){}
+var calStarAnimId=null;
+function calDrawStarsBg(t){}
+
+function calResize(){
+var mc=document.getElementById('cal-main');var dpr=window.devicePixelRatio||1;
+mc.width=innerWidth*dpr;mc.height=innerHeight*dpr;mc.style.width=innerWidth+'px';mc.style.height=innerHeight+'px';
+calCtx=mc.getContext('2d');calCtx.setTransform(dpr,0,0,dpr,0,0);
+var sp=document.getElementById('cal-sparkle');
+sp.width=innerWidth*dpr;sp.height=innerHeight*dpr;sp.style.width=innerWidth+'px';sp.style.height=innerHeight+'px';
+calSpCtx=sp.getContext('2d');calSpCtx.setTransform(dpr,0,0,dpr,0,0);
+calCX=innerWidth/2;calCY=innerHeight/2+30;calOuterR=Math.min(innerWidth,innerHeight)*0.25;calInnerR=calOuterR*0.38;calOrbitR=calInnerR+4;
+}
+
+function calCreateLabelEls(){
+var container=document.getElementById('cal-cycle-labels');
+container.innerHTML='';calLabelEls=[];
+CAL_CYCLES.forEach(function(c){var el=document.createElement('div');el.className='cal-cycle-label'+(c.holiday?' holiday':'');el.style.fontSize=c.holiday?'10px':'11.5px';el.textContent=c.name;container.appendChild(el);calLabelEls.push(el);});
+}
+function calPositionLabel(idx,angle,radius,alpha){
+var el=calLabelEls[idx];if(!el)return;
+var x=calCX+Math.cos(angle)*radius;var y=calCY+Math.sin(angle)*radius;
+el.style.left=x+'px';el.style.top=y+'px';
+var deg=angle*180/Math.PI;if(deg>90||deg<-90)deg+=180;
+el.style.transform='translate(-50%,-50%) rotate('+deg+'deg)';
+if(alpha>0.05){el.classList.add('visible');el.style.opacity=alpha;}else{el.classList.remove('visible');}
+}
+function calHideAllLabels(){calLabelEls.forEach(function(el){el.classList.remove('visible');el.style.opacity=0;});}
+
+function calEmitSparkle(x,y,count){
+for(var i=0;i<count;i++){
+var angle=Math.random()*Math.PI*2;var speed=Math.random()*3.5+0.8;var life=Math.random()*60+35;
+calSparkles.push({x:x,y:y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
+life:life,maxLife:life,size:Math.random()*3+0.8,
+hue:190+Math.random()*50,light:65+Math.random()*20,
+delay:Math.random()*6,wobble:Math.random()*0.3-0.15,
+wobbleSpeed:Math.random()*0.2+0.05,drag:0.96+Math.random()*0.025,
+wobbleOff:Math.random()*Math.PI*2,wobbleOff2:Math.random()*Math.PI*2,
+wobbleRatio:0.5+Math.random()*1.5,
+driftX:(Math.random()-0.5)*0.06,driftY:(Math.random()-0.5)*0.06,
+superBright:Math.random()<0.06,
+twinklePhase:Math.random()*Math.PI*2,twinkleSpeed:Math.random()*0.3+0.1
+});
+}
+}
+function calDrawSparkles(){
+calSpCtx.clearRect(0,0,innerWidth,innerHeight);
+calSparkles=calSparkles.filter(function(p){
+if(p.delay>0){p.delay--;return true;}
+p.vx+=p.wobble*Math.sin(p.life*p.wobbleSpeed+p.wobbleOff);
+p.vy+=p.wobble*Math.cos(p.life*p.wobbleSpeed*p.wobbleRatio+p.wobbleOff2);
+p.vx+=p.driftX;p.vy+=p.driftY;p.x+=p.vx;p.y+=p.vy;
+p.vx*=p.drag;p.vy*=p.drag;p.life--;
+var t=Math.max(0,p.life/p.maxLife);var fadeT=t<0.3?t/0.3:1;
+var bright=p.superBright?2.5:1;
+var twinkle=0.6+0.4*Math.sin(p.life*p.twinkleSpeed+p.twinklePhase);
+var alpha=Math.min(1,fadeT*0.9*twinkle*bright);
+var sz=Math.max(0.1,p.size*(0.4+t*0.6)*(p.superBright?1.8:1));
+calSpCtx.beginPath();calSpCtx.arc(p.x,p.y,sz,0,Math.PI*2);
+var pLight=p.superBright?Math.min(100,p.light+25):p.light;
+calSpCtx.fillStyle='hsla('+p.hue+','+(p.superBright?'30':'65')+'%,'+pLight+'%,'+alpha+')';calSpCtx.fill();
+var glowSz=Math.max(0.1,sz*4);
+calSpCtx.beginPath();calSpCtx.arc(p.x,p.y,glowSz,0,Math.PI*2);
+calSpCtx.fillStyle='hsla('+p.hue+',50%,'+p.light+'%,'+(alpha*0.15)+')';calSpCtx.fill();
+if(t>0.5&&twinkle>0.85){
+var spkLen=sz*3;
+calSpCtx.strokeStyle='hsla('+p.hue+',60%,85%,'+(alpha*0.35)+')';calSpCtx.lineWidth=0.5;
+calSpCtx.beginPath();calSpCtx.moveTo(p.x-spkLen,p.y);calSpCtx.lineTo(p.x+spkLen,p.y);calSpCtx.stroke();
+calSpCtx.beginPath();calSpCtx.moveTo(p.x,p.y-spkLen);calSpCtx.lineTo(p.x,p.y+spkLen);calSpCtx.stroke();
+}
+return p.life>0;
+});
+}
+
+
+// Draw a relationship-web style node on canvas
+function calDrawNode(cx,cy,alpha,nodeR){
+if(alpha<=0.01)return;
+nodeR=nodeR||7;
+var bloomR=nodeR*3.5;
+// Single gradient glow halo
+var glow=calCtx.createRadialGradient(cx,cy,nodeR*1.2,cx,cy,bloomR);
+glow.addColorStop(0,'rgba(140,180,220,'+(0.18*alpha)+')');
+glow.addColorStop(0.4,'rgba(140,180,220,'+(0.08*alpha)+')');
+glow.addColorStop(1,'rgba(140,180,220,0)');
+calCtx.beginPath();calCtx.arc(cx,cy,bloomR,0,Math.PI*2);calCtx.fillStyle=glow;calCtx.fill();
+// Glow ring
+calCtx.beginPath();calCtx.arc(cx,cy,nodeR*2,0,Math.PI*2);calCtx.strokeStyle='rgba(140,180,220,'+(0.18*alpha)+')';calCtx.lineWidth=0.5;calCtx.stroke();
+// Spike lines
+var spkLen=nodeR*2.5;
+calCtx.strokeStyle='rgba(140,180,220,'+(0.16*alpha)+')';calCtx.lineWidth=0.5;
+calCtx.beginPath();calCtx.moveTo(cx-spkLen,cy);calCtx.lineTo(cx+spkLen,cy);calCtx.stroke();
+calCtx.beginPath();calCtx.moveTo(cx,cy-spkLen);calCtx.lineTo(cx,cy+spkLen);calCtx.stroke();
+// Core circle — bright
+calCtx.beginPath();calCtx.arc(cx,cy,nodeR,0,Math.PI*2);calCtx.fillStyle='rgba(210,230,245,'+alpha+')';calCtx.fill();
+calCtx.beginPath();calCtx.arc(cx,cy,nodeR,0,Math.PI*2);calCtx.strokeStyle='rgba(140,180,220,'+(0.45*alpha)+')';calCtx.lineWidth=0.8;calCtx.stroke();
+// Hot center highlight
+calCtx.beginPath();calCtx.arc(cx,cy,nodeR*0.55,0,Math.PI*2);calCtx.fillStyle='rgba(240,248,255,'+(0.5*alpha)+')';calCtx.fill();
+}
+
+// Center SVG node for calendar (same style as cluster nodes)
+var calCenterSvgNode=null;
+
+function calCreateCenterSvgNode(){
+var overlaySvg=document.getElementById('cal-svg');
+var wrapper=document.createElementNS('http://www.w3.org/2000/svg','g');
+wrapper.setAttribute('transform','translate('+calCX+','+calCY+')');
+wrapper.style.opacity='0';
+var inner=document.createElementNS('http://www.w3.org/2000/svg','g');
+renderClusterNodeSVG(inner,0,0,9);
+wrapper.appendChild(inner);
+overlaySvg.appendChild(wrapper);
+calCenterSvgNode={el:wrapper};
+}
+
+function calDrawCenterSvgNode(){
+if(!calCenterSvgNode){calCreateCenterSvgNode();}
+calCenterSvgNode.el.setAttribute('transform','translate('+calCX+','+calCY+')');
+calCenterSvgNode.el.style.opacity='1';
+}
+
+function calRemoveCenterSvgNode(){
+if(calCenterSvgNode&&calCenterSvgNode.el.parentNode){
+calCenterSvgNode.el.parentNode.removeChild(calCenterSvgNode.el);
+}
+calCenterSvgNode=null;
+}
+
+// Return label roll-in (left to right reveal, like travel quotes)
+function calRevealReturnLabel(){
+var retLabel=document.getElementById('cal-return-label');
+retLabel.style.left=calCX+'px';
+var sRl=9*2+6;
+retLabel.style.top=(calCY+sRl)+'px';
+retLabel.style.opacity='1';
+retLabel.style.clipPath='inset(0 100% 0 0)';
+retLabel.style.display='block';
+var startTime=performance.now();
+var revealDur=600;
+function revealStep(now){
+var el=now-startTime;
+var pr=Math.min(el/revealDur,1);
+var ease=1-Math.pow(1-pr,2);
+retLabel.style.clipPath='inset(0 '+(100-ease*100)+'% 0 0)';
+if(pr<1)requestAnimationFrame(revealStep);
+}
+requestAnimationFrame(revealStep);
+}
+
+// Return label roll-away (left to right disappear)
+function calHideReturnLabel(cb){
+var retLabel=document.getElementById('cal-return-label');
+var startTime=performance.now();
+var rollDur=450;
+function rollStep(now){
+var el=now-startTime;
+var pr=Math.min(el/rollDur,1);
+var ease=pr*pr;
+retLabel.style.clipPath='inset(0 0 0 '+(ease*100)+'%)';
+if(pr<1){requestAnimationFrame(rollStep);}
+else{retLabel.style.opacity='0';retLabel.style.clipPath='inset(0 100% 0 0)';retLabel.classList.remove('visible');if(cb)cb();}
+}
+requestAnimationFrame(rollStep);
+}
+function calHitTestCycle(mx,my){
+var dx=mx-calCX,dy=my-calCY;var dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<calInnerR||dist>calOuterR+30)return-1;
+var angle=Math.atan2(dy,dx);
+for(var i=0;i<CAL_CYCLES.length;i++){
+var a=calGetArcAngles(i);
+var s=((a.start%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);
+var e=((a.end%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);
+var t=((angle%(Math.PI*2))+(Math.PI*2))%(Math.PI*2);
+if(s<e){if(t>=s&&t<=e)return i;}
+else{if(t>=s||t<=e)return i;}
+}
+return-1;
+}
+
+function calDrawStatic(){
+calCtx.clearRect(0,0,innerWidth,innerHeight);
+var isCur=calCurrentCycle.index;
+for(var i=0;i<CAL_CYCLES.length;i++){
+var a=calGetArcAngles(i);
+var isCurrentCycle=i===isCur;var isHovered=i===calHoveredIdx;var isSelected=i===calSelectedIdx;
+var oR=calOuterR;if(isCurrentCycle)oR=calOuterR+4;
+var baseA=CAL_CYCLES[i].holiday?0.28:0.18;
+if(isCurrentCycle)baseA=CAL_CYCLES[i].holiday?0.38:0.30;
+if(isHovered&&!isSelected)baseA+=0.08;if(isSelected)baseA+=0.10;
+calCtx.beginPath();calCtx.arc(calCX,calCY,oR,a.start,a.end);calCtx.arc(calCX,calCY,calInnerR,a.end,a.start,true);calCtx.closePath();
+calCtx.fillStyle=calHexToRGBA(CAL_CYCLES[i].color,baseA);calCtx.fill();
+var strokeA=isCurrentCycle?0.55:isHovered?0.42:0.30;
+calCtx.beginPath();calCtx.arc(calCX,calCY,oR,a.start,a.end);calCtx.strokeStyle=calHexToRGBA(CAL_CYCLES[i].color,strokeA);calCtx.lineWidth=isCurrentCycle?1.5:1;calCtx.stroke();
+calCtx.beginPath();calCtx.arc(calCX,calCY,calInnerR,a.start,a.end);calCtx.strokeStyle=calHexToRGBA(CAL_CYCLES[i].color,0.14);calCtx.lineWidth=0.5;calCtx.stroke();
+calCtx.beginPath();calCtx.moveTo(calCX+Math.cos(a.start)*calInnerR,calCY+Math.sin(a.start)*calInnerR);calCtx.lineTo(calCX+Math.cos(a.start)*oR,calCY+Math.sin(a.start)*oR);calCtx.strokeStyle='rgba(100,130,170,0.12)';calCtx.lineWidth=0.5;calCtx.stroke();
+if(isCurrentCycle){
+calCtx.beginPath();calCtx.arc(calCX,calCY,oR+2,a.start,a.end);calCtx.strokeStyle='rgba(125,184,110,0.18)';calCtx.lineWidth=6;calCtx.stroke();
+calCtx.beginPath();calCtx.arc(calCX,calCY,oR+1,a.start,a.end);calCtx.strokeStyle='rgba(160,220,140,0.12)';calCtx.lineWidth=3;calCtx.stroke();
+}
+var tR=oR-3;var midR=calInnerR+(oR-calInnerR)*0.5;
+for(var d=1;d<CAL_CYCLES[i].days;d++){var ta2=a.start+(d/CAL_CYCLES[i].days)*(a.end-a.start);var tickAlpha=isCurrentCycle?0.70:0.44;calCtx.beginPath();calCtx.moveTo(calCX+Math.cos(ta2)*tR,calCY+Math.sin(ta2)*tR);calCtx.lineTo(calCX+Math.cos(ta2)*(tR-3),calCY+Math.sin(ta2)*(tR-3));calCtx.strokeStyle='rgba(100,130,170,'+tickAlpha+')';calCtx.lineWidth=0.5;calCtx.stroke();}
+var midAngle=a.mid;var mpx=calCX+Math.cos(midAngle)*midR;var mpy=calCY+Math.sin(midAngle)*midR;var crossSz=3;
+calCtx.strokeStyle='rgba(160,180,200,'+(isCurrentCycle?0.35:0.20)+')';calCtx.lineWidth=0.7;
+calCtx.beginPath();calCtx.moveTo(mpx-crossSz,mpy);calCtx.lineTo(mpx+crossSz,mpy);calCtx.stroke();
+calCtx.beginPath();calCtx.moveTo(mpx,mpy-crossSz);calCtx.lineTo(mpx,mpy+crossSz);calCtx.stroke();
+calCtx.beginPath();calCtx.arc(mpx,mpy,1,0,Math.PI*2);calCtx.fillStyle='rgba(160,180,200,'+(isCurrentCycle?0.30:0.16)+')';calCtx.fill();
+var pipAngle=a.start;var pipBase=calInnerR;var pipTip=calInnerR+5;var pipHalf=0.012;
+calCtx.beginPath();calCtx.moveTo(calCX+Math.cos(pipAngle)*pipTip,calCY+Math.sin(pipAngle)*pipTip);calCtx.lineTo(calCX+Math.cos(pipAngle-pipHalf)*pipBase,calCY+Math.sin(pipAngle-pipHalf)*pipBase);calCtx.lineTo(calCX+Math.cos(pipAngle+pipHalf)*pipBase,calCY+Math.sin(pipAngle+pipHalf)*pipBase);calCtx.closePath();calCtx.fillStyle='rgba(140,165,190,0.30)';calCtx.fill();
+if(isCurrentCycle){
+var dayFrac=calCurrentCycle.dayInCycle/CAL_CYCLES[i].days;var dayAngle=a.start+dayFrac*(a.end-a.start);var px=calCX+Math.cos(dayAngle)*oR;var py=calCY+Math.sin(dayAngle)*oR;var pR=5;
+calCtx.beginPath();calCtx.arc(px,py,pR*2.5,0,Math.PI*2);calCtx.fillStyle='rgba(140,210,130,0.10)';calCtx.fill();
+calCtx.beginPath();calCtx.arc(px,py,pR,0,Math.PI*2);calCtx.fillStyle='rgba(140,210,130,0.9)';calCtx.fill();
+calCtx.beginPath();calCtx.arc(px,py,pR+2.5,0,Math.PI*2);calCtx.strokeStyle='rgba(140,210,130,0.35)';calCtx.lineWidth=0.8;calCtx.stroke();
+calCtx.beginPath();calCtx.arc(px,py,pR+5,0,Math.PI*2);calCtx.strokeStyle='rgba(140,210,130,0.20)';calCtx.lineWidth=0.6;calCtx.stroke();
+}
+var labelR=oR+22;var labelAlpha=isCurrentCycle?1:isHovered?0.85:isSelected?0.85:1;
+calPositionLabel(i,a.mid,labelR,labelAlpha);
+var el=calLabelEls[i];if(el){el.classList.toggle('current',isCurrentCycle);el.classList.toggle('hovered',isHovered&&!isCurrentCycle);}
+}
+// Quarterly markers
+var quarterDays=[91,182,273];
+for(var q=0;q<quarterDays.length;q++){
+var qAngle=(quarterDays[q]/calTotalDays)*Math.PI*2-Math.PI/2;var qMidR=calInnerR+(calOuterR-calInnerR)*0.5;var qx=calCX+Math.cos(qAngle)*qMidR;var qy=calCY+Math.sin(qAngle)*qMidR;
+calCtx.beginPath();calCtx.arc(qx,qy,5,0,Math.PI*2);calCtx.strokeStyle='rgba(200,190,150,0.18)';calCtx.lineWidth=0.5;calCtx.stroke();
+calCtx.beginPath();calCtx.arc(qx,qy,2.5,0,Math.PI*2);calCtx.strokeStyle='rgba(200,190,150,0.25)';calCtx.lineWidth=0.5;calCtx.stroke();
+calCtx.beginPath();calCtx.arc(qx,qy,1,0,Math.PI*2);calCtx.fillStyle='rgba(220,210,170,0.35)';calCtx.fill();
+for(var sp=0;sp<8;sp++){var spAngle2=(sp/8)*Math.PI*2;var spInner=2.5;var spOuter=sp%2===0?7:5;calCtx.beginPath();calCtx.moveTo(qx+Math.cos(spAngle2)*spInner,qy+Math.sin(spAngle2)*spInner);calCtx.lineTo(qx+Math.cos(spAngle2)*spOuter,qy+Math.sin(spAngle2)*spOuter);calCtx.strokeStyle='rgba(200,190,150,'+(sp%2===0?0.22:0.14)+')';calCtx.lineWidth=0.5;calCtx.stroke();}
+}
+// Center node drawn via SVG overlay (same color as cluster nodes)
+calDrawCenterSvgNode();
+}
+
+// ═══════════════════════════════════════════════════════════
+// CLOCKWORK RINGS — ambient ornamental arcs orbiting the calendar
+// ═══════════════════════════════════════════════════════════
+var calClockworkRings=[
+{// Ring 0: Wide outer crescent, slow clockwise, gear-tooth edge
+radiusFactor:1.22, arcLen:Math.PI*0.58, speed:0.00012, dir:1, phase:0.4,
+lineWidth:1.2, color:[140,165,200], alpha:0.18,
+ticks:24, tickLen:4, tickAlpha:0.14,
+gearTeeth:true, gearCount:36, gearDepth:2.5,
+endDots:true, dotR:2.2,
+midCross:true,
+entryDelay:0.15
+},
+{// Ring 1: Inner crescent, moderate counter-clockwise, filigree ticks
+radiusFactor:0.72, arcLen:Math.PI*0.45, speed:0.00025, dir:-1, phase:1.8,
+lineWidth:0.8, color:[180,160,210], alpha:0.16,
+ticks:16, tickLen:3, tickAlpha:0.12,
+gearTeeth:false,
+endDots:true, dotR:1.8,
+midCross:true,
+filigree:true, filiCount:4, filiLen:6,
+entryDelay:0.0
+},
+{// Ring 2: Far outer half-ring, very slow clockwise, diamond endpoints
+radiusFactor:1.38, arcLen:Math.PI*0.72, speed:0.00008, dir:1, phase:3.1,
+lineWidth:1.0, color:[160,185,170], alpha:0.13,
+ticks:32, tickLen:3.5, tickAlpha:0.10,
+gearTeeth:false,
+endDiamonds:true, diamondSize:3.5,
+midCross:false,
+entryDelay:0.35
+},
+{// Ring 3: Tight inner ring, faster counter-clockwise, notched
+radiusFactor:0.55, arcLen:Math.PI*0.38, speed:0.00035, dir:-1, phase:5.0,
+lineWidth:0.7, color:[200,190,150], alpha:0.15,
+ticks:12, tickLen:2.5, tickAlpha:0.13,
+gearTeeth:true, gearCount:20, gearDepth:1.8,
+endDots:true, dotR:1.5,
+midCross:true,
+entryDelay:0.08
+},
+{// Ring 4: Medium outer arc, moderate clockwise, sparse ornate ticks
+radiusFactor:1.12, arcLen:Math.PI*0.52, speed:0.00018, dir:1, phase:2.3,
+lineWidth:0.9, color:[170,150,190], alpha:0.14,
+ticks:8, tickLen:5, tickAlpha:0.12,
+gearTeeth:false,
+endDiamonds:true, diamondSize:2.8,
+filigree:true, filiCount:3, filiLen:5,
+midCross:true,
+entryDelay:0.22
+}
+];
+var calClockworkAlpha=0; // 0=invisible, 1=fully arrived
+var calClockworkAnimId=null;
+var calClockworkStartTime=0;
+var calClockworkEntryDur=2800; // ms for rings to drift in from off-screen
+var calClockworkExiting=false;
+var calClockworkExitStart=0;
+var calClockworkExitDur=1200;
+
+function calDrawClockwork(t,entryProgress,exitProgress){
+var ctx=calCtx;
+for(var ri=0;ri<calClockworkRings.length;ri++){
+var ring=calClockworkRings[ri];
+// Per-ring staggered entry
+var ringEntry=Math.max(0,Math.min(1,(entryProgress-ring.entryDelay)/(1-ring.entryDelay)));
+var ringEase=1-Math.pow(1-ringEntry,2.5);
+// Exit: reverse stagger (outermost leaves first)
+var ringExit=1;
+if(exitProgress>0){
+var exitDelay=0.35-ring.entryDelay;if(exitDelay<0)exitDelay=0;
+ringExit=1-Math.max(0,Math.min(1,(exitProgress-exitDelay*0.5)/(1-exitDelay*0.5)));
+ringExit=ringExit*ringExit;
+}
+var visibility=ringEase*ringExit;
+if(visibility<0.01)continue;
+
+var baseR=ring.radiusFactor<1?calInnerR*ring.radiusFactor:calOuterR*ring.radiusFactor;
+// During entry, radius starts much larger (from behind camera) and contracts
+var entryR=baseR*(1+3.5*(1-ringEase));
+// During exit, radius expands back out
+var curR=entryR;
+if(exitProgress>0)curR=baseR*(1+3.5*(1-ringExit));
+
+var angle=ring.phase+t*ring.speed*ring.dir;
+var halfArc=ring.arcLen/2;
+var startA=angle-halfArc;
+var endA=angle+halfArc;
+var alphaM=ring.alpha*visibility;
+
+// Main arc
+ctx.beginPath();ctx.arc(calCX,calCY,curR,startA,endA);
+ctx.strokeStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+alphaM+')';
+ctx.lineWidth=ring.lineWidth;ctx.stroke();
+
+// Subtle glow line behind main arc
+ctx.beginPath();ctx.arc(calCX,calCY,curR,startA,endA);
+ctx.strokeStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.3)+')';
+ctx.lineWidth=ring.lineWidth+3;ctx.stroke();
+
+// Gear teeth along edge
+if(ring.gearTeeth){
+var gc=ring.gearCount||24;var gd=ring.gearDepth||2;
+for(var g=0;g<gc;g++){
+var gFrac=g/gc;
+var gAngle=startA+gFrac*(endA-startA);
+var outerR2=curR+gd;
+ctx.beginPath();
+ctx.moveTo(calCX+Math.cos(gAngle)*curR,calCY+Math.sin(gAngle)*curR);
+ctx.lineTo(calCX+Math.cos(gAngle)*outerR2,calCY+Math.sin(gAngle)*outerR2);
+var nextAngle=startA+((g+0.5)/gc)*(endA-startA);
+ctx.lineTo(calCX+Math.cos(nextAngle)*outerR2,calCY+Math.sin(nextAngle)*outerR2);
+ctx.lineTo(calCX+Math.cos(nextAngle)*curR,calCY+Math.sin(nextAngle)*curR);
+ctx.strokeStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.7)+')';
+ctx.lineWidth=0.5;ctx.stroke();
+}
+}
+
+// Tick marks
+if(ring.ticks>0){
+var tl=ring.tickLen||3;
+for(var ti=0;ti<=ring.ticks;ti++){
+var tFrac=ti/ring.ticks;
+var tAngle=startA+tFrac*(endA-startA);
+var tOuter=curR;var tInner=curR-tl;
+// Alternate: every 4th tick is longer
+if(ti%4===0){tInner=curR-tl*1.6;}
+ctx.beginPath();
+ctx.moveTo(calCX+Math.cos(tAngle)*tOuter,calCY+Math.sin(tAngle)*tOuter);
+ctx.lineTo(calCX+Math.cos(tAngle)*tInner,calCY+Math.sin(tAngle)*tInner);
+ctx.strokeStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(ring.tickAlpha*visibility)+')';
+ctx.lineWidth=ti%4===0?0.8:0.5;ctx.stroke();
+}
+}
+
+// Filigree marks (small crosshatch ornaments)
+if(ring.filigree){
+var fc=ring.filiCount||3;var fl=ring.filiLen||5;
+for(var fi=1;fi<=fc;fi++){
+var fFrac=fi/(fc+1);
+var fAngle=startA+fFrac*(endA-startA);
+var fx=calCX+Math.cos(fAngle)*curR;var fy=calCY+Math.sin(fAngle)*curR;
+// Perpendicular to radius
+var px=Math.cos(fAngle+Math.PI/2);var py=Math.sin(fAngle+Math.PI/2);
+ctx.beginPath();ctx.moveTo(fx-px*fl,fy-py*fl);ctx.lineTo(fx+px*fl,fy+py*fl);
+ctx.strokeStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.6)+')';
+ctx.lineWidth=0.5;ctx.stroke();
+// Small diamond at intersection
+var ds=1.5;
+ctx.beginPath();ctx.moveTo(fx,fy-ds);ctx.lineTo(fx+ds,fy);ctx.lineTo(fx,fy+ds);ctx.lineTo(fx-ds,fy);ctx.closePath();
+ctx.fillStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.5)+')';ctx.fill();
+}
+}
+
+// Endpoint dots
+if(ring.endDots){
+var dr=ring.dotR||2;
+for(var ep=0;ep<2;ep++){
+var eAngle=ep===0?startA:endA;
+var ex=calCX+Math.cos(eAngle)*curR;var ey=calCY+Math.sin(eAngle)*curR;
+ctx.beginPath();ctx.arc(ex,ey,dr,0,Math.PI*2);
+ctx.fillStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.7)+')';ctx.fill();
+ctx.beginPath();ctx.arc(ex,ey,dr*0.5,0,Math.PI*2);
+ctx.fillStyle='rgba(240,248,255,'+(alphaM*0.4)+')';ctx.fill();
+// Small spike cross at endpoint
+var spk=dr*2.2;
+ctx.strokeStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.35)+')';ctx.lineWidth=0.4;
+ctx.beginPath();ctx.moveTo(ex-spk,ey);ctx.lineTo(ex+spk,ey);ctx.stroke();
+ctx.beginPath();ctx.moveTo(ex,ey-spk);ctx.lineTo(ex,ey+spk);ctx.stroke();
+}
+}
+
+// Endpoint diamonds
+if(ring.endDiamonds){
+var dSz=ring.diamondSize||3;
+for(var ep=0;ep<2;ep++){
+var eAngle=ep===0?startA:endA;
+var ex=calCX+Math.cos(eAngle)*curR;var ey=calCY+Math.sin(eAngle)*curR;
+ctx.beginPath();ctx.moveTo(ex,ey-dSz);ctx.lineTo(ex+dSz*0.7,ey);ctx.lineTo(ex,ey+dSz);ctx.lineTo(ex-dSz*0.7,ey);ctx.closePath();
+ctx.fillStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.6)+')';ctx.fill();
+ctx.strokeStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.35)+')';ctx.lineWidth=0.4;ctx.stroke();
+// Inner highlight
+ctx.beginPath();ctx.moveTo(ex,ey-dSz*0.5);ctx.lineTo(ex+dSz*0.35,ey);ctx.lineTo(ex,ey+dSz*0.5);ctx.lineTo(ex-dSz*0.35,ey);ctx.closePath();
+ctx.fillStyle='rgba(240,248,255,'+(alphaM*0.25)+')';ctx.fill();
+}
+}
+
+// Mid-arc cross marker
+if(ring.midCross){
+var midAngle=(startA+endA)/2;
+var mx2=calCX+Math.cos(midAngle)*curR;var my2=calCY+Math.sin(midAngle)*curR;
+var cs=3;
+ctx.strokeStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.5)+')';ctx.lineWidth=0.6;
+ctx.beginPath();ctx.moveTo(mx2-cs,my2);ctx.lineTo(mx2+cs,my2);ctx.stroke();
+ctx.beginPath();ctx.moveTo(mx2,my2-cs);ctx.lineTo(mx2,my2+cs);ctx.stroke();
+ctx.beginPath();ctx.arc(mx2,my2,1.2,0,Math.PI*2);
+ctx.fillStyle='rgba('+ring.color[0]+','+ring.color[1]+','+ring.color[2]+','+(alphaM*0.4)+')';ctx.fill();
+}
+}
+
+// ── Track arrowheads on the inner ring ──
+var handVisibility=Math.min(entryProgress,1-exitProgress);
+if(handVisibility>0.01){
+var now2=new Date();
+var sec=now2.getSeconds()+now2.getMilliseconds()/1000;
+var min=now2.getMinutes()+sec/60;
+var hr=(now2.getHours()%12)+min/60;
+
+var trackR=calInnerR;
+var hAlpha=handVisibility;
+
+// Angles (12 o'clock = top = -PI/2)
+var hrAngle=(hr/12)*Math.PI*2-Math.PI/2;
+var minAngle=(min/60)*Math.PI*2-Math.PI/2;
+var secAngle=(sec/60)*Math.PI*2-Math.PI/2;
+
+// Helper: draw an arrowhead on the ring track
+// ang = position angle, len = arrowhead length along arc, wid = width (radial), col = [r,g,b]
+function drawTrackArrow(ang,len,wid,col,alpha){
+// Arrowhead sits flush on the inner ring, pointing radially outward
+var baseR=trackR;
+var tipR=trackR+len;
+var tipX=calCX+Math.cos(ang)*tipR;
+var tipY=calCY+Math.sin(ang)*tipR;
+var tangentSpread=wid/(2*trackR);
+var baseLX=calCX+Math.cos(ang-tangentSpread)*baseR;
+var baseLY=calCY+Math.sin(ang-tangentSpread)*baseR;
+var baseRX=calCX+Math.cos(ang+tangentSpread)*baseR;
+var baseRY=calCY+Math.sin(ang+tangentSpread)*baseR;
+// Fill
+ctx.beginPath();ctx.moveTo(tipX,tipY);ctx.lineTo(baseLX,baseLY);ctx.lineTo(baseRX,baseRY);ctx.closePath();
+ctx.fillStyle='rgba('+col[0]+','+col[1]+','+col[2]+','+(0.35*alpha)+')';ctx.fill();
+// Outer border triangle with gap — scaled up version
+var gap=3;
+var borderTipR=tipR+gap;
+var borderBaseR=baseR-gap*0.5;
+var borderSpread=tangentSpread*1.35;
+var bTipX=calCX+Math.cos(ang)*borderTipR;
+var bTipY=calCY+Math.sin(ang)*borderTipR;
+var bLX=calCX+Math.cos(ang-borderSpread)*borderBaseR;
+var bLY=calCY+Math.sin(ang-borderSpread)*borderBaseR;
+var bRX=calCX+Math.cos(ang+borderSpread)*borderBaseR;
+var bRY=calCY+Math.sin(ang+borderSpread)*borderBaseR;
+ctx.beginPath();ctx.moveTo(bTipX,bTipY);ctx.lineTo(bLX,bLY);ctx.lineTo(bRX,bRY);ctx.closePath();
+ctx.strokeStyle='rgba('+col[0]+','+col[1]+','+col[2]+','+(0.25*alpha)+')';ctx.lineWidth=0.5;ctx.stroke();
+}
+
+// Return label color: rgb(255,235,180)
+drawTrackArrow(hrAngle,10,8,[255,235,180],hAlpha);
+drawTrackArrow(minAngle,20,3,[255,235,180],hAlpha);
+drawTrackArrow(secAngle,4,3,[255,235,180],hAlpha);
+}
+}
+function calClockworkLoop(now){
+if(!calendarActive){calClockworkAnimId=null;return;}
+var entryPr=1;
+if(calClockworkStartTime>0){
+entryPr=Math.min(1,(now-calClockworkStartTime)/calClockworkEntryDur);
+}
+var exitPr=0;
+if(calClockworkExiting){
+exitPr=Math.min(1,(now-calClockworkExitStart)/calClockworkExitDur);
+}
+// Redraw static calendar + clockwork
+calCtx.clearRect(0,0,innerWidth,innerHeight);
+if(calCalendarBuilt&&!calAnimRunning){
+calDrawStatic();
+calDrawClockwork(now,entryPr,exitPr);
+} else if(!calAnimRunning){
+// Only clockwork visible during entry before calendar built (shouldn't normally happen)
+calDrawClockwork(now,entryPr,exitPr);
+}
+calClockworkAnimId=requestAnimationFrame(calClockworkLoop);
+}
+function calStartClockwork(){
+calClockworkExiting=false;
+if(!calClockworkStartTime||calClockworkStartTime<=0)calClockworkStartTime=performance.now();
+if(!calClockworkAnimId)calClockworkAnimId=requestAnimationFrame(calClockworkLoop);
+}
+function calStopClockwork(){
+if(calClockworkAnimId){cancelAnimationFrame(calClockworkAnimId);calClockworkAnimId=null;}
+calClockworkStartTime=0;
+}
+function calExitClockwork(){
+calClockworkExiting=true;
+calClockworkExitStart=performance.now();
+}
+
+// Detail panel
+var calDetailPanel=document.getElementById('cal-detail-panel');
+function calShowPanel(idx){
+var c=CAL_CYCLES[idx];
+calDetailPanel.querySelector('.dp-name').textContent=c.name;
+calDetailPanel.querySelector('.dp-days').textContent=c.days+' days'+(c.holiday?' \u00B7 Imperial Holiday':'');
+calDetailPanel.querySelector('.dp-ideal').textContent=c.ideal;
+calDetailPanel.querySelector('.dp-message').textContent=c.message;
+calDetailPanel.querySelector('.dp-quote').textContent=c.quote;
+var curEl=calDetailPanel.querySelector('.dp-current');
+if(idx===calCurrentCycle.index){curEl.textContent='\u25C8 Current cycle \u2014 '+calGetDateString();curEl.style.display='block';}else{curEl.style.display='none';}
+calDetailPanel.classList.add('visible');
+}
+function calClosePanel(){
+calDetailPanel.classList.remove('visible');calSelectedIdx=-1;
+if(calCalendarBuilt)calDrawStatic();
+}
+
+// Mouse/touch on calendar
+function calInitInteraction(){
+var mc=document.getElementById('cal-main');
+mc.addEventListener('mousemove',function(e){
+if(!calCalendarBuilt||calAnimRunning)return;
+var idx=calHitTestCycle(e.clientX,e.clientY);
+if(idx!==calHoveredIdx){calHoveredIdx=idx;mc.style.cursor=idx>=0?'pointer':'default';calDrawStatic();}
+});
+mc.addEventListener('mouseleave',function(){if(!calCalendarBuilt||calAnimRunning)return;if(calHoveredIdx>=0){calHoveredIdx=-1;calDrawStatic();}});
+mc.addEventListener('click',function(e){
+if(!calCalendarBuilt||calAnimRunning)return;
+var idx=calHitTestCycle(e.clientX,e.clientY);
+if(idx>=0){calSelectedIdx=idx;calDrawStatic();calPanelOpenedAt=Date.now();calShowPanel(idx);}
+});
+mc.addEventListener('touchstart',function(e){
+if(!calCalendarBuilt||calAnimRunning)return;
+var t=e.touches[0];var idx=calHitTestCycle(t.clientX,t.clientY);
+if(idx>=0){calSelectedIdx=idx;calDrawStatic();calPanelOpenedAt=Date.now();calShowPanel(idx);}
+},{passive:true});
+}
+var calPanelOpenedAt=0;
+
+// Build animation
+function calBuildCalendar(){
+if(calAnimRunning)return;
+calAnimRunning=true;calCalendarBuilt=false;
+calHideAllLabels();
+var centerEl=document.getElementById('cal-center-node');
+centerEl.classList.remove('visible');
+calCtx.clearRect(0,0,innerWidth,innerHeight);calSpCtx.clearRect(0,0,innerWidth,innerHeight);calSparkles=[];
+calClockworkExiting=false;
+calClockworkStartTime=performance.now()+1200;
+
+var CAL_NODES=[{label:'Atlas',color:'#8070b0'},{label:'Roadmap',color:'#8070b0'},{label:'Imperial Calendar',color:'#a090c0'},{label:'Relationship Web',color:'#8070b0'}];
+var gatherDur=1200;var orbitDur=2500;var mergeDur=800;var totalDur=gatherDur+orbitDur+mergeDur;
+var st=performance.now();
+// Map CAL_NODES to real cluster screen positions:
+// CAL_NODES[0]=Atlas->cluster[0], [1]=Roadmap->cluster[1], [2]=Calendar->cluster[3], [3]=Rel.Web->cluster[2]
+var clusterMap=[0,1,3,2];
+var startPositions=CAL_NODES.map(function(n,i){
+var ci=clusterMap[i];
+return calClusterScreenPos[ci]?{x:calClusterScreenPos[ci].x,y:calClusterScreenPos[ci].y}:{x:calCX,y:calCY};
+});
+var nodeOrbitOffsets=[0,Math.PI/2,Math.PI,Math.PI*1.5];
+var travelArc=Math.PI;
+var cycleSpawnInfo=CAL_CYCLES.map(function(c,i){
+var targetAngle=calGetCycleStartAngle(i);var bestNode=0,bestFrac=Infinity;
+for(var n=0;n<CAL_NODES.length;n++){var nodeStart=-Math.PI/2+nodeOrbitOffsets[n];var dist=((targetAngle-nodeStart)%(Math.PI*2)+(Math.PI*2))%(Math.PI*2);var frac=dist/travelArc;if(frac<=1&&frac<bestFrac){bestFrac=frac;bestNode=n;}}
+return{triggerFraction:bestFrac,node:bestNode};
+});
+var arcGrowFrac=0.22;var spawnBuffer=0.08;
+
+function step(now){
+calCtx.clearRect(0,0,innerWidth,innerHeight);calSpCtx.clearRect(0,0,innerWidth,innerHeight);
+var elapsed=now-st;var pr=Math.min(elapsed/totalDur,1);
+var gatherPr=Math.min(elapsed/gatherDur,1);
+var orbitElapsed=Math.max(0,elapsed-gatherDur);var orbitPr=Math.min(orbitElapsed/orbitDur,1);
+var mergeElapsed=Math.max(0,elapsed-gatherDur-orbitDur);var mergePr=Math.min(mergeElapsed/mergeDur,1);
+var gatherEase=calEaseInOut(gatherPr);var mergeEase=calEaseInOut(mergePr);
+// Inner ring trail
+if(gatherPr>=1&&orbitPr>0){
+var ringBase=0.15*(1-mergeEase*0.5);var coolDist=0.65;var segments=32;
+for(var n=0;n<CAL_NODES.length;n++){
+var nodeStart=-Math.PI/2+nodeOrbitOffsets[n];var nodeEnd=nodeStart+orbitPr*travelArc;var trailLen=nodeEnd-nodeStart;if(trailLen<=0)continue;
+if(orbitPr<1){var segSize=trailLen/segments;for(var s=0;s<segments;s++){var segStart2=nodeStart+s*segSize;var segEnd2=nodeStart+(s+1)*segSize;var distFromHead=nodeEnd-segEnd2;var coolness=Math.min(1,distFromHead/coolDist);var purpleMix=coolness*coolness;var r=Math.round(160+(128-160)*purpleMix);var g=Math.round(220+(112-220)*purpleMix);var b=Math.round(140+(176-140)*purpleMix);var alpha=ringBase+(0.32-ringBase)*(1-purpleMix);calCtx.beginPath();calCtx.arc(calCX,calCY,calOrbitR,segStart2,segEnd2+0.003);calCtx.strokeStyle='rgba('+r+','+g+','+b+','+alpha+')';calCtx.lineWidth=1+(1-purpleMix)*0.8;calCtx.stroke();if(purpleMix<0.6){var glowAlpha=(1-purpleMix/0.6)*0.06;calCtx.beginPath();calCtx.arc(calCX,calCY,calOrbitR,segStart2,segEnd2+0.003);calCtx.strokeStyle='rgba('+r+','+g+','+b+','+glowAlpha+')';calCtx.lineWidth=5+(1-purpleMix)*5;calCtx.stroke();}}}
+else{calCtx.beginPath();calCtx.arc(calCX,calCY,calOrbitR,nodeStart,nodeEnd);calCtx.strokeStyle='rgba(128,112,176,'+ringBase+')';calCtx.lineWidth=1;calCtx.stroke();}
+}}
+if(mergePr>0){var ringFade=0.15*(1-mergeEase);calCtx.beginPath();calCtx.arc(calCX,calCY,calOrbitR,0,Math.PI*2);calCtx.strokeStyle='rgba(128,112,176,'+ringFade+')';calCtx.lineWidth=1;calCtx.stroke();}
+// Spawned arcs
+for(var i=0;i<CAL_CYCLES.length;i++){
+var info=cycleSpawnInfo[i];var arcPr2=Math.max(0,Math.min(1,(orbitPr-(info.triggerFraction+spawnBuffer))/arcGrowFrac));if(arcPr2<=0)continue;var aEase=calEaseOut(arcPr2);var rotOffset=(1-aEase)*0.15*(1-mergeEase);var arcA=calGetArcAngles(i);var curOuter=calInnerR+(calOuterR-calInnerR)*aEase;
+calCtx.beginPath();calCtx.arc(calCX,calCY,curOuter,arcA.start+rotOffset,arcA.end+rotOffset);calCtx.arc(calCX,calCY,calInnerR,arcA.end+rotOffset,arcA.start+rotOffset,true);calCtx.closePath();calCtx.fillStyle=calHexToRGBA(CAL_CYCLES[i].color,(CAL_CYCLES[i].holiday?0.18:0.10)*aEase);calCtx.fill();
+calCtx.beginPath();calCtx.arc(calCX,calCY,curOuter,arcA.start+rotOffset,arcA.end+rotOffset);calCtx.strokeStyle=calHexToRGBA(CAL_CYCLES[i].color,0.22*aEase);calCtx.lineWidth=1;calCtx.stroke();
+calCtx.beginPath();calCtx.moveTo(calCX+Math.cos(arcA.start+rotOffset)*calInnerR,calCY+Math.sin(arcA.start+rotOffset)*calInnerR);calCtx.lineTo(calCX+Math.cos(arcA.start+rotOffset)*curOuter,calCY+Math.sin(arcA.start+rotOffset)*curOuter);calCtx.strokeStyle='rgba(100,130,170,'+0.08*aEase+')';calCtx.lineWidth=0.5;calCtx.stroke();
+if(aEase>0.4)calPositionLabel(i,arcA.mid+rotOffset,curOuter+22,Math.min(1,(aEase-0.4)/0.6));
+if(aEase>0.65){var tickAlpha=(aEase-0.65)/0.35;var tR2=curOuter-3;for(var d=1;d<CAL_CYCLES[i].days;d++){var ta3=arcA.start+rotOffset+(d/CAL_CYCLES[i].days)*(arcA.end-arcA.start);calCtx.beginPath();calCtx.moveTo(calCX+Math.cos(ta3)*tR2,calCY+Math.sin(ta3)*tR2);calCtx.lineTo(calCX+Math.cos(ta3)*(tR2-3),calCY+Math.sin(ta3)*(tR2-3));calCtx.strokeStyle='rgba(100,130,170,'+0.05*tickAlpha+')';calCtx.lineWidth=0.5;calCtx.stroke();}}
+}
+// Orbiting SVG nodes
+var clusterMap=[0,1,3,2]; // CAL_NODES->secondCluster index
+for(var n=0;n<CAL_NODES.length;n++){
+var ci=clusterMap[n];
+var svgNode=calSvgNodes[ci];
+if(!svgNode)continue;
+var nx,ny,nodeAlpha;
+if(gatherPr<1){var tgtA=-Math.PI/2+nodeOrbitOffsets[n];nx=startPositions[n].x+(calCX+Math.cos(tgtA)*calOrbitR-startPositions[n].x)*gatherEase;ny=startPositions[n].y+(calCY+Math.sin(tgtA)*calOrbitR-startPositions[n].y)*gatherEase;nodeAlpha=1.0;}
+else if(mergePr<=0){var oa=-Math.PI/2+nodeOrbitOffsets[n]+orbitPr*travelArc;nx=calCX+Math.cos(oa)*calOrbitR;ny=calCY+Math.sin(oa)*calOrbitR;nodeAlpha=1.0;}
+else{var endAngle=-Math.PI/2+nodeOrbitOffsets[n]+travelArc;var ox=calCX+Math.cos(endAngle)*calOrbitR;var oy=calCY+Math.sin(endAngle)*calOrbitR;nx=ox+(calCX-ox)*mergeEase;ny=oy+(calCY-oy)*mergeEase;nodeAlpha=1.0-mergeEase*0.7;}
+svgNode.el.setAttribute('transform','translate('+nx+','+ny+')');
+svgNode.el.style.opacity=nodeAlpha;
+// Fade labels during orbit
+var lFade=nodeAlpha*Math.max(0,1-orbitPr*2.5);
+svgNode.textEl.style.opacity=lFade>0.05?lFade:'0';
+}
+// Animate cluster lines
+var lineFade=Math.max(0,1-orbitPr*3)*(gatherEase>0.3?1:gatherEase/0.3);
+for(var li=0;li<calSvgLines.length;li++){
+var sl=calSvgLines[li];
+var si=clusterMap.indexOf(sl.i);var sj=clusterMap.indexOf(sl.j);
+if(si<0||sj<0){sl.el.style.opacity=lineFade;continue;}
+var ix,iy,jx,jy;
+if(gatherPr<1){var a1=-Math.PI/2+nodeOrbitOffsets[si],a2=-Math.PI/2+nodeOrbitOffsets[sj];ix=startPositions[si].x+(calCX+Math.cos(a1)*calOrbitR-startPositions[si].x)*gatherEase;iy=startPositions[si].y+(calCY+Math.sin(a1)*calOrbitR-startPositions[si].y)*gatherEase;jx=startPositions[sj].x+(calCX+Math.cos(a2)*calOrbitR-startPositions[sj].x)*gatherEase;jy=startPositions[sj].y+(calCY+Math.sin(a2)*calOrbitR-startPositions[sj].y)*gatherEase;}
+else{var b1=-Math.PI/2+nodeOrbitOffsets[si]+orbitPr*travelArc;var b2=-Math.PI/2+nodeOrbitOffsets[sj]+orbitPr*travelArc;ix=calCX+Math.cos(b1)*calOrbitR;iy=calCY+Math.sin(b1)*calOrbitR;jx=calCX+Math.cos(b2)*calOrbitR;jy=calCY+Math.sin(b2)*calOrbitR;}
+sl.el.setAttribute('x1',ix);sl.el.setAttribute('y1',iy);
+sl.el.setAttribute('x2',jx);sl.el.setAttribute('y2',jy);
+sl.el.style.opacity=lineFade;
+}
+// Draw clockwork rings (entering during build)
+var cwEntryPr=Math.min(1,(performance.now()-calClockworkStartTime)/calClockworkEntryDur);
+calDrawClockwork(performance.now(),cwEntryPr,0);
+calDrawSparkles();
+if(pr<1){requestAnimationFrame(step);}
+else{
+calDrawStatic();
+var centerEl=document.getElementById('cal-center-node');
+centerEl.style.left=calCX+'px';centerEl.style.top=calCY+'px';centerEl.classList.add('visible');
+calCalendarBuilt=true;calAnimRunning=false;
+calStartClockwork();
+var dateEl=document.getElementById('cal-date-display');dateEl.textContent=calGetDateString();
+var dateR=(calInnerR+calOuterR)/2;dateEl.style.left=calCX+'px';dateEl.style.top=(calCY-dateR+5)+'px';dateEl.classList.add('visible');
+calRevealReturnLabel();
+calEmitSparkle(calCX,calCY,80);
+function finalSparkle(){calSpCtx.clearRect(0,0,innerWidth,innerHeight);calDrawSparkles();if(calSparkles.length>0)requestAnimationFrame(finalSparkle);else calSpCtx.clearRect(0,0,innerWidth,innerHeight);}
+requestAnimationFrame(finalSparkle);
+}
+}
+requestAnimationFrame(step);
+}
+
+// Reverse animation
+function calReverseCalendar(){
+if(calAnimRunning)return;
+calAnimRunning=true;calCalendarBuilt=false;
+var centerEl=document.getElementById('cal-center-node');centerEl.classList.remove('visible');
+calClosePanel();calHoveredIdx=-1;calSelectedIdx=-1;
+document.getElementById('cal-date-display').classList.remove('visible');
+calHideReturnLabel();
+calSparkles=[];
+calRemoveCenterSvgNode();
+calExitClockwork();
+var CAL_NODES=[{label:'Atlas',color:'#8070b0'},{label:'Roadmap',color:'#8070b0'},{label:'Imperial Calendar',color:'#a090c0'},{label:'Relationship Web',color:'#8070b0'}];
+// Mirror the forward durations
+var unmergeDur=800;var orbitDur=2500;var scatterDur=1200;var totalDur2=unmergeDur+orbitDur+scatterDur;
+var st=performance.now();var nodeOrbitOffsets=[0,Math.PI/2,Math.PI,Math.PI*1.5];var travelArc=Math.PI;
+var clusterMap=[0,1,3,2];
+var endPositions=CAL_NODES.map(function(n,i){
+var ci=clusterMap[i];
+return calClusterScreenPos[ci]?{x:calClusterScreenPos[ci].x,y:calClusterScreenPos[ci].y}:{x:calCX,y:calCY};
+});
+// Replicate the forward spawn info so we know when each cycle was born
+var cycleSpawnInfo=CAL_CYCLES.map(function(c,i){
+var targetAngle=calGetCycleStartAngle(i);var bestNode=0,bestFrac=Infinity;
+for(var n=0;n<CAL_NODES.length;n++){var nodeStart=-Math.PI/2+nodeOrbitOffsets[n];var dist=((targetAngle-nodeStart)%(Math.PI*2)+(Math.PI*2))%(Math.PI*2);var frac=dist/travelArc;if(frac<=1&&frac<bestFrac){bestFrac=frac;bestNode=n;}}
+return{triggerFraction:bestFrac,node:bestNode};
+});
+var arcGrowFrac=0.22;var spawnBuffer=0.08;
+calEmitSparkle(calCX,calCY,80);
+
+function step(now){
+calCtx.clearRect(0,0,innerWidth,innerHeight);calSpCtx.clearRect(0,0,innerWidth,innerHeight);
+var elapsed=now-st;var pr=Math.min(elapsed/totalDur2,1);
+// Phase 1: unmerge (nodes move from center back to their end-of-orbit positions)
+var unmergePr=Math.min(elapsed/unmergeDur,1);
+// Phase 2: reverse orbit (nodes retrace the arc backwards)
+var orbitElapsed=Math.max(0,elapsed-unmergeDur);var orbitPr=Math.min(orbitElapsed/orbitDur,1);
+// Phase 3: scatter (nodes fly back to original cluster positions)
+var scatterElapsed=Math.max(0,elapsed-unmergeDur-orbitDur);var scatterPr=Math.min(scatterElapsed/scatterDur,1);
+var unmergeEase=calEaseInOut(unmergePr);var scatterEase=calEaseInOut(scatterPr);
+// reverseOrbitPr: 0 = nodes at end-of-forward-orbit, 1 = nodes back at start
+var reverseOrbitPr=orbitPr;
+var reverseOrbitEase=calEaseInOut(reverseOrbitPr);
+
+// --- Inner ring trail (reverse: shrinks as nodes retrace) ---
+if(unmergePr>=1&&orbitPr>0&&orbitPr<1){
+var ringAlpha=0.15*(1-orbitPr*0.5);
+var segments=32;
+for(var n=0;n<CAL_NODES.length;n++){
+// Forward end angle for this node
+var nodeEnd=-Math.PI/2+nodeOrbitOffsets[n]+travelArc;
+// Current angle as it retraces back
+var curAngle=nodeEnd-reverseOrbitEase*travelArc;
+var trailStart=curAngle;var trailEnd=nodeEnd;
+var trailLen=trailEnd-trailStart;
+if(trailLen<=0.001)continue;
+var segSize=trailLen/segments;
+for(var s=0;s<segments;s++){
+var segStart2=trailStart+s*segSize;
+var segEnd2=trailStart+(s+1)*segSize;
+var distFromHead=segStart2-trailStart;
+var coolness=Math.min(1,distFromHead/(trailLen*0.65));
+var purpleMix=coolness*coolness;
+var r=Math.round(160+(128-160)*purpleMix);
+var g=Math.round(220+(112-220)*purpleMix);
+var b=Math.round(140+(176-140)*purpleMix);
+var alpha=ringAlpha+(0.32-ringAlpha)*(1-purpleMix);
+calCtx.beginPath();calCtx.arc(calCX,calCY,calOrbitR,segStart2,segEnd2+0.003);
+calCtx.strokeStyle='rgba('+r+','+g+','+b+','+alpha+')';calCtx.lineWidth=1+(1-purpleMix)*0.8;calCtx.stroke();
+}
+}
+}
+// Fading ring during unmerge
+if(unmergePr>0&&unmergePr<1){
+var ringFade=0.15*unmergeEase;
+calCtx.beginPath();calCtx.arc(calCX,calCY,calOrbitR,0,Math.PI*2);
+calCtx.strokeStyle='rgba(128,112,176,'+ringFade+')';calCtx.lineWidth=1;calCtx.stroke();
+}
+// Ring fadeout during scatter phase — expands outward and fades
+if(scatterPr>0&&scatterPr<=1){
+var scFade=0.12*(1-calEaseOut(scatterPr));
+var scExpandR=calOrbitR*(1+scatterEase*0.15);
+if(scFade>0.005){
+calCtx.beginPath();calCtx.arc(calCX,calCY,scExpandR,0,Math.PI*2);
+calCtx.strokeStyle='rgba(128,112,176,'+scFade+')';calCtx.lineWidth=1-scatterEase*0.5;calCtx.stroke();
+// Softer glow ring expanding with it
+calCtx.beginPath();calCtx.arc(calCX,calCY,scExpandR,0,Math.PI*2);
+calCtx.strokeStyle='rgba(128,112,176,'+(scFade*0.3)+')';calCtx.lineWidth=4+scatterEase*3;calCtx.stroke();
+}
+}
+// Residual ring at end of orbit / start of scatter transition
+if(unmergePr>=1&&orbitPr>=1&&scatterPr<=0){
+calCtx.beginPath();calCtx.arc(calCX,calCY,calOrbitR,0,Math.PI*2);
+calCtx.strokeStyle='rgba(128,112,176,0.12)';calCtx.lineWidth=1;calCtx.stroke();
+}
+
+// --- Cycle wedges: collapse as the reverse orbit sweeps past them ---
+for(var i=0;i<CAL_CYCLES.length;i++){
+var info=cycleSpawnInfo[i];
+// In forward, this cycle appeared at orbitPr = triggerFraction+spawnBuffer
+// and was fully grown at orbitPr = triggerFraction+spawnBuffer+arcGrowFrac
+// In reverse, it should start collapsing when reverseOrbitPr reaches (1 - triggerFraction - spawnBuffer - arcGrowFrac)
+// and be fully gone by reverseOrbitPr = (1 - triggerFraction - spawnBuffer)
+var forwardFullyGrown=info.triggerFraction+spawnBuffer+arcGrowFrac;
+var forwardSpawnStart=info.triggerFraction+spawnBuffer;
+// Map to reverse: collapse starts when reverse orbit progress passes (1 - forwardFullyGrown)
+var collapseStart=1-forwardFullyGrown;
+var collapseEnd=1-forwardSpawnStart;
+var collapseRange=collapseEnd-collapseStart;
+if(collapseRange<0.001)collapseRange=0.001;
+// During unmerge phase, wedges are fully visible
+var arcVisible=1;
+if(orbitPr>0){
+// Calculate how much this wedge has collapsed during reverse orbit
+var collapseFrac=Math.max(0,Math.min(1,(reverseOrbitPr-collapseStart)/collapseRange));
+arcVisible=1-calEaseOut(collapseFrac);
+}
+if(arcVisible<=0.01)continue;
+var arcA=calGetArcAngles(i);
+var rotOffset=(1-arcVisible)*0.15;
+var curOuter=calInnerR+(calOuterR-calInnerR)*arcVisible;
+calCtx.beginPath();calCtx.arc(calCX,calCY,curOuter,arcA.start+rotOffset,arcA.end+rotOffset);
+calCtx.arc(calCX,calCY,calInnerR,arcA.end+rotOffset,arcA.start+rotOffset,true);calCtx.closePath();
+calCtx.fillStyle=calHexToRGBA(CAL_CYCLES[i].color,(CAL_CYCLES[i].holiday?0.18:0.10)*arcVisible);calCtx.fill();
+calCtx.beginPath();calCtx.arc(calCX,calCY,curOuter,arcA.start+rotOffset,arcA.end+rotOffset);
+calCtx.strokeStyle=calHexToRGBA(CAL_CYCLES[i].color,0.22*arcVisible);calCtx.lineWidth=1;calCtx.stroke();
+calCtx.beginPath();
+calCtx.moveTo(calCX+Math.cos(arcA.start+rotOffset)*calInnerR,calCY+Math.sin(arcA.start+rotOffset)*calInnerR);
+calCtx.lineTo(calCX+Math.cos(arcA.start+rotOffset)*curOuter,calCY+Math.sin(arcA.start+rotOffset)*curOuter);
+calCtx.strokeStyle='rgba(100,130,170,'+0.08*arcVisible+')';calCtx.lineWidth=0.5;calCtx.stroke();
+// Labels fade with their wedge
+if(arcVisible>0.4)calPositionLabel(i,arcA.mid+rotOffset,curOuter+22,Math.min(1,(arcVisible-0.4)/0.6)*arcVisible);
+// Tick marks
+if(arcVisible>0.65){var tickAlpha=(arcVisible-0.65)/0.35;var tR2=curOuter-3;
+for(var d=1;d<CAL_CYCLES[i].days;d++){var ta3=arcA.start+rotOffset+(d/CAL_CYCLES[i].days)*(arcA.end-arcA.start);
+calCtx.beginPath();calCtx.moveTo(calCX+Math.cos(ta3)*tR2,calCY+Math.sin(ta3)*tR2);
+calCtx.lineTo(calCX+Math.cos(ta3)*(tR2-3),calCY+Math.sin(ta3)*(tR2-3));
+calCtx.strokeStyle='rgba(100,130,170,'+0.05*tickAlpha+')';calCtx.lineWidth=0.5;calCtx.stroke();}}
+}
+
+// --- Orbiting SVG nodes ---
+for(var n=0;n<CAL_NODES.length;n++){
+var ci=clusterMap[n];
+var svgNode=calSvgNodes[ci];
+if(!svgNode)continue;
+var nx,ny,nodeAlpha;
+// End-of-forward-orbit angle for this node
+var endAngle=-Math.PI/2+nodeOrbitOffsets[n]+travelArc;
+// Start-of-forward-orbit angle
+var startAngle=-Math.PI/2+nodeOrbitOffsets[n];
+if(unmergePr<1){
+// Phase 1: unmerge from center to end-of-orbit position
+var ox=calCX+Math.cos(endAngle)*calOrbitR;var oy=calCY+Math.sin(endAngle)*calOrbitR;
+nx=calCX+(ox-calCX)*unmergeEase;ny=calCY+(oy-calCY)*unmergeEase;
+nodeAlpha=0.3+0.7*unmergeEase;
+} else if(scatterPr<=0){
+// Phase 2: retrace orbit backwards
+var curA=endAngle-reverseOrbitEase*travelArc;
+nx=calCX+Math.cos(curA)*calOrbitR;ny=calCY+Math.sin(curA)*calOrbitR;
+nodeAlpha=1.0;
+} else {
+// Phase 3: scatter from orbit start to cluster positions
+nx=calCX+Math.cos(startAngle)*calOrbitR;ny=calCY+Math.sin(startAngle)*calOrbitR;
+nx=nx+(endPositions[n].x-nx)*scatterEase;ny=ny+(endPositions[n].y-ny)*scatterEase;
+nodeAlpha=1.0;
+}
+svgNode.el.setAttribute('transform','translate('+nx+','+ny+')');
+svgNode.el.style.opacity=nodeAlpha;
+// Labels fade in during scatter phase
+var lFade=nodeAlpha*Math.min(1,scatterPr*2.5);
+svgNode.textEl.style.opacity=lFade>0.05?lFade:'0';
+}
+// --- Animate cluster lines ---
+var lineFade=scatterPr>0.2?(scatterPr-0.2)/0.8*0.3:0;
+for(var li=0;li<calSvgLines.length;li++){
+var sl=calSvgLines[li];
+var si=clusterMap.indexOf(sl.i);var sj=clusterMap.indexOf(sl.j);
+if(si<0||sj<0)continue;
+var sa1=-Math.PI/2+nodeOrbitOffsets[si],sa2=-Math.PI/2+nodeOrbitOffsets[sj];
+var ea1=sa1+travelArc,ea2=sa2+travelArc;
+var lx1,ly1,lx2,ly2;
+if(unmergePr<1){
+lx1=calCX+Math.cos(ea1)*calOrbitR*unmergeEase;ly1=calCY+Math.sin(ea1)*calOrbitR*unmergeEase;
+lx2=calCX+Math.cos(ea2)*calOrbitR*unmergeEase;ly2=calCY+Math.sin(ea2)*calOrbitR*unmergeEase;
+} else if(scatterPr<=0){
+var ca1=ea1-reverseOrbitEase*travelArc;var ca2=ea2-reverseOrbitEase*travelArc;
+lx1=calCX+Math.cos(ca1)*calOrbitR;ly1=calCY+Math.sin(ca1)*calOrbitR;
+lx2=calCX+Math.cos(ca2)*calOrbitR;ly2=calCY+Math.sin(ca2)*calOrbitR;
+} else {
+var bx1=calCX+Math.cos(sa1)*calOrbitR;var by1=calCY+Math.sin(sa1)*calOrbitR;
+var bx2=calCX+Math.cos(sa2)*calOrbitR;var by2=calCY+Math.sin(sa2)*calOrbitR;
+lx1=bx1+(endPositions[si].x-bx1)*scatterEase;ly1=by1+(endPositions[si].y-by1)*scatterEase;
+lx2=bx2+(endPositions[sj].x-bx2)*scatterEase;ly2=by2+(endPositions[sj].y-by2)*scatterEase;
+}
+sl.el.setAttribute('x1',lx1);sl.el.setAttribute('y1',ly1);
+sl.el.setAttribute('x2',lx2);sl.el.setAttribute('y2',ly2);
+sl.el.style.opacity=lineFade>0.05?lineFade:unmergePr>0?0.15*unmergeEase:0;
+}
+// Draw clockwork rings (exiting)
+var cwExitPr=calClockworkExiting?Math.min(1,(performance.now()-calClockworkExitStart)/calClockworkExitDur):0;
+calDrawClockwork(performance.now(),1,cwExitPr);
+calDrawSparkles();
+if(pr<1){requestAnimationFrame(step);}
+else{
+calHideAllLabels();calCtx.clearRect(0,0,innerWidth,innerHeight);calSpCtx.clearRect(0,0,innerWidth,innerHeight);calAnimRunning=false;
+calStopClockwork();
+calRemoveCenterSvgNode();
+hideCalendar();
+}
+}
+requestAnimationFrame(step);
+}
+
+// Show/hide calendar
+function showCalendar(){
+calendarActive=true;
+document.getElementById('infobtn').style.display='none';
+document.getElementById('musicbtn').style.display='none';
+var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)creditEl.style.display='none';
+
+// Capture screen positions and clone the SVG cluster nodes into overlay
+calClusterScreenPos=[];
+calSvgNodes=[];
+var overlaySvg=document.getElementById('cal-svg');
+overlaySvg.innerHTML='';
+// Copy the textshadow filter
+var defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+defs.innerHTML='<filter id="cal-textshadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#0a0e14" flood-opacity="0.8"/></filter>';
+overlaySvg.appendChild(defs);
+
+for(var i=0;i<secondCluster.length;i++){
+calClusterScreenPos.push({x:secondCluster[i].wx-camOX,y:secondCluster[i].wy-camOY});
+}
+
+// Build SVG node groups at origin, positioned via transform
+var clusterNames=['Atlas','Roadmap','Relationship Web','Imperial Calendar'];
+for(var i=0;i<secondCluster.length;i++){
+var sx=calClusterScreenPos[i].x;
+var sy=calClusterScreenPos[i].y;
+var wrapper=document.createElementNS('http://www.w3.org/2000/svg','g');
+wrapper.setAttribute('transform','translate('+sx+','+sy+')');
+wrapper.classList.add('cal-anim-node');
+// Build node graphics at origin (0,0)
+var inner=document.createElementNS('http://www.w3.org/2000/svg','g');
+renderClusterNodeSVG(inner,0,0,7);
+var text=document.createElementNS('http://www.w3.org/2000/svg','text');
+text.setAttribute('x',0);text.setAttribute('y',-22);
+text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');
+text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');
+text.setAttribute('font-weight','600');text.setAttribute('filter','url(#cal-textshadow)');
+text.textContent=clusterNames[i];
+inner.appendChild(text);
+wrapper.appendChild(inner);
+overlaySvg.appendChild(wrapper);
+calSvgNodes.push({el:wrapper,originX:sx,originY:sy,textEl:text});
+}
+
+// Build inter-node lines
+calSvgLines=[];
+for(var i=0;i<secondCluster.length;i++){
+for(var j=i+1;j<secondCluster.length;j++){
+var ln=document.createElementNS('http://www.w3.org/2000/svg','line');
+ln.setAttribute('x1',calClusterScreenPos[i].x);ln.setAttribute('y1',calClusterScreenPos[i].y);
+ln.setAttribute('x2',calClusterScreenPos[j].x);ln.setAttribute('y2',calClusterScreenPos[j].y);
+ln.setAttribute('stroke','#8070a0');ln.setAttribute('stroke-width','0.8');ln.setAttribute('stroke-opacity','0.3');
+ln.classList.add('cal-anim-line');
+overlaySvg.appendChild(ln);
+calSvgLines.push({el:ln,i:i,j:j});
+}
+}
+
+// Show overlay, hide real cluster nodes
+document.getElementById('cal-overlay-svg').style.display='block';
+document.querySelectorAll('.cluster-node').forEach(function(el){el.style.display='none';});
+var svgEl=document.getElementById('svg');
+svgEl.querySelectorAll('line').forEach(function(ln){
+if(ln.getAttribute('stroke')==='#8070a0')ln.style.display='none';
+});
+
+document.getElementById('cal-main').classList.add('active');
+document.getElementById('cal-sparkle').classList.add('active');
+document.getElementById('cal-cycle-labels').style.display='';
+calResize();calCreateLabelEls();calInitInteraction();
+var titleEl=document.querySelector('#title-bar h1');var subEl=document.querySelector('#title-bar .sub');
+titleEl.style.opacity='0';subEl.style.opacity='0';
+setTimeout(function(){titleEl.textContent='THE CYCLES OF PARADISE';subEl.textContent='Imperial Calendar';titleEl.style.opacity='1';subEl.style.opacity='1';},300);
+calBuildCalendar();
+}
+
+function hideCalendar(){
+calendarActive=false;
+calStopClockwork();
+if(calStarAnimId){cancelAnimationFrame(calStarAnimId);calStarAnimId=null;}
+document.getElementById('cal-main').classList.remove('active');
+document.getElementById('cal-sparkle').classList.remove('active');
+document.getElementById('cal-cycle-labels').style.display='none';
+document.getElementById('cal-center-node').classList.remove('visible');
+document.getElementById('cal-date-display').classList.remove('visible');
+document.getElementById('cal-return-label').classList.remove('visible');
+// Hide overlay and restore real cluster nodes
+document.getElementById('cal-overlay-svg').style.display='none';
+document.querySelectorAll('.cluster-node').forEach(function(el){el.style.display='';});
+var svgEl=document.getElementById('svg');
+svgEl.querySelectorAll('line').forEach(function(ln){
+if(ln.getAttribute('stroke')==='#8070a0')ln.style.display='';
+});
+calSvgNodes=[];calSvgLines=[];
+document.getElementById('infobtn').style.display='';
+document.getElementById('musicbtn').style.display='';
+var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)creditEl.style.display='';
+// Restore header
+var titleEl=document.querySelector('#title-bar h1');var subEl=document.querySelector('#title-bar .sub');
+titleEl.style.opacity='0';subEl.style.opacity='0';
+setTimeout(function(){titleEl.textContent='HALCYON FOLD';subEl.textContent='The Covenant of The Flowers';titleEl.style.opacity='1';subEl.style.opacity='1';},300);
+}
+
+// Center node click to reverse
+document.getElementById('cal-center-node').addEventListener('click',function(){if(calCalendarBuilt&&!calAnimRunning)calReverseCalendar();});
+
+// Panel close handlers
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&calDetailPanel.classList.contains('visible'))calClosePanel();});
+document.addEventListener('click',function(e){
+if(!calDetailPanel.classList.contains('visible'))return;
+if(Date.now()-calPanelOpenedAt<300)return;
+calClosePanel();
+});
+
 // Atlas reveal
 function showAtlas(){
 document.getElementById('infobtn').style.display='none';
@@ -4464,6 +5692,7 @@ var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)cre
 </div>
 </div>
 <div id="opening-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:198;background:#0a0e14;pointer-events:none"></div>
+<button id="skip-crawl" style="display:none;position:fixed;bottom:32px;right:32px;z-index:201;background:rgba(74,144,217,0.08);border:1px solid rgba(74,144,217,0.25);color:rgba(138,170,200,0.6);font-family:EB Garamond,serif;font-size:13px;padding:6px 20px;border-radius:16px;cursor:pointer;transition:all 0.4s;letter-spacing:0.08em" onmouseover="this.style.color='rgba(138,170,200,0.9)';this.style.borderColor='rgba(74,144,217,0.5)'" onmouseout="this.style.color='rgba(138,170,200,0.6)';this.style.borderColor='rgba(74,144,217,0.25)'">Skip</button>
 <div id="infopanel" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:199;background:rgba(12,18,28,0.95);border:1px solid rgba(74,144,217,0.25);border-radius:10px;padding:28px 32px;max-width:520px;width:80vw;backdrop-filter:blur(12px);box-shadow:0 0 40px rgba(74,144,217,0.12)">
 <div style="font-family:Cormorant Garamond,serif;font-size:19px;font-weight:600;color:#8aaac8;margin-bottom:12px;letter-spacing:0.06em">A Note to the Visitor</div>
 <div style="font-family:EB Garamond,serif;font-size:15px;color:#7888a0;line-height:1.7">Our Council is not a simple circle! While reading The Covenant of The Flowers, you may ask, 'To whom is the author referring here?' This chart of our real-world connections is thereby provided. </div>
@@ -4476,9 +5705,31 @@ var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)cre
 <script>
 
 
+var openingTimers=[];
+var openingSkipped=false;
+function skipOpening(){
+if(openingSkipped)return;
+openingSkipped=true;
+document.getElementById('skip-crawl').style.display='none';
+openingTimers.forEach(function(t){clearTimeout(t);});
+openingTimers=[];
+rollAwayQuote();
+var qt=document.getElementById('quote-text');
+qt.classList.remove('crawl-mode');
+var sl=document.getElementById('opening-line2');if(sl)sl.remove();
+var ov=document.getElementById('opening-overlay');
+ov.style.transition='opacity 1.2s';
+ov.style.opacity='0';
+setTimeout(function(){ov.style.display='none';},1400);
+}
 function openingSequence(withMusic){
+openingSkipped=false;
 var pc=document.getElementById('preload-cover');if(pc)pc.remove();
 document.getElementById("infopanel").style.display="none";
+var skipBtn=document.getElementById('skip-crawl');
+skipBtn.style.display='block';skipBtn.style.opacity='0';
+setTimeout(function(){skipBtn.style.opacity='1';},400);
+skipBtn.onclick=function(ev){ev.stopPropagation();skipOpening();};
 if(withMusic){
 var aud=document.getElementById("bgm-web");
 aud.volume=0;
@@ -4491,12 +5742,14 @@ else{aud.volume=1;clearInterval(fi);}
 var mb=document.getElementById("musicbtn");
 if(mb){mb.innerHTML="\u23F8";}
 }
-setTimeout(function(){
+openingTimers.push(setTimeout(function(){
+if(openingSkipped)return;
 var qt=document.getElementById('quote-text');
 showTravelQuote('WHO TRAVELS THE NIGHT WITH A LAMP IN SUCH STORMS',999999);
 qt.classList.add('crawl-mode');
 if(quoteHideTimer){clearTimeout(quoteHideTimer);quoteHideTimer=null;}
-setTimeout(function(){
+openingTimers.push(setTimeout(function(){
+if(openingSkipped)return;
 var secondLine=document.createElement('div');
 secondLine.id='opening-line2';
 secondLine.style.cssText='position:fixed;top:35%;left:0;right:0;z-index:200;text-align:center;pointer-events:none;padding:0 10px';
@@ -4507,16 +5760,19 @@ secondLine.appendChild(inner);
 document.body.appendChild(secondLine);
 var st2=performance.now();
 function reveal2(now){
+if(openingSkipped)return;
 var el=now-st2;var pr=Math.min(el/750,1);
 var ease=1-Math.pow(1-pr,2);
 inner.style.clipPath='inset(0 '+(100-ease*100)+'% 0 0)';
 if(pr<1)requestAnimationFrame(reveal2);
 }
 requestAnimationFrame(reveal2);
-setTimeout(function(){
+openingTimers.push(setTimeout(function(){
+if(openingSkipped)return;
 rollAwayQuote();
 var st3=performance.now();
 function rollAway2(now){
+if(openingSkipped)return;
 var el=now-st3;var pr=Math.min(el/750,1);
 var ease=pr*pr;
 inner.style.clipPath='inset(0 0 0 '+(ease*100)+'%)';
@@ -4524,15 +5780,17 @@ if(pr<1){requestAnimationFrame(rollAway2);}
 else{secondLine.remove();}
 }
 requestAnimationFrame(rollAway2);
-setTimeout(function(){
+openingTimers.push(setTimeout(function(){
+if(openingSkipped)return;
+document.getElementById('skip-crawl').style.display='none';
 var ov=document.getElementById('opening-overlay');
 ov.style.transition='opacity 3.5s';
 ov.style.opacity='0';
 setTimeout(function(){ov.style.display='none';document.getElementById('quote-text').classList.remove('crawl-mode');},4000);
-},1200);
-},3500);
-},1250);
-},1000);
+},1200));
+},3500));
+},1250));
+},1000));
 }
 document.getElementById("bgmbtn").onclick=function(ev){
 ev.stopPropagation();
