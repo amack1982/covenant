@@ -112,6 +112,7 @@ animation:marqueeScroll 6s linear infinite;
 
 
 
+#quote-text.crawl-mode{font-size:17px!important}
 @media(max-width:600px){
 #quote-text{font-size:18px!important}
 #quote-text.crawl-mode{font-size:12px!important}
@@ -260,6 +261,7 @@ var quoteText=document.getElementById('quote-text');
 var quoteHideTimer=null;
 function showTravelQuote(text,duration){
 if(quoteHideTimer){clearTimeout(quoteHideTimer);quoteHideTimer=null;}
+quoteText.classList.remove('crawl-mode');
 quoteEl.style.transition='none';
 quoteEl.style.opacity='0';
 quoteInner.textContent=text;
@@ -843,6 +845,7 @@ else{layoutRmDefault();rmChapterNodes=[];}
 
 var rmAnimating=false;
 function animateRm(){
+if(roadmapState==='hidden'){rmAnimating=false;return;}
 var moving=false;
 Object.keys(rmNodes).forEach(function(k){
 var n=rmNodes[k];
@@ -962,12 +965,11 @@ text.setAttribute('filter','url(#textshadow)');text.textContent=n.name;g.appendC
 
 (function(key){
 g.addEventListener('click',function(e){e.stopPropagation();
-if(rmCooldown)return;
 emitSparkle(n.x,n.y);requestAnimationFrame(drawSparkles);
 if(key==='roadmap'){
-if(selectedRmNode){selectedRmNode=null;layoutRmNodes();startRmAnim();}
-else{hideRoadmap();}
+hideRoadmap();
 }else{
+if(rmCooldown)return;
 if(selectedRmNode===key){selectedRmNode=null;}
 else{selectedRmNode=key;}
 document.getElementById('tooltip').style.opacity='0';
@@ -4490,8 +4492,9 @@ var mb=document.getElementById("musicbtn");
 if(mb){mb.innerHTML="\u23F8";}
 }
 setTimeout(function(){
-var qt=document.getElementById('quote-text');qt.style.fontSize='17px';qt.classList.add('crawl-mode');
+var qt=document.getElementById('quote-text');
 showTravelQuote('WHO TRAVELS THE NIGHT WITH A LAMP IN SUCH STORMS',999999);
+qt.classList.add('crawl-mode');
 if(quoteHideTimer){clearTimeout(quoteHideTimer);quoteHideTimer=null;}
 setTimeout(function(){
 var secondLine=document.createElement('div');
@@ -4525,7 +4528,7 @@ setTimeout(function(){
 var ov=document.getElementById('opening-overlay');
 ov.style.transition='opacity 3.5s';
 ov.style.opacity='0';
-setTimeout(function(){ov.style.display='none';var qt2=document.getElementById('quote-text');qt2.style.fontSize='';qt2.classList.remove('crawl-mode');},4000);
+setTimeout(function(){ov.style.display='none';document.getElementById('quote-text').classList.remove('crawl-mode');},4000);
 },1200);
 },3500);
 },1250);
