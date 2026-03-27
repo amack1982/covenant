@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
+<meta charset="UTF-8">
+<!-- Google Analytics 4 -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8T7RG3WBTT"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-8T7RG3WBTT');
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-8T7RG3WBTT');
 </script>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Covenant of The Flowers — Relationship Web</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
@@ -5744,5 +5743,174 @@ ev.stopPropagation();
 openingSequence(false);
 };
 document.getElementById("infopanel").onclick=function(ev){ev.stopPropagation();};
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     COVENANT TELEMETRY — tracks all meaningful user interactions
+     and resolves visitor city via IP lookup before sending.
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ── 1. City resolution via ipapi.co (free, no key needed) ── */
+var _visitorCity = null;
+var _visitorRegion = null;
+var _cityResolved = false;
+var _cityQueue = [];
+
+function resolveCity(){
+  try {
+    fetch('https://ipapi.co/json/')
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        _visitorCity   = d.city   || d.region || 'Unknown';
+        _visitorRegion = d.region || '';
+        _cityResolved  = true;
+        // Set user property so every subsequent event carries the city
+        gtag('set', 'user_properties', { visitor_city: _visitorCity, visitor_region: _visitorRegion });
+        // Flush queued events
+        _cityQueue.forEach(function(fn){ fn(); });
+        _cityQueue = [];
+      })
+      .catch(function(){ _cityResolved = true; _cityQueue.forEach(function(fn){ fn(); }); _cityQueue = []; });
+  } catch(e){}
+}
+
+/* ── 2. Thin wrapper — queues until city is known ── */
+function track(eventName, params){
+  var base = params || {};
+  function send(){
+    if(_visitorCity) base.visitor_city = _visitorCity;
+    if(_visitorRegion) base.visitor_region = _visitorRegion;
+    gtag('event', eventName, base);
+  }
+  if(_cityResolved){ send(); } else { _cityQueue.push(send); }
+}
+
+/* ── 3. Kick off city resolution immediately ── */
+resolveCity();
+
+/* ─────────────────────────────────────────────────────────────
+   RELATIONSHIP WEB — node clicks
+   We wrap the node click handler by patching the existing
+   click listener logic.  The cleanest hook is to wrap the
+   render() function so we can intercept after SVG is rebuilt.
+   But the real nodes use addEventListener inside render().
+   Instead we use event delegation on #web (the SVG wrapper).
+───────────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function(){
+
+  /* Relationship web: delegate click on #web, read text content of closest .node */
+  var webDiv = document.getElementById('web');
+  if(webDiv){
+    webDiv.addEventListener('click', function(e){
+      // SVG node groups have a <text> child with the character name
+      var g = e.target && e.target.closest ? e.target.closest('g.node') : null;
+      if(!g) return;
+      var textEl = g.querySelector('text');
+      var nodeName = textEl ? textEl.textContent.trim() : 'Unknown';
+      track('web_node_click', { node_name: nodeName });
+    });
+  }
+
+  /* ── Atlas: open ── */
+  var origShowAtlas = window.showAtlas;
+  if(typeof origShowAtlas === 'function'){
+    window.showAtlas = function(){
+      track('atlas_open', {});
+      origShowAtlas.apply(this, arguments);
+    };
+  }
+
+  /* ── Atlas: tab switch — patch sw() ── */
+  var origSw = window.sw;
+  var TAB_LABELS = {
+    realm:    'The Realm (Present)',
+    cp9:      'Dawn Empire — CP 6',
+    cp9post:  'Dawn Empire — CP 9 (Post-Flood)',
+    cp890:    'Dawn Empire — CP 890'
+  };
+  if(typeof origSw === 'function'){
+    window.sw = function(tabKey){
+      track('atlas_tab_view', {
+        tab_key:   tabKey,
+        tab_label: TAB_LABELS[tabKey] || tabKey
+      });
+      origSw.apply(this, arguments);
+    };
+  }
+
+  /* ── Atlas: city / location tooltip opened ──
+     We delegate on #atlas-container for mouseenter on .city-g */
+  var atlasContainer = document.getElementById('atlas-container');
+  if(atlasContainer){
+    atlasContainer.addEventListener('click', function(e){
+      var cityG = e.target && e.target.closest ? e.target.closest('.city-g') : null;
+      if(!cityG) return;
+      var cityName = cityG.getAttribute('data-n') || 'Unknown';
+      track('atlas_city_click', { city_name: cityName });
+    });
+  }
+
+  /* ── Imperial Calendar: open ── */
+  var origShowCalendar = window.showCalendar;
+  if(typeof origShowCalendar === 'function'){
+    window.showCalendar = function(){
+      track('calendar_open', {});
+      origShowCalendar.apply(this, arguments);
+    };
+  }
+
+  /* ── Imperial Calendar: cycle detail panel opened ── */
+  var origCalShowPanel = window.calShowPanel;
+  if(typeof origCalShowPanel === 'function'){
+    window.calShowPanel = function(idx){
+      var cycles = window.CAL_CYCLES || [];
+      var cycleName = (cycles[idx] && cycles[idx].name) ? cycles[idx].name : 'Cycle ' + idx;
+      var isHoliday = cycles[idx] && cycles[idx].holiday ? true : false;
+      track('calendar_cycle_view', {
+        cycle_index:  idx,
+        cycle_name:   cycleName,
+        is_holiday:   isHoliday
+      });
+      origCalShowPanel.apply(this, arguments);
+    };
+  }
+
+  /* ── Roadmap: open ── */
+  var origShowRoadmap = window.showRoadmap;
+  if(typeof origShowRoadmap === 'function'){
+    window.showRoadmap = function(){
+      track('roadmap_open', {});
+      origShowRoadmap.apply(this, arguments);
+    };
+  }
+
+  /* ── Cluster navigation: track when visitor travels to Halcyon Fold ── */
+  var origTravelToCluster = window.travelToCluster;
+  if(typeof origTravelToCluster === 'function'){
+    window.travelToCluster = function(){
+      track('cluster_travel', { destination: 'Halcyon Fold' });
+      origTravelToCluster.apply(this, arguments);
+    };
+  }
+
+  /* ── Opening sequence: track BGM choice ── */
+  var bgmBtn   = document.getElementById('bgmbtn');
+  var nobgmBtn = document.getElementById('nobgmbtn');
+  if(bgmBtn){
+    bgmBtn.addEventListener('click', function(){
+      track('session_start_bgm', { bgm: true });
+    }, { once: true });
+  }
+  if(nobgmBtn){
+    nobgmBtn.addEventListener('click', function(){
+      track('session_start_bgm', { bgm: false });
+    }, { once: true });
+  }
+
+});
+})();
 </script>
 </body></html>
