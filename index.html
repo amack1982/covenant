@@ -495,7 +495,7 @@ var titleEl=document.querySelector('#title-bar h1');
 var subEl=document.querySelector('#title-bar .sub');
 titleEl.style.opacity='0';subEl.style.opacity='0';
 setTimeout(function(){titleEl.textContent='HALCYON FOLD';subEl.textContent='The Covenant of The Flowers';titleEl.style.opacity='1';subEl.style.opacity='1';},800);
-showTravelQuote('\u201CIt was to be our greatest gift to man.\nOur Promethean Fire.\u201D',3750);
+setTimeout(function(){showTravelQuote('\u201CIt was to be our greatest gift to man.\nOur Promethean Fire.\u201D',4300);},2200);
 document.getElementById('legend').style.opacity='0';
 document.getElementById('instructions').style.opacity='0';
 document.getElementById('infobtn').style.opacity='0';document.getElementById('infobtn').style.pointerEvents='none';
@@ -510,10 +510,8 @@ secondCluster[2].wx=destX;secondCluster[2].wy=destY;
 secondCluster[0].wx=destX-70;secondCluster[0].wy=destY-70;
 secondCluster[1].wx=destX+70;secondCluster[1].wy=destY-70;
 secondCluster[3].wx=destX;secondCluster[3].wy=destY+80;
-whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
-var dur=3750;var st=performance.now();
-var trailPts=[];
-for(var i=0;i<400;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*30,oy:(Math.random()-0.5)*30,sz:Math.random()*2.5+0.5,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*20+5,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
+whDiv.style.opacity='0';
+var dur=7000;var st=performance.now();
 function drawTravel(now){
 var el=now-st;var pr=Math.min(el/dur,1);
 var ease=pr<0.5?2*pr*pr:(1-Math.pow(-2*pr+2,2)/2);
@@ -522,66 +520,10 @@ camOX=startCamX+(endCamX-startCamX)*ease;
 camOY=startCamY+(endCamY-startCamY)*ease;
 starOffX=camOX;starOffY=camOY;
 render();
-whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
-var lineStartX=nodes['To Halcyon Fold'].x-camOX;var lineStartY=nodes['To Halcyon Fold'].y-camOY;
-var lineEndX=destX-camOX;var lineEndY=destY-camOY;
-var dx=lineEndX-lineStartX;var dy=lineEndY-lineStartY;
-var lineLen=Math.sqrt(dx*dx+dy*dy);
-var perpX=-dy/lineLen;var perpY=dx/lineLen;
-trailPts.forEach(function(p){
-var headPos=ease;
-var pt=headPos*p.sp*p.t;
-if(pt>1)return;
-var baseX=lineStartX+(lineEndX-lineStartX)*pt;
-var baseY=lineStartY+(lineEndY-lineStartY)*pt;
-var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
-var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
-var px=baseX+perpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
-var py=baseY+perpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
-var distFromHead=Math.abs(pt-headPos);
-var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI);
-var flare=p.bright?2.2:1;
-var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
-whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
-whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
-whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*3),0,Math.PI*2);
-whCtx.fillStyle='rgba(160,140,220,'+(al*0.12)+')';whCtx.fill();
-});
-
 if(pr<1){requestAnimationFrame(drawTravel);}else{
 travelState='cluster';
 render();
-var scatterStart=performance.now();
-var scatterPts=trailPts.map(function(p){
-var pt=p.sp*p.t;if(pt>1)pt=1;
-var baseX=lineStartX+(lineEndX-lineStartX)*pt;
-var baseY=lineStartY+(lineEndY-lineStartY)*pt;
-var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
-var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
-var perpXl=-dy/lineLen;var perpYl=dx/lineLen;
-return{x:baseX+perpXl*Math.sin(helixAngle)*hr,y:baseY+perpYl*Math.sin(helixAngle)*hr,
-vx:(Math.random()-0.5)*3,vy:(Math.random()-0.5)*3,
-life:Math.random()*40+20,maxLife:60,sz:p.sz,bright:p.bright,
-drag:0.94+Math.random()*0.04};
-});
-function drawScatter(now2){
-var el2=now2-scatterStart;
-whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
-var alive=false;
-scatterPts.forEach(function(sp){
-if(sp.life<=0)return;
-sp.x+=sp.vx;sp.y+=sp.vy;sp.vx*=sp.drag;sp.vy*=sp.drag;sp.life--;
-var t=Math.max(0,sp.life/sp.maxLife);
-var al=t*0.6;
-var sz=Math.max(0.1,sp.sz*t);
-whCtx.beginPath();whCtx.arc(sp.x,sp.y,sz,0,Math.PI*2);
-whCtx.fillStyle='rgba('+(sp.bright?'200,180,255':'160,140,220')+','+al+')';whCtx.fill();
-alive=true;
-});
-if(alive){requestAnimationFrame(drawScatter);}
-else{whDiv.style.opacity='0';}
-}
-requestAnimationFrame(drawScatter);
+whDiv.style.opacity='0';
 }}
 requestAnimationFrame(drawTravel);
 }
@@ -669,16 +611,13 @@ svg.appendChild(clLG);svg.appendChild(clG);
 
 function travelBackAnim(){
 travelState='traveling';
-showTravelQuote('\u201CColor raked across the sky.\nGreens, purples, flowing from an open leyvein.\u201D',3750);
+setTimeout(function(){showTravelQuote('\u201CColor raked across the sky.\nGreens, purples, flowing from an open leyvein.\u201D',4300);},2200);
 var titleElR=document.querySelector('#title-bar h1');
 var subElR=document.querySelector('#title-bar .sub');
 titleElR.style.opacity='0';subElR.style.opacity='0';
 setTimeout(function(){titleElR.textContent='RELATIONSHIP WEB';subElR.textContent='The Covenant of The Flowers';titleElR.style.opacity='1';subElR.style.opacity='1';},2500);
 var startCamX=camOX;var startCamY=camOY;
-whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
-var dur=3750;var st=performance.now();
-var trailPts=[];
-for(var i=0;i<400;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*30,oy:(Math.random()-0.5)*30,sz:Math.random()*2.5+0.5,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*20+5,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
+var dur=7000;var st=performance.now();
 drawReturn._headerFaded=false;
 function drawReturn(now){
 var el=now-st;var pr=Math.min(el/dur,1);
@@ -688,35 +627,6 @@ camOX=startCamX*(1-ease);
 camOY=startCamY*(1-ease);
 starOffX=camOX;starOffY=camOY;
 render();
-whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
-var hf=nodes['To Halcyon Fold'];
-var destX=hf.x;var destY=hf.y;
-var fromX=secondCluster[2].wx-camOX;var fromY=secondCluster[2].wy-camOY;
-var toX=destX-camOX;var toY=destY-camOY;
-
-var rdx=toX-fromX;var rdy=toY-fromY;
-var rLen=Math.sqrt(rdx*rdx+rdy*rdy)||1;
-var rpX=-rdy/rLen;var rpY=rdx/rLen;
-trailPts.forEach(function(p){
-var headPos=ease;
-var pt=headPos*p.sp*p.t;
-if(pt>1)return;
-var baseX=fromX+(toX-fromX)*pt;
-var baseY=fromY+(toY-fromY)*pt;
-var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
-var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
-var px=baseX+rpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
-var py=baseY+rpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
-var distFromHead=Math.abs(pt-headPos);
-var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI);
-var flare=p.bright?2.2:1;
-var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
-whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
-whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
-whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*3),0,Math.PI*2);
-whCtx.fillStyle='rgba(160,140,220,'+(al*0.12)+')';whCtx.fill();
-});
-
 if(pr>0.6&&!drawReturn._headerFaded){
 drawReturn._headerFaded=true;
 var te=document.querySelector('#title-bar h1');
@@ -786,7 +696,7 @@ var titleEl=document.querySelector('#title-bar h1');
 var subEl=document.querySelector('#title-bar .sub');
 titleEl.style.opacity='0';subEl.style.opacity='0';
 setTimeout(function(){titleEl.textContent='MONS CONCORDIA';subEl.textContent='The Covenant of The Flowers';titleEl.style.opacity='1';subEl.style.opacity='1';},800);
-showTravelQuote('\u201CLook to the Eight-Point Chrysanthemum.\nIt\u2019s our symbol, a testament to our good Council.\u201D',7000);
+setTimeout(function(){showTravelQuote('\u201CLook to the Eight-Point Chrysanthemum.\nIt\u2019s our symbol, a testament to our good Council.\u201D',4300);},2200);
 document.getElementById('legend').style.opacity='0';
 document.getElementById('instructions').style.opacity='0';
 document.getElementById('infobtn').style.opacity='0';document.getElementById('infobtn').style.pointerEvents='none';
@@ -803,10 +713,8 @@ layoutMonsConstellation(destX,destY);
 for(var i=0;i<monsCluster.length;i++){
 monsCluster[i].wx=destX;monsCluster[i].wy=destY;
 }
-whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
+whDiv.style.opacity='0';
 var dur=7000;var st=performance.now();
-var trailPts=[];
-for(var i=0;i<300;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*22,oy:(Math.random()-0.5)*22,sz:Math.random()*1.9+0.4,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*15+4,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
 var monsSwirlTriggered=false;
 function drawMonsTravel(now){
 var el=now-st;var pr=Math.min(el/dur,1);
@@ -816,35 +724,6 @@ camOX=startCamX+(endCamX-startCamX)*ease;
 camOY=startCamY+(endCamY-startCamY)*ease;
 starOffX=camOX;starOffY=camOY;
 render();
-whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
-// Fade envelope: invisible first 15%, fade out last 15%
-var envAlpha=1;
-if(pr<0.15){envAlpha=pr/0.15;}
-else if(pr>0.85){envAlpha=1-(pr-0.85)/0.15;}
-var lineStartX=nodes['To Mons Concordia'].x-camOX;var lineStartY=nodes['To Mons Concordia'].y-camOY;
-var lineEndX=destX-camOX;var lineEndY=destY-camOY;
-var dx=lineEndX-lineStartX;var dy=lineEndY-lineStartY;
-var lineLen=Math.sqrt(dx*dx+dy*dy);
-var perpX=-dy/lineLen;var perpY=dx/lineLen;
-trailPts.forEach(function(p){
-var headPos=ease;
-var pt=headPos*p.sp*p.t;
-if(pt>1)return;
-var baseX=lineStartX+(lineEndX-lineStartX)*pt;
-var baseY=lineStartY+(lineEndY-lineStartY)*pt;
-var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
-var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
-var px=baseX+perpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
-var py=baseY+perpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
-var distFromHead=Math.abs(pt-headPos);
-var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI)*envAlpha;
-var flare=p.bright?2.2:1;
-var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
-whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
-whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
-whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*2.5),0,Math.PI*2);
-whCtx.fillStyle='rgba(160,140,220,'+(al*0.09)+')';whCtx.fill();
-});
 // Trigger swirl at 60% of travel
 if(pr>0.6&&!monsSwirlTriggered){
 monsSwirlTriggered=true;
@@ -1026,16 +905,13 @@ requestAnimationFrame(fadeLabelsOut);
 
 function travelBackFromMons(){
 travelState='traveling-mons';monsState='traveling';
-showTravelQuote('\u201CSo be it.\u201D',7000);
+setTimeout(function(){showTravelQuote('\u201CWe have all the time in the world.\u201D',4300);},2200);
 var titleElR=document.querySelector('#title-bar h1');
 var subElR=document.querySelector('#title-bar .sub');
 titleElR.style.opacity='0';subElR.style.opacity='0';
 setTimeout(function(){titleElR.textContent='RELATIONSHIP WEB';subElR.textContent='The Covenant of The Flowers';titleElR.style.opacity='1';subElR.style.opacity='1';},2500);
 var startCamX=camOX;var startCamY=camOY;
-whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
 var dur=7000;var st=performance.now();
-var trailPts=[];
-for(var i=0;i<300;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*22,oy:(Math.random()-0.5)*22,sz:Math.random()*1.9+0.4,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*15+4,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
 drawMonsReturn._headerFaded=false;
 function drawMonsReturn(now){
 var el=now-st;var pr=Math.min(el/dur,1);
@@ -1045,38 +921,6 @@ camOX=startCamX*(1-ease);
 camOY=startCamY*(1-ease);
 starOffX=camOX;starOffY=camOY;
 render();
-whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
-// Fade envelope: invisible first 30%, fade in by 45%, fade out last 15%
-var envAlpha=1;
-if(pr<0.30){envAlpha=0;}
-else if(pr<0.45){envAlpha=(pr-0.30)/0.15;}
-else if(pr>0.85){envAlpha=1-(pr-0.85)/0.15;}
-var mc=nodes['To Mons Concordia'];
-var rwNode=monsCluster[4];
-var fromX=rwNode.wx-camOX;var fromY=rwNode.wy-camOY;
-var toX=mc.x-camOX;var toY=mc.y-camOY;
-var rdx=toX-fromX;var rdy=toY-fromY;
-var rLen=Math.sqrt(rdx*rdx+rdy*rdy)||1;
-var rpX=-rdy/rLen;var rpY=rdx/rLen;
-trailPts.forEach(function(p){
-var headPos=ease;
-var pt=headPos*p.sp*p.t;
-if(pt>1)return;
-var baseX=fromX+(toX-fromX)*pt;
-var baseY=fromY+(toY-fromY)*pt;
-var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
-var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
-var px=baseX+rpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
-var py=baseY+rpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
-var distFromHead=Math.abs(pt-headPos);
-var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI)*envAlpha;
-var flare=p.bright?2.2:1;
-var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
-whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
-whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
-whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*2.5),0,Math.PI*2);
-whCtx.fillStyle='rgba(160,140,220,'+(al*0.09)+')';whCtx.fill();
-});
 // Trigger collapse at 25% of return travel
 if(pr>0.25&&!monsCollapsing&&!monsSwirlAnim){
 animateMonsCollapse(null);
