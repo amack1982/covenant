@@ -5860,6 +5860,9 @@ requestAnimationFrame(step);
 // Show/hide calendar
 function showCalendar(){
 calendarActive=true;
+var webEl=document.getElementById('web');
+webEl.style.transition='opacity 0.8s';
+webEl.style.opacity='0';
 document.getElementById('infobtn').style.display='none';
 document.getElementById('musicbtn').style.display='none';
 
@@ -5935,6 +5938,19 @@ calBuildCalendar();
 
 function hideCalendar(){
 calendarActive=false;
+var webEl=document.getElementById('web');
+webEl.style.transition='none';
+webEl.style.opacity='1';
+// Fade transit line back in after calendar closes
+hfTransitPr=0;
+var fadeStart=performance.now();
+function fadeLineIn(now){
+var p=Math.min((now-fadeStart)/800,1);
+hfTransitPr=p;
+render();
+if(p<1)requestAnimationFrame(fadeLineIn);
+}
+requestAnimationFrame(fadeLineIn);
 calStopClockwork();
 if(calStarAnimId){cancelAnimationFrame(calStarAnimId);calStarAnimId=null;}
 document.getElementById('cal-main').classList.remove('active');
