@@ -180,6 +180,65 @@ transition:opacity 0.4s
 #cal-detail-panel .close-btn{position:absolute;top:14px;right:18px;font-family:'Cormorant Garamond',serif;font-size:18px;color:#506878;cursor:pointer;background:none;border:none;transition:color 0.3s}
 #cal-detail-panel .close-btn:hover{color:#8898a8}
 @media(max-width:600px){#cal-detail-panel{padding:24px 22px 22px}#cal-detail-panel .dp-name{font-size:20px}#cal-detail-panel .dp-message{font-size:14px}}
+
+/* About Overlay */
+#about-overlay{
+position:fixed;top:0;left:0;width:100%;height:100%;z-index:45;
+display:none;opacity:0;transition:opacity 0.8s;
+overflow-y:auto;
+background:rgba(10,14,20,0.75);
+backdrop-filter:blur(6px);
+}
+#about-content{
+max-width:620px;margin:0 auto;padding:80px 32px 120px;
+}
+#about-content .about-section{margin-bottom:48px}
+#about-content h2{
+font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;
+letter-spacing:0.18em;text-transform:uppercase;
+color:rgba(160,175,195,0.7);margin-bottom:18px;
+}
+#about-content p{
+font-family:'EB Garamond',serif;font-size:15px;
+color:rgba(180,190,205,0.8);line-height:1.85;margin-bottom:12px;
+}
+#about-content .prose-italic{font-style:italic;color:rgba(150,165,185,0.7)}
+#about-content .archival-note{
+font-family:'EB Garamond',serif;font-size:13px;font-style:italic;
+color:rgba(130,145,165,0.65);line-height:1.7;
+margin-bottom:20px;
+}
+#about-content .letter{
+padding-left:20px;border-left:2px solid rgba(100,130,170,0.15);
+margin:16px 0 24px;
+}
+#about-content .letter p{
+font-family:'EB Garamond',serif;font-size:14.5px;
+color:rgba(165,178,195,0.78);line-height:1.8;margin-bottom:10px;
+}
+#about-content .letter .salutation{margin-bottom:14px}
+#about-content .letter .postscript{
+font-size:13.5px;color:rgba(140,155,175,0.65);margin-top:18px;
+font-style:italic;
+}
+#about-content .credits{
+font-family:'EB Garamond',serif;font-size:13.5px;
+color:rgba(140,155,175,0.6);line-height:1.8;
+}
+#about-close{
+position:fixed;top:24px;right:28px;z-index:46;
+font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:500;
+letter-spacing:0.12em;text-transform:uppercase;
+color:rgba(160,175,195,0.45);cursor:pointer;
+background:none;border:none;transition:color 0.3s;
+}
+#about-close:hover{color:rgba(160,175,195,0.8)}
+@media(max-width:600px){
+#about-content{padding:60px 20px 100px}
+#about-content h2{font-size:13px}
+#about-content p{font-size:14px}
+#about-content .letter p{font-size:13.5px}
+}
 </style>
 </head>
 <body>
@@ -211,6 +270,51 @@ transition:opacity 0.4s
 <div class="dp-quote"></div>
 <div class="dp-current"></div>
 </div>
+
+<div id="about-overlay" onclick="hideAbout()">
+<button id="about-close" onclick="hideAbout()">Return</button>
+<div id="about-content" onclick="event.stopPropagation()">
+
+<div class="about-section" id="about-book">
+<h2>About the Book</h2>
+<p class="prose-italic">Before the birth of our Empire, those bound by conviction built their Realm and called their brothers and sisters into fellowship.</p>
+<p class="prose-italic">The leylines they found, and followed, to their spring of living light.</p>
+<p class="prose-italic">Each heart was heard, and here the covenant of dominion was struck with the Dawn.</p>
+<p class="prose-italic">But the Fount heard many hearts that day.</p>
+<div class="archival-note" style="margin-top:24px;text-align:right">&mdash; Archival Committee of the Citadel Repository of Letters, CP 804</div>
+</div>
+
+<div class="about-section" id="about-author">
+<h2>About the Author</h2>
+<div class="archival-note">The following is a torn scrap of unmarked page, discovered tucked among recovered source documents. It bears no date. The writing is believed to be the Chronicler's hand. Whether he was aware it had been misplaced is not known.<br><br>&mdash; Archival Committee of the Citadel Repository of Letters<br>Third Day of the Tower, CP 791</div>
+<div class="letter">
+<p class="salutation">Grandmother,</p>
+<p>They've asked me to write it down. The whole of it. The story of the High Council, the Realm, the children &mdash; and they want it told honestly.</p>
+<p>I thought of you immediately. You always said the day would come. Just like you always told me to take good care of her.</p>
+<p>I did my best, you know. For all the time we were given together.</p>
+<p>Would you believe the snow has returned? Real snow, just like the stories described.</p>
+<p>I think it's time to begin.</p>
+<p>I'm going to make it something worth remembering, Grandmother. For you.</p>
+<p class="postscript">P.S. I should find somewhere safe to keep this. It would be just like me to lose it in the manuscript.</p>
+</div>
+</div>
+
+<div class="about-section" id="about-avail">
+<h2>Availability</h2>
+<p>The Covenant of the Flowers is not available for public purchase. Copies for personal, review, or other purposes may be requested through the contact information to be posted here at a later date.</p>
+</div>
+
+<div class="about-section" id="about-credits">
+<h2>Credits</h2>
+<div class="credits">
+Site Music &mdash; Pedro Macedo Camacho<br>
+Website Assistance &mdash; Mr. Jeffrey Bresch
+</div>
+</div>
+
+</div>
+</div>
+
 <div id="title-bar"><h1>RELATIONSHIP WEB</h1><div class="sub">The Covenant of The Flowers</div></div>
 <div id="tooltip"><div class="tt-name"></div><div class="tt-detail"></div></div>
 
@@ -273,7 +377,7 @@ requestAnimationFrame(drawAurora);
 requestAnimationFrame(drawAurora);
 window.addEventListener('resize',()=>{initAurora();});
 
-const DATA={"characters":["Andrew","Robert","James","Jeff","Mark","Charles Jr.","Dinah","Sayuri","Sumire","Noah","Kojo","Hepatica","Madam-E","Amy","Caleb","Silas","Chloe","Lena","Vancleve","Brandon","Layla","Elizabeth","Brent","Gateway","To Halcyon Fold"],"relationships":[{"source":"Andrew","target":"Robert","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Andrew","target":"James","category":"family","detail":"Cousin","type_ab":"Cousin","type_ba":"Cousin"},{"source":"Andrew","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Sayuri","category":"family","detail":"Andrew: Parent, Sayuri: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Andrew","target":"Sumire","category":"family","detail":"Andrew: Parent, Sumire: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Andrew","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Hepatica","category":"family","detail":"Andrew: Cousin, Jayne: Relative","type_ab":"Cousin","type_ba":"Relative"},{"source":"Andrew","target":"Madam-E","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Vancleve","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Layla","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"James","category":"family","detail":"Cousin","type_ab":"Cousin","type_ba":"Cousin"},{"source":"Robert","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Sayuri","category":"family","detail":"Robert: Uncle, Sayuri: Niece","type_ab":"Uncle","type_ba":"Niece"},{"source":"Robert","target":"Sumire","category":"family","detail":"Robert: Uncle, Sumire: Niece","type_ab":"Uncle","type_ba":"Niece"},{"source":"Robert","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Kojo","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Hepatica","category":"family","detail":"Robert: Cousin, Jayne: Relative","type_ab":"Cousin","type_ba":"Relative"},{"source":"Robert","target":"Madam-E","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Sayuri","category":"family","detail":"James: Second Cousin, Sayuri: Relative","type_ab":"Second Cousin","type_ba":"Relative"},{"source":"James","target":"Sumire","category":"family","detail":"James: Second Cousin, Sumire: Relative","type_ab":"Second Cousin","type_ba":"Relative"},{"source":"James","target":"Kojo","category":"family","detail":"In-Law","type_ab":"In-Law","type_ba":"In-Law"},{"source":"James","target":"Hepatica","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"James","target":"Madam-E","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Vancleve","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"James","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Sayuri","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Hepatica","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Madam-E","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Charles Jr.","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Sayuri","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Sumire","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Hepatica","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Layla","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Charles Jr.","target":"Dinah","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Charles Jr.","target":"Lena","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Charles Jr.","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Sayuri","target":"Sumire","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Sayuri","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Hepatica","category":"family","detail":"Relative","type_ab":"Relative","type_ba":"Relative"},{"source":"Sayuri","target":"Amy","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Elizabeth","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Brent","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sumire","target":"Hepatica","category":"family","detail":"Relative","type_ab":"Relative","type_ba":"Relative"},{"source":"Noah","target":"Layla","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Noah","target":"Elizabeth","category":"family","detail":"Noah: Son, Elizabeth: Parent","type_ab":"Son","type_ba":"Parent"},{"source":"Noah","target":"Brent","category":"family","detail":"Son","type_ab":"Son","type_ba":"Son"},{"source":"Noah","target":"Brandon","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Kojo","target":"Hepatica","category":"family","detail":"Spouse","type_ab":"Spouse","type_ba":"Spouse"},{"source":"Hepatica","target":"Madam-E","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Hepatica","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Hepatica","target":"Brandon","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Hepatica","target":"Elizabeth","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Hepatica","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Madam-E","target":"Vancleve","category":"family","detail":"Spouse","type_ab":"Spouse","type_ba":"Spouse"},{"source":"Madam-E","target":"Brent","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Amy","target":"Caleb","category":"family","detail":"Amy: Parent, Caleb: Son","type_ab":"Parent","type_ba":"Son"},{"source":"Amy","target":"Silas","category":"family","detail":"Amy: Parent, Silas: Son","type_ab":"Parent","type_ba":"Son"},{"source":"Amy","target":"Chloe","category":"family","detail":"Amy: Parent, Chloe: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Caleb","target":"Chloe","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Caleb","target":"Silas","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Silas","target":"Chloe","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Brandon","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Brandon","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Elizabeth","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Layla","target":"Elizabeth","category":"family","detail":"Layla: Daughter, Elizabeth: Parent","type_ab":"Daughter","type_ba":"Parent"},{"source":"Layla","target":"Brent","category":"family","detail":"Layla: Daughter, Brent: Parent","type_ab":"Daughter","type_ba":"Parent"},{"source":"Lena","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Hepatica","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Gateway","target":"To Halcyon Fold","category":"known","detail":"","type_ab":"","type_ba":""}]};
+const DATA={"characters":["Andrew","Robert","James","Jeff","Mark","Charles Jr.","Dinah","Sayuri","Sumire","Noah","Kojo","Hepatica","Madam-E","Amy","Caleb","Silas","Chloe","Lena","Vancleve","Brandon","Layla","Elizabeth","Brent","Gateway","To Halcyon Fold","To Mons Concordia"],"relationships":[{"source":"Andrew","target":"Robert","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Andrew","target":"James","category":"family","detail":"Cousin","type_ab":"Cousin","type_ba":"Cousin"},{"source":"Andrew","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Sayuri","category":"family","detail":"Andrew: Parent, Sayuri: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Andrew","target":"Sumire","category":"family","detail":"Andrew: Parent, Sumire: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Andrew","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Hepatica","category":"family","detail":"Andrew: Cousin, Jayne: Relative","type_ab":"Cousin","type_ba":"Relative"},{"source":"Andrew","target":"Madam-E","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Vancleve","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Layla","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Andrew","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Andrew","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"James","category":"family","detail":"Cousin","type_ab":"Cousin","type_ba":"Cousin"},{"source":"Robert","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Sayuri","category":"family","detail":"Robert: Uncle, Sayuri: Niece","type_ab":"Uncle","type_ba":"Niece"},{"source":"Robert","target":"Sumire","category":"family","detail":"Robert: Uncle, Sumire: Niece","type_ab":"Uncle","type_ba":"Niece"},{"source":"Robert","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Kojo","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Hepatica","category":"family","detail":"Robert: Cousin, Jayne: Relative","type_ab":"Cousin","type_ba":"Relative"},{"source":"Robert","target":"Madam-E","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Robert","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Robert","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Jeff","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Sayuri","category":"family","detail":"James: Second Cousin, Sayuri: Relative","type_ab":"Second Cousin","type_ba":"Relative"},{"source":"James","target":"Sumire","category":"family","detail":"James: Second Cousin, Sumire: Relative","type_ab":"Second Cousin","type_ba":"Relative"},{"source":"James","target":"Kojo","category":"family","detail":"In-Law","type_ab":"In-Law","type_ba":"In-Law"},{"source":"James","target":"Hepatica","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"James","target":"Madam-E","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Vancleve","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"James","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"James","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Mark","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Charles Jr.","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Sayuri","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Hepatica","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Madam-E","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Jeff","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Jeff","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Charles Jr.","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Dinah","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Sayuri","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Sumire","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Hepatica","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Layla","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Mark","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Mark","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Charles Jr.","target":"Dinah","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Charles Jr.","target":"Lena","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Charles Jr.","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Lena","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Dinah","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Sayuri","target":"Sumire","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Sayuri","target":"Noah","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Hepatica","category":"family","detail":"Relative","type_ab":"Relative","type_ba":"Relative"},{"source":"Sayuri","target":"Amy","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Caleb","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Elizabeth","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sayuri","target":"Brent","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Sumire","target":"Hepatica","category":"family","detail":"Relative","type_ab":"Relative","type_ba":"Relative"},{"source":"Noah","target":"Layla","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Noah","target":"Elizabeth","category":"family","detail":"Noah: Son, Elizabeth: Parent","type_ab":"Son","type_ba":"Parent"},{"source":"Noah","target":"Brent","category":"family","detail":"Son","type_ab":"Son","type_ba":"Son"},{"source":"Noah","target":"Brandon","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Kojo","target":"Hepatica","category":"family","detail":"Spouse","type_ab":"Spouse","type_ba":"Spouse"},{"source":"Hepatica","target":"Madam-E","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Hepatica","target":"Amy","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Hepatica","target":"Brandon","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Hepatica","target":"Elizabeth","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Hepatica","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Madam-E","target":"Vancleve","category":"family","detail":"Spouse","type_ab":"Spouse","type_ba":"Spouse"},{"source":"Madam-E","target":"Brent","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Amy","target":"Caleb","category":"family","detail":"Amy: Parent, Caleb: Son","type_ab":"Parent","type_ba":"Son"},{"source":"Amy","target":"Silas","category":"family","detail":"Amy: Parent, Silas: Son","type_ab":"Parent","type_ba":"Son"},{"source":"Amy","target":"Chloe","category":"family","detail":"Amy: Parent, Chloe: Daughter","type_ab":"Parent","type_ba":"Daughter"},{"source":"Caleb","target":"Chloe","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Caleb","target":"Silas","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Silas","target":"Chloe","category":"family","detail":"Sibling","type_ab":"Sibling","type_ba":"Sibling"},{"source":"Brandon","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Brandon","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Elizabeth","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Layla","target":"Elizabeth","category":"family","detail":"Layla: Daughter, Elizabeth: Parent","type_ab":"Daughter","type_ba":"Parent"},{"source":"Layla","target":"Brent","category":"family","detail":"Layla: Daughter, Brent: Parent","type_ab":"Daughter","type_ba":"Parent"},{"source":"Lena","target":"Elizabeth","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Brent","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Brandon","category":"well-known","detail":"Well-Known","type_ab":"Well-Known","type_ba":"Well-Known"},{"source":"Lena","target":"Hepatica","category":"known","detail":"Known","type_ab":"Known","type_ba":"Known"},{"source":"Gateway","target":"To Halcyon Fold","category":"known","detail":"","type_ab":"","type_ba":""},{"source":"Gateway","target":"To Mons Concordia","category":"known","detail":"","type_ab":"","type_ba":""}]};
 
 const MAIN_CIRCLE=['Andrew','Robert','James','Jeff','Mark','Brent','Brandon'];
 const W=()=>window.innerWidth;const H=()=>window.innerHeight;const CX=()=>W()/2;const CY=()=>H()/2+40;
@@ -286,14 +390,16 @@ function getSecondary(centerName,primaryNames){const s=new Set();primaryNames.fo
 let selectedNode=null;let animating=false;var travelState='web';var camOX=0;var camOY=0;var travelStartTime=0;
 var clusterAngle=Math.PI*7/6;var clusterDist=0;
 var secondCluster=[{name:'Atlas'},{name:'Roadmap'},{name:'Relationship Web'},{name:'Imperial Calendar'}];
+var monsAngle=Math.PI*11/6;var monsDist=0;
 
 function layoutCircle(){
 const mainR=Math.min(W(),H())*0.18;const outerR=Math.min(W(),H())*0.38;
-const others=DATA.characters.filter(n=>!MAIN_CIRCLE.includes(n)&&n!=='Gateway'&&n!=='To Halcyon Fold');
+const others=DATA.characters.filter(n=>!MAIN_CIRCLE.includes(n)&&n!=='Gateway'&&n!=='To Halcyon Fold'&&n!=='To Mons Concordia');
 MAIN_CIRCLE.forEach((name,i)=>{const a=(i/MAIN_CIRCLE.length)*Math.PI*2-Math.PI/2;nodes[name].tx=CX()+Math.cos(a)*mainR;nodes[name].ty=CY()+Math.sin(a)*mainR;});
 others.forEach((name,i)=>{const a=(i/others.length)*Math.PI*2-Math.PI/2;nodes[name].tx=CX()+Math.cos(a)*outerR;nodes[name].ty=CY()+Math.sin(a)*outerR;});
 if(nodes['Gateway']){nodes['Gateway'].tx=CX();nodes['Gateway'].ty=CY();}
 if(nodes['To Halcyon Fold']){nodes['To Halcyon Fold'].tx=CX()-W()*0.8;nodes['To Halcyon Fold'].ty=CY()-H()*0.3;}
+if(nodes['To Mons Concordia']){nodes['To Mons Concordia'].tx=CX()+W()*0.8;nodes['To Mons Concordia'].ty=CY()-H()*0.3;}
 }
 
 function layoutFocused(centerName){
@@ -306,6 +412,7 @@ const secR=Math.min(W(),H())*0.40;
 secondary.forEach((name,i)=>{const a=(i/secondary.length)*Math.PI*2-Math.PI/3;nodes[name].tx=CX()+Math.cos(a)*secR;nodes[name].ty=CY()+Math.sin(a)*secR;});
 const edgeR=Math.min(W(),H())*0.50;
 if(centerName==='Gateway'&&nodes['To Halcyon Fold']){var hfDist=Math.min(W(),H())*0.28;nodes['To Halcyon Fold'].tx=CX()+Math.cos(Math.PI*7/6)*hfDist;nodes['To Halcyon Fold'].ty=CY()+Math.sin(Math.PI*7/6)*hfDist;}
+if(centerName==='Gateway'&&nodes['To Mons Concordia']){var mcDist=Math.min(W(),H())*0.28;nodes['To Mons Concordia'].tx=CX()+Math.cos(Math.PI*11/6)*mcDist;nodes['To Mons Concordia'].ty=CY()+Math.sin(Math.PI*11/6)*mcDist;}
 unconnected.forEach((name,i)=>{const a=(i/Math.max(unconnected.length,1))*Math.PI*2;nodes[name].tx=CX()+Math.cos(a)*edgeR;nodes[name].ty=CY()+Math.sin(a)*edgeR;});
 }
 
@@ -642,6 +749,404 @@ Object.values(nodes).forEach(function(n){n.x=n.tx;n.y=n.ty;});
 render();
 }
 
+// ═══════════════════════════════════════════════════════════
+// MONS CONCORDIA — travel, cluster, About overlay
+// ═══════════════════════════════════════════════════════════
+var monsState='inactive'; // inactive | traveling | cluster | about
+var monsCluster=[
+{name:'The Book',section:'book'},
+{name:'The Author',section:'author'},
+{name:'Availability',section:'avail'},
+{name:'Credits',section:'credits'},
+{name:'To Relationship Web',section:null}
+];
+var monsSwirlAnim=false;
+var monsSwirlStart=0;
+var monsSwirlDur=1800;
+
+function layoutMonsConstellation(cx,cy){
+// Pentagon shape: 5 nodes, Relationship Web at center-bottom, content around it
+var r=Math.min(W(),H())*0.14;
+var offsets=[
+{a:-Math.PI/2,      d:r},       // The Book — top
+{a:-Math.PI/2+Math.PI*2/5, d:r}, // The Author — upper right
+{a:-Math.PI/2+Math.PI*4/5, d:r}, // Availability — lower right
+{a:-Math.PI/2+Math.PI*6/5, d:r}, // Credits — lower left
+{a:0,               d:0}         // Relationship Web — center
+];
+for(var i=0;i<monsCluster.length;i++){
+monsCluster[i].tx=cx+Math.cos(offsets[i].a)*offsets[i].d;
+monsCluster[i].ty=cy+Math.sin(offsets[i].a)*offsets[i].d;
+}
+}
+
+function travelToMons(){
+travelState='traveling-mons';monsState='traveling';
+monsLabelAlpha=0;
+var titleEl=document.querySelector('#title-bar h1');
+var subEl=document.querySelector('#title-bar .sub');
+titleEl.style.opacity='0';subEl.style.opacity='0';
+setTimeout(function(){titleEl.textContent='MONS CONCORDIA';subEl.textContent='The Covenant of The Flowers';titleEl.style.opacity='1';subEl.style.opacity='1';},800);
+showTravelQuote('\u201CLook to the Eight-Point Chrysanthemum.\nIt\u2019s our symbol, a testament to our good Council.\u201D',7000);
+document.getElementById('legend').style.opacity='0';
+document.getElementById('instructions').style.opacity='0';
+document.getElementById('infobtn').style.opacity='0';document.getElementById('infobtn').style.pointerEvents='none';
+var mc=nodes['To Mons Concordia'];
+mc.x=mc.tx;mc.y=mc.ty;
+monsDist=Math.max(W(),H())*0.9;
+var destX=mc.x+Math.cos(monsAngle)*monsDist;
+var destY=mc.y+Math.sin(monsAngle)*monsDist;
+var startCamX=camOX;var startCamY=camOY;
+var endCamX=destX-CX();var endCamY=destY-CY();
+// Layout constellation around destination
+layoutMonsConstellation(destX,destY);
+// All nodes start at center for swirl
+for(var i=0;i<monsCluster.length;i++){
+monsCluster[i].wx=destX;monsCluster[i].wy=destY;
+}
+whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
+var dur=7000;var st=performance.now();
+var trailPts=[];
+for(var i=0;i<400;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*30,oy:(Math.random()-0.5)*30,sz:Math.random()*2.5+0.5,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*20+5,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
+function drawMonsTravel(now){
+var el=now-st;var pr=Math.min(el/dur,1);
+var ease=pr<0.5?2*pr*pr:(1-Math.pow(-2*pr+2,2)/2);
+camOX=startCamX+(endCamX-startCamX)*ease;
+camOY=startCamY+(endCamY-startCamY)*ease;
+starOffX=camOX;starOffY=camOY;
+render();
+whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+var lineStartX=nodes['To Mons Concordia'].x-camOX;var lineStartY=nodes['To Mons Concordia'].y-camOY;
+var lineEndX=destX-camOX;var lineEndY=destY-camOY;
+var dx=lineEndX-lineStartX;var dy=lineEndY-lineStartY;
+var lineLen=Math.sqrt(dx*dx+dy*dy);
+var perpX=-dy/lineLen;var perpY=dx/lineLen;
+trailPts.forEach(function(p){
+var headPos=ease;
+var pt=headPos*p.sp*p.t;
+if(pt>1)return;
+var baseX=lineStartX+(lineEndX-lineStartX)*pt;
+var baseY=lineStartY+(lineEndY-lineStartY)*pt;
+var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
+var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
+var px=baseX+perpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
+var py=baseY+perpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
+var distFromHead=Math.abs(pt-headPos);
+var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI);
+var flare=p.bright?2.2:1;
+var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
+whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
+whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
+whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*3),0,Math.PI*2);
+whCtx.fillStyle='rgba(160,140,220,'+(al*0.12)+')';whCtx.fill();
+});
+if(pr<1){requestAnimationFrame(drawMonsTravel);}else{
+travelState='cluster-mons';monsState='cluster';
+// Start swirl animation
+monsSwirlAnim=true;monsSwirlStart=performance.now();
+requestAnimationFrame(animateMonsSwirl);
+// Scatter trail particles
+var scatterStart=performance.now();
+var scatterPts=trailPts.map(function(p){
+var pt=p.sp*p.t;if(pt>1)pt=1;
+var baseX=lineStartX+(lineEndX-lineStartX)*pt;
+var baseY=lineStartY+(lineEndY-lineStartY)*pt;
+var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
+var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
+return{x:baseX+perpX*Math.sin(helixAngle)*hr,y:baseY+perpY*Math.sin(helixAngle)*hr,
+vx:(Math.random()-0.5)*3,vy:(Math.random()-0.5)*3,
+life:Math.random()*40+20,maxLife:60,sz:p.sz,bright:p.bright,
+drag:0.94+Math.random()*0.04};
+});
+function drawScatter(now2){
+whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+var alive=false;
+scatterPts.forEach(function(sp){
+if(sp.life<=0)return;
+sp.x+=sp.vx;sp.y+=sp.vy;sp.vx*=sp.drag;sp.vy*=sp.drag;sp.life--;
+var t=Math.max(0,sp.life/sp.maxLife);
+var al=t*0.6;
+var sz=Math.max(0.1,sp.sz*t);
+whCtx.beginPath();whCtx.arc(sp.x,sp.y,sz,0,Math.PI*2);
+whCtx.fillStyle='rgba('+(sp.bright?'200,180,255':'160,140,220')+','+al+')';whCtx.fill();
+alive=true;
+});
+if(alive){requestAnimationFrame(drawScatter);}
+else{whDiv.style.opacity='0';}
+}
+requestAnimationFrame(drawScatter);
+}}
+requestAnimationFrame(drawMonsTravel);
+}
+
+// Swirl animation: nodes spiral outward from center to their constellation positions
+var monsLabelAlpha=1;
+function animateMonsSwirl(now){
+if(!monsSwirlAnim)return;
+var el=now-monsSwirlStart;
+var pr=Math.min(el/monsSwirlDur,1);
+var ease=1-Math.pow(1-pr,3);
+var cx=monsCluster[4].tx;
+var cy=monsCluster[4].ty;
+for(var i=0;i<monsCluster.length;i++){
+var sc=monsCluster[i];
+if(!sc.tx)continue;
+var targetDx=sc.tx-cx;
+var targetDy=sc.ty-cy;
+var targetDist=Math.sqrt(targetDx*targetDx+targetDy*targetDy);
+var targetAngle=Math.atan2(targetDy,targetDx);
+var stagger=i*0.08;
+var nodeEase=Math.max(0,Math.min(1,(pr-stagger)/(1-stagger)));
+nodeEase=1-Math.pow(1-nodeEase,3);
+var swirlTurns=2;
+var currentAngle=targetAngle+Math.PI*2*swirlTurns*(1-nodeEase);
+var currentDist=targetDist*nodeEase;
+sc.wx=cx+Math.cos(currentAngle)*currentDist;
+sc.wy=cy+Math.sin(currentAngle)*currentDist;
+}
+monsLabelAlpha=0;
+renderMonsCluster();
+if(pr<1){requestAnimationFrame(animateMonsSwirl);}
+else{
+monsSwirlAnim=false;
+monsLabelAlpha=0;
+for(var i=0;i<monsCluster.length;i++){
+monsCluster[i].wx=monsCluster[i].tx;
+monsCluster[i].wy=monsCluster[i].ty;
+}
+// Fade labels in after swirl completes
+var labelFadeStart=performance.now();
+var labelFadeDur=600;
+function fadeMonsLabelsIn(now){
+var lpr=Math.min((now-labelFadeStart)/labelFadeDur,1);
+monsLabelAlpha=lpr;
+renderMonsCluster();
+if(lpr<1)requestAnimationFrame(fadeMonsLabelsIn);
+}
+requestAnimationFrame(fadeMonsLabelsIn);
+}
+}
+
+// Reverse swirl: nodes collapse back to center before return travel
+var monsCollapsing=false;
+var monsCollapseDur=1200;
+function animateMonsCollapse(callback){
+monsCollapsing=true;
+monsSwirlAnim=true;
+var collStart=performance.now();
+var cx=monsCluster[4].tx;
+var cy=monsCluster[4].ty;
+var starts=[];
+for(var i=0;i<monsCluster.length;i++){
+starts.push({x:monsCluster[i].wx,y:monsCluster[i].wy});
+}
+function stepCollapse(now){
+var el=now-collStart;
+var pr=Math.min(el/monsCollapseDur,1);
+var ease=pr*pr*pr;
+for(var i=0;i<monsCluster.length;i++){
+var stagger=(4-i)*0.04;
+var nodeEase=Math.max(0,Math.min(1,(pr-stagger)/(1-stagger)));
+nodeEase=nodeEase*nodeEase;
+var dx=starts[i].x-cx;var dy=starts[i].y-cy;
+var startAngle=Math.atan2(dy,dx);
+var startDist=Math.sqrt(dx*dx+dy*dy);
+var swirlBack=1.5;
+var curAngle=startAngle+Math.PI*2*swirlBack*nodeEase;
+var curDist=startDist*(1-nodeEase);
+monsCluster[i].wx=cx+Math.cos(curAngle)*curDist;
+monsCluster[i].wy=cy+Math.sin(curAngle)*curDist;
+}
+monsLabelAlpha=0;
+renderMonsCluster();
+if(pr<1){requestAnimationFrame(stepCollapse);}
+else{
+monsCollapsing=false;
+monsSwirlAnim=false;
+monsLabelAlpha=0;
+for(var i=0;i<monsCluster.length;i++){
+monsCluster[i].wx=cx;monsCluster[i].wy=cy;
+}
+if(callback)callback();
+}
+}
+requestAnimationFrame(stepCollapse);
+}
+
+function renderMonsCluster(appendOnly){
+if(calendarActive)return;
+if(!appendOnly){
+svg.innerHTML='';
+var defs=document.createElementNS(NS,'defs');
+defs.innerHTML='<filter id="textshadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#0a0e14" flood-opacity="0.8"/></filter>';
+svg.appendChild(defs);
+}
+var nodeG=document.createElementNS(NS,'g');
+var linkG=document.createElementNS(NS,'g');
+var positions=[];
+monsCluster.forEach(function(sc,idx){
+var cx=sc.wx-camOX;var cy=sc.wy-camOY;
+sc.screenX=cx;sc.screenY=cy;
+positions.push({x:cx,y:cy});
+var g=document.createElementNS(NS,'g');g.style.cursor='pointer';g.classList.add('cluster-node');
+renderClusterNodeSVG(g,cx,cy,sc.name==='To Relationship Web'?8:6);
+var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-22);text.setAttribute('font-size','13');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.setAttribute('filter','url(#textshadow)');text.textContent=sc.name;
+text.setAttribute('opacity',monsLabelAlpha);
+g.appendChild(text);
+if(!monsSwirlAnim&&!monsCollapsing){
+(function(section,name,px,py){
+g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(px,py);requestAnimationFrame(drawSparkles);
+if(name==='To Relationship Web'){startMonsReturn();}
+else{showAbout(section);}
+});
+})(sc.section,sc.name,cx,cy);
+}
+nodeG.appendChild(g);
+});
+var lineAlpha=monsLabelAlpha*0.25;
+for(var i=0;i<positions.length;i++){for(var j=i+1;j<positions.length;j++){
+var l=document.createElementNS(NS,'line');
+l.setAttribute('x1',positions[i].x);l.setAttribute('y1',positions[i].y);
+l.setAttribute('x2',positions[j].x);l.setAttribute('y2',positions[j].y);
+l.setAttribute('stroke','#8070a0');l.setAttribute('stroke-width','0.6');l.setAttribute('stroke-opacity',lineAlpha);
+linkG.appendChild(l);
+}}
+svg.appendChild(linkG);svg.appendChild(nodeG);
+var mcNode=nodes['To Mons Concordia'];
+var rwNode=monsCluster[4];
+if(mcNode&&rwNode.wx){
+var tLine=document.createElementNS(NS,'line');
+tLine.setAttribute('x1',mcNode.x-camOX);tLine.setAttribute('y1',mcNode.y-camOY);
+tLine.setAttribute('x2',rwNode.wx-camOX);tLine.setAttribute('y2',rwNode.wy-camOY);
+tLine.setAttribute('stroke','#8070a0');tLine.setAttribute('stroke-width','1');tLine.setAttribute('stroke-opacity','0.35');
+svg.appendChild(tLine);
+}
+}
+
+// Start return: fade labels, then collapse, then travel
+function startMonsReturn(){
+// Quick label fade-out first
+var fadeStart=performance.now();
+var fadeDur=300;
+function fadeLabelsOut(now){
+var pr=Math.min((now-fadeStart)/fadeDur,1);
+monsLabelAlpha=1-pr;
+renderMonsCluster();
+if(pr<1){requestAnimationFrame(fadeLabelsOut);}
+else{
+monsLabelAlpha=0;
+animateMonsCollapse(function(){
+travelBackFromMons();
+});
+}
+}
+requestAnimationFrame(fadeLabelsOut);
+}
+
+
+function travelBackFromMons(){
+travelState='traveling-mons';monsState='traveling';
+showTravelQuote('\u201CThe truth is not always kind enough to be simple.\u201D',7000);
+var titleElR=document.querySelector('#title-bar h1');
+var subElR=document.querySelector('#title-bar .sub');
+titleElR.style.opacity='0';subElR.style.opacity='0';
+setTimeout(function(){titleElR.textContent='RELATIONSHIP WEB';subElR.textContent='The Covenant of The Flowers';titleElR.style.opacity='1';subElR.style.opacity='1';},2500);
+var startCamX=camOX;var startCamY=camOY;
+whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
+var dur=7000;var st=performance.now();
+var trailPts=[];
+for(var i=0;i<400;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*30,oy:(Math.random()-0.5)*30,sz:Math.random()*2.5+0.5,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*20+5,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
+drawMonsReturn._headerFaded=false;
+function drawMonsReturn(now){
+var el=now-st;var pr=Math.min(el/dur,1);
+var ease=pr<0.5?2*pr*pr:(1-Math.pow(-2*pr+2,2)/2);
+camOX=startCamX*(1-ease);
+camOY=startCamY*(1-ease);
+starOffX=camOX;starOffY=camOY;
+render();
+whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+var mc=nodes['To Mons Concordia'];
+var rwNode=monsCluster[4];
+var fromX=rwNode.wx-camOX;var fromY=rwNode.wy-camOY;
+var toX=mc.x-camOX;var toY=mc.y-camOY;
+var rdx=toX-fromX;var rdy=toY-fromY;
+var rLen=Math.sqrt(rdx*rdx+rdy*rdy)||1;
+var rpX=-rdy/rLen;var rpY=rdx/rLen;
+trailPts.forEach(function(p){
+var headPos=ease;
+var pt=headPos*p.sp*p.t;
+if(pt>1)return;
+var baseX=fromX+(toX-fromX)*pt;
+var baseY=fromY+(toY-fromY)*pt;
+var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
+var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
+var px=baseX+rpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
+var py=baseY+rpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
+var distFromHead=Math.abs(pt-headPos);
+var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI);
+var flare=p.bright?2.2:1;
+var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
+whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
+whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
+whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*3),0,Math.PI*2);
+whCtx.fillStyle='rgba(160,140,220,'+(al*0.12)+')';whCtx.fill();
+});
+if(pr>0.6&&!drawMonsReturn._headerFaded){
+drawMonsReturn._headerFaded=true;
+var te=document.querySelector('#title-bar h1');
+var se=document.querySelector('#title-bar .sub');
+te.style.opacity='0';se.style.opacity='0';
+setTimeout(function(){te.textContent='RELATIONSHIP WEB';se.textContent='The Covenant of The Flowers';te.style.opacity='1';se.style.opacity='1';
+document.getElementById('legend').style.opacity='0.6';
+document.getElementById('instructions').style.opacity='0.6';
+document.getElementById('infobtn').style.opacity='0.7';document.getElementById('infobtn').style.pointerEvents='auto';
+},800);
+}
+if(pr<1){requestAnimationFrame(drawMonsReturn);}else{
+camOX=0;camOY=0;
+travelState='web';monsState='inactive';
+selectedNode='Gateway';
+layoutFocused('Gateway');
+Object.values(nodes).forEach(function(n){n.x=n.tx;n.y=n.ty;});
+render();
+setTimeout(function(){whDiv.style.opacity='0';},200);
+}}
+requestAnimationFrame(drawMonsReturn);
+}
+
+// About overlay
+function showAbout(section){
+monsState='about';
+var ao=document.getElementById('about-overlay');
+// Hide all sections first
+var sections=ao.querySelectorAll('.about-section');
+for(var i=0;i<sections.length;i++){sections[i].style.display='none';}
+// Show only the targeted section
+if(section){
+var target=document.getElementById('about-'+section);
+if(target){target.style.display='block';}
+}else{
+// No section specified, show all
+for(var i=0;i<sections.length;i++){sections[i].style.display='block';}
+}
+ao.scrollTop=0;
+ao.style.display='block';
+setTimeout(function(){ao.style.opacity='1';},50);
+var titleEl=document.querySelector('#title-bar h1');
+var subEl=document.querySelector('#title-bar .sub');
+titleEl.style.opacity='0';subEl.style.opacity='0';
+}
+function hideAbout(){
+var ao=document.getElementById('about-overlay');
+ao.style.opacity='0';
+setTimeout(function(){ao.style.display='none';},800);
+monsState='cluster';
+var titleEl=document.querySelector('#title-bar h1');
+var subEl=document.querySelector('#title-bar .sub');
+titleEl.style.opacity='0';subEl.style.opacity='0';
+setTimeout(function(){titleEl.textContent='MONS CONCORDIA';subEl.textContent='The Covenant of The Flowers';titleEl.style.opacity='1';subEl.style.opacity='1';},400);
+}
+
 function animate(){let moving=false;Object.values(nodes).forEach(n=>{const dx=n.tx-n.x;const dy=n.ty-n.y;if(Math.abs(dx)>0.3||Math.abs(dy)>0.3){n.x+=dx*0.065;n.y+=dy*0.065;moving=true;}else{n.x=n.tx;n.y=n.ty;}});render();if(moving)requestAnimationFrame(animate);else animating=false;}
 function startAnimation(){if(!animating){animating=true;animate();}}
 
@@ -747,12 +1252,13 @@ svg.innerHTML='';var defs=document.createElementNS(NS,'defs');defs.innerHTML='<f
 const connected=selectedNode?getConnected(selectedNode):[];const secondary=selectedNode?getSecondary(selectedNode,connected):[];
 
 DATA.relationships.forEach((r,i)=>{
-var isGatewayLink=(r.source==='Gateway'||r.target==='Gateway')||(r.source==='To Halcyon Fold'||r.target==='To Halcyon Fold');
+var isGatewayLink=(r.source==='Gateway'||r.target==='Gateway')||(r.source==='To Halcyon Fold'||r.target==='To Halcyon Fold')||(r.source==='To Mons Concordia'||r.target==='To Mons Concordia');
 if(isGatewayLink&&selectedNode!=='Gateway'){return;}
 const s=nodes[r.source];const t=nodes[r.target];const line=document.createElementNS(NS,'line');
 line.setAttribute('x1',s.x-camOX);line.setAttribute('y1',s.y-camOY);line.setAttribute('x2',t.x-camOX);line.setAttribute('y2',t.y-camOY);
 line.classList.add('link');var isHFLink=(r.source==='To Halcyon Fold'||r.target==='To Halcyon Fold')||(r.source==='Gateway'&&r.target==='To Halcyon Fold')||(r.target==='Gateway'&&r.source==='To Halcyon Fold');
-line.setAttribute('stroke',isHFLink?'#8070a0':COLORS[r.category]);
+var isMCLink=(r.source==='To Mons Concordia'||r.target==='To Mons Concordia')||(r.source==='Gateway'&&r.target==='To Mons Concordia')||(r.target==='Gateway'&&r.source==='To Mons Concordia');
+line.setAttribute('stroke',(isHFLink||isMCLink)?'#8070a0':COLORS[r.category]);
 if(selectedNode){
 const isPri=r.source===selectedNode||r.target===selectedNode;
 const isSec=!isPri&&((connected.includes(r.source)&&(connected.includes(r.target)||secondary.includes(r.target)))||(connected.includes(r.target)&&(connected.includes(r.source)||secondary.includes(r.source))));
@@ -765,14 +1271,15 @@ linkG.appendChild(line);});
 DATA.characters.forEach(name=>{
 if(name==='Gateway'&&selectedNode&&selectedNode!=='Gateway'){return;}
 if(name==='To Halcyon Fold'&&selectedNode!=='Gateway'){return;}
+if(name==='To Mons Concordia'&&selectedNode!=='Gateway'){return;}
 const n=nodes[name];const g=document.createElementNS(NS,'g');g.classList.add('node');
 if(selectedNode){const isPri=selectedNode===name||connected.includes(name);const isSec=secondary.includes(name);if(!isPri&&!isSec)g.classList.add('dimmed');else if(isSec)g.classList.add('secondary');}
 if(selectedNode===name)g.classList.add('selected');
 var nx=n.x-camOX;var ny=n.y-camOY;
-var isGW=name==='Gateway';var isHF=name==='To Halcyon Fold';var isSel=selectedNode===name;
-var baseR=isHF?n.r*1.4:isSel?n.r*1.6:n.r;
-var bloomR=isHF?n.r*6:isSel?n.r*5:n.isMain?n.r*4:n.r*3;
-var coreColor=isGW?'#a080c0':isHF?'#8070b0':n.isMain?'#c8ddf0':'#90a8c0';
+var isGW=name==='Gateway';var isHF=name==='To Halcyon Fold';var isMC=name==='To Mons Concordia';var isSel=selectedNode===name;
+var baseR=(isHF||isMC)?n.r*1.4:isSel?n.r*1.6:n.r;
+var bloomR=(isHF||isMC)?n.r*6:isSel?n.r*5:n.isMain?n.r*4:n.r*3;
+var coreColor=isGW?'#a080c0':(isHF||isMC)?'#8070b0':n.isMain?'#c8ddf0':'#90a8c0';
 var glowColor=isGW?'rgba(160,128,192,':'rgba(140,180,220,';
 var glow3=document.createElementNS(NS,'circle');glow3.setAttribute('cx',nx);glow3.setAttribute('cy',ny);
 glow3.setAttribute('r',bloomR);glow3.setAttribute('fill',glowColor+(isSel?'0.06':'0.02')+')');g.appendChild(glow3);
@@ -783,7 +1290,7 @@ glow1.setAttribute('r',bloomR*0.3);glow1.setAttribute('fill',glowColor+(isSel?'0
 var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',nx);circle.setAttribute('cy',ny);
 circle.setAttribute('r',baseR);circle.setAttribute('fill',coreColor);
 circle.setAttribute('stroke',glowColor+'0.4)');circle.setAttribute('stroke-width',isSel?'1.5':'0.8');g.appendChild(circle);
-if(n.isMain&&!isGW&&!isHF){
+if(n.isMain&&!isGW&&!isHF&&!isMC){
 var spkLen=baseR*2.5;var spkOp=isSel?'0.25':'0.12';
 var h1=document.createElementNS(NS,'line');h1.setAttribute('x1',nx-spkLen);h1.setAttribute('y1',ny);h1.setAttribute('x2',nx+spkLen);h1.setAttribute('y2',ny);
 h1.setAttribute('stroke',glowColor+spkOp+')');h1.setAttribute('stroke-width','0.5');g.appendChild(h1);
@@ -799,6 +1306,7 @@ text.setAttribute('font-size',selectedNode===name?'18':name==='Gateway'?'16':n.i
 g.addEventListener('click',e=>{e.stopPropagation();
 if(selectedNode===name){emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);selectedNode=null;layoutNodes();if(nodes['Gateway']){nodes['Gateway'].x=CX();nodes['Gateway'].y=CY();}startAnimation();}
 else if(name==='To Halcyon Fold'){emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);travelToCluster();}
+else if(name==='To Mons Concordia'){emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);travelToMons();}
 else{emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);playWormhole(n.x-camOX,n.y-camOY,CX(),CY(),()=>{});selectedNode=name;layoutNodes();startAnimation();}
 hideTooltip();});
 nodeG.appendChild(g);});
@@ -841,6 +1349,12 @@ clG.appendChild(g);
 });
 svg.appendChild(clLG);svg.appendChild(clG);
 }
+// Mons Concordia cluster rendering
+if(travelState==='traveling-mons'){
+renderMonsCluster(true);
+}else if(travelState==='cluster-mons'){
+renderMonsCluster(false);
+}
 }
 
 const tooltip=document.getElementById('tooltip');const ttName=tooltip.querySelector('.tt-name');const ttDetail=tooltip.querySelector('.tt-detail');
@@ -856,7 +1370,7 @@ function positionTooltip(e){let x=e.clientX+16;let y=e.clientY-10;if(x+260>W())x
 function hideTooltip(){tooltip.style.opacity='0';}
 
 
-document.getElementById('svg').addEventListener('click',()=>{if(roadmapState!=='hidden'){document.getElementById('tooltip').style.opacity='0';if(selectedRmNode){selectedRmNode=null;layoutRmNodes();startRmAnim();}return;}if(travelState==='cluster'||travelState==='traveling'){return;}if(selectedNode){selectedNode=null;layoutNodes();if(nodes['Gateway']){nodes['Gateway'].x=CX();nodes['Gateway'].y=CY();}startAnimation();hideTooltip();}});
+document.getElementById('svg').addEventListener('click',()=>{if(roadmapState!=='hidden'){document.getElementById('tooltip').style.opacity='0';if(selectedRmNode){selectedRmNode=null;layoutRmNodes();startRmAnim();}return;}if(travelState==='cluster'||travelState==='traveling'||travelState==='cluster-mons'||travelState==='traveling-mons'){return;}if(selectedNode){selectedNode=null;layoutNodes();if(nodes['Gateway']){nodes['Gateway'].x=CX();nodes['Gateway'].y=CY();}startAnimation();hideTooltip();}});
 
 
 // Roadmap System
@@ -1150,9 +1664,10 @@ layoutCircle();Object.values(nodes).forEach(n=>{n.x=n.tx;n.y=n.ty;});render();
 
 
 <button id="infobtn" onclick="event.stopPropagation();var ip=document.getElementById('info-panel');if(ip.style.opacity==='1'){ip.style.opacity='0';ip.style.pointerEvents='none';}else{ip.style.opacity='1';ip.style.pointerEvents='auto';}" style="position:fixed;bottom:110px;left:55px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:16px;font-weight:bold;font-style:italic;cursor:pointer;opacity:0.7" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">i</button>
-<audio id="bgm-web" src="life_is_reason.mp3" loop></audio>
+<audio id="bgm-web" src="Pedro.mp3" loop></audio>
 <button id="musicbtn" style="position:fixed;bottom:110px;left:20px;z-index:100;width:30px;height:30px;border-radius:50%;border:1px solid rgba(74,144,217,0.6);background:rgba(10,14,20,0.8);color:#6ab0f0;font-family:serif;font-size:14px;cursor:pointer;opacity:0.7;display:flex;align-items:center;justify-content:center" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">&#9654;</button>
-<div style="position:fixed;bottom:92px;left:20px;z-index:100;font-family:EB Garamond,serif;font-size:10px;color:#c8cdd4;font-style:italic;opacity:0.6">Life is Reason &mdash; Daniel Pemberton</div>
+
+
 <script>
 var mbtn=document.getElementById("musicbtn");
 var aud=document.getElementById("bgm-web");
@@ -5496,7 +6011,7 @@ function showCalendar(){
 calendarActive=true;
 document.getElementById('infobtn').style.display='none';
 document.getElementById('musicbtn').style.display='none';
-var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)creditEl.style.display='none';
+
 
 // Capture screen positions and clone the SVG cluster nodes into overlay
 calClusterScreenPos=[];
@@ -5588,7 +6103,7 @@ if(ln.getAttribute('stroke')==='#8070a0')ln.style.display='';
 calSvgNodes=[];calSvgLines=[];
 document.getElementById('infobtn').style.display='';
 document.getElementById('musicbtn').style.display='';
-var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)creditEl.style.display='';
+
 // Restore header
 var titleEl=document.querySelector('#title-bar h1');var subEl=document.querySelector('#title-bar .sub');
 titleEl.style.opacity='0';subEl.style.opacity='0';
@@ -5610,7 +6125,7 @@ calClosePanel();
 function showAtlas(){
 document.getElementById('infobtn').style.display='none';
 document.getElementById('musicbtn').style.display='none';
-var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)creditEl.style.display='none';
+
 var overlay=document.getElementById('fade-overlay');
 overlay.style.pointerEvents='auto';
 overlay.style.opacity='1';
@@ -5653,7 +6168,7 @@ overlay.style.opacity='0';
 overlay.style.pointerEvents='none';
 document.getElementById('infobtn').style.display='';
 document.getElementById('musicbtn').style.display='';
-var creditEl=document.querySelector('[style*="Life is Reason"]');if(creditEl)creditEl.style.display='';
+
 },800);
 },3000);
 },1300);
