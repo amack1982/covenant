@@ -276,7 +276,7 @@ background:none;border:none;transition:color 0.3s;
 <div id="about-content" onclick="event.stopPropagation()">
 
 <div class="about-section" id="about-book">
-<h2>About the Book</h2>
+<h2>About the Saga</h2>
 <p class="prose-italic">Before the birth of our Empire, those bound by conviction built their Realm and called their brothers and sisters into fellowship.</p>
 <p class="prose-italic">The leylines they found, and followed, to their spring of living light.</p>
 <p class="prose-italic">Each heart was heard, and here the covenant of dominion was struck with the Dawn.</p>
@@ -663,7 +663,7 @@ render();
 var monsState='inactive'; // inactive | traveling | cluster | about
 var monsTransitPr=0; // 0=at web, 1=at cluster
 var monsCluster=[
-{name:'The Book',section:'book'},
+{name:'The Saga',section:'book'},
 {name:'The Author',section:'author'},
 {name:'Availability',section:'avail'},
 {name:'Credits',section:'credits'},
@@ -677,7 +677,7 @@ function layoutMonsConstellation(cx,cy){
 // Pentagon shape: 5 nodes, Relationship Web at center-bottom, content around it
 var r=Math.min(W(),H())*0.22;
 var offsets=[
-{a:-Math.PI/2,      d:r},       // The Book — top
+{a:-Math.PI/2,      d:r},       // The Saga — top
 {a:-Math.PI/2+Math.PI*2/5, d:r}, // The Author — upper right
 {a:-Math.PI/2+Math.PI*4/5, d:r}, // Availability — lower right
 {a:-Math.PI/2+Math.PI*6/5, d:r}, // Credits — lower left
