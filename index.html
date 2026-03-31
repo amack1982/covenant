@@ -289,12 +289,12 @@ background:none;border:none;transition:color 0.3s;
 <div class="archival-note">The following is a torn scrap of unmarked page, discovered tucked among recovered source documents. It bears no date. The writing is believed to be the Chronicler's hand. Whether he was aware it had been misplaced is not known.<br><br>&mdash; Archival Committee of the Citadel Repository of Letters<br>Third Day of the Tower, CP 791</div>
 <div class="letter">
 <p class="salutation">Grandmother,</p>
-<p>They've asked me to write it down. The whole of it. The story of the High Council, the Realm, the children &mdash; and they want it told honestly.</p>
+<p>They've asked me to write it down. The whole of it. The story of the High Council, the Realm, the children. And they want it told honestly.</p>
 <p>I thought of you immediately. You always said the day would come. Just like you always told me to take good care of her.</p>
 <p>I did my best, you know. For all the time we were given together.</p>
 <p>Would you believe the snow has returned? Real snow, just like the stories described.</p>
 <p>I think it's time to begin.</p>
-<p>I'm going to make it something worth remembering, Grandmother. For you.</p>
+<p>I'll write something worth remembering, Gran. For you.</p>
 <p class="postscript">P.S. I should find somewhere safe to keep this. It would be just like me to lose it in the manuscript.</p>
 </div>
 </div>
@@ -388,8 +388,9 @@ function getConnected(name){const c=[];DATA.relationships.forEach(r=>{if(r.sourc
 function getSecondary(centerName,primaryNames){const s=new Set();primaryNames.forEach(p=>{getConnected(p).forEach(n=>{if(n!==centerName&&!primaryNames.includes(n))s.add(n);});});return[...s];}
 
 let selectedNode=null;let animating=false;var travelState='web';var camOX=0;var camOY=0;var travelStartTime=0;
+var hfTransitPr=0;
 var clusterAngle=Math.PI*7/6;var clusterDist=0;
-var secondCluster=[{name:'Atlas'},{name:'Roadmap'},{name:'Relationship Web'},{name:'Imperial Calendar'}];
+var secondCluster=[{name:'Atlas'},{name:'Roadmap'},{name:'To Relationship Web'},{name:'Imperial Calendar'}];
 var monsAngle=Math.PI*11/6;var monsDist=0;
 
 function layoutCircle(){
@@ -517,6 +518,7 @@ for(var i=0;i<400;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*30,
 function drawTravel(now){
 var el=now-st;var pr=Math.min(el/dur,1);
 var ease=pr<0.5?2*pr*pr:(1-Math.pow(-2*pr+2,2)/2);
+hfTransitPr=ease;
 camOX=startCamX+(endCamX-startCamX)*ease;
 camOY=startCamY+(endCamY-startCamY)*ease;
 starOffX=camOX;starOffY=camOY;
@@ -616,7 +618,7 @@ renderClusterNodeSVG(g,cx,cy,7);
 var text=document.createElementNS(NS,'text');text.setAttribute('x',cx);text.setAttribute('y',cy-22);text.setAttribute('font-size','15');text.setAttribute('text-anchor','middle');text.setAttribute('fill','#c8cdd4');text.setAttribute('font-family','Cormorant Garamond,serif');text.setAttribute('font-weight','600');text.setAttribute('filter','url(#textshadow)');text.textContent=sc.name;g.appendChild(text);
 g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(cx,cy);requestAnimationFrame(drawSparkles);
 if(sc.name==='Atlas'){showAtlas();}
-else if(sc.name==='Relationship Web'){travelBackAnim();}
+else if(sc.name==='To Relationship Web'){travelBackAnim();}
 else if(sc.name==='Roadmap'){showRoadmap();}
 else if(sc.name==='Imperial Calendar'){showCalendar();}
 });
@@ -633,11 +635,7 @@ svg.appendChild(linkG);svg.appendChild(nodeG);
 if(travelState==='traveling'||travelState==='cluster'){
 var hfNode=nodes['To Halcyon Fold'];
 if(hfNode&&secondCluster[2].wx){
-var tLine=document.createElementNS(NS,'line');
-tLine.setAttribute('x1',hfNode.x-camOX);tLine.setAttribute('y1',hfNode.y-camOY);
-tLine.setAttribute('x2',secondCluster[2].wx-camOX);tLine.setAttribute('y2',secondCluster[2].wy-camOY);
-tLine.setAttribute('stroke','#8070a0');tLine.setAttribute('stroke-width','1');tLine.setAttribute('stroke-opacity','0.35');
-svg.appendChild(tLine);
+drawTransitLine(svg,hfNode.x-camOX,hfNode.y-camOY,secondCluster[2].wx-camOX,secondCluster[2].wy-camOY,hfTransitPr);
 }
 var clG=document.createElementNS(NS,'g');
 var clLG=document.createElementNS(NS,'g');
@@ -658,7 +656,7 @@ if(travelState==='cluster'){
 (function(name,px,py){
 g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(px,py);requestAnimationFrame(drawSparkles);
 if(name==='Atlas'){showAtlas();}
-else if(name==='Relationship Web'){travelBackAnim();}
+else if(name==='To Relationship Web'){travelBackAnim();}
 else if(name==='Roadmap'){showRoadmap();}
 else if(name==='Imperial Calendar'){showCalendar();}
 });
@@ -686,6 +684,7 @@ drawReturn._headerFaded=false;
 function drawReturn(now){
 var el=now-st;var pr=Math.min(el/dur,1);
 var ease=pr<0.5?2*pr*pr:(1-Math.pow(-2*pr+2,2)/2);
+hfTransitPr=1-ease;
 camOX=startCamX*(1-ease);
 camOY=startCamY*(1-ease);
 starOffX=camOX;starOffY=camOY;
@@ -753,6 +752,7 @@ render();
 // MONS CONCORDIA — travel, cluster, About overlay
 // ═══════════════════════════════════════════════════════════
 var monsState='inactive'; // inactive | traveling | cluster | about
+var monsTransitPr=0; // 0=at web, 1=at cluster
 var monsCluster=[
 {name:'The Book',section:'book'},
 {name:'The Author',section:'author'},
@@ -807,15 +807,21 @@ monsCluster[i].wx=destX;monsCluster[i].wy=destY;
 whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
 var dur=7000;var st=performance.now();
 var trailPts=[];
-for(var i=0;i<400;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*30,oy:(Math.random()-0.5)*30,sz:Math.random()*2.5+0.5,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*20+5,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
+for(var i=0;i<300;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*22,oy:(Math.random()-0.5)*22,sz:Math.random()*1.9+0.4,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*15+4,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
+var monsSwirlTriggered=false;
 function drawMonsTravel(now){
 var el=now-st;var pr=Math.min(el/dur,1);
 var ease=pr<0.5?2*pr*pr:(1-Math.pow(-2*pr+2,2)/2);
+monsTransitPr=ease;
 camOX=startCamX+(endCamX-startCamX)*ease;
 camOY=startCamY+(endCamY-startCamY)*ease;
 starOffX=camOX;starOffY=camOY;
 render();
 whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+// Fade envelope: invisible first 15%, fade out last 15%
+var envAlpha=1;
+if(pr<0.15){envAlpha=pr/0.15;}
+else if(pr>0.85){envAlpha=1-(pr-0.85)/0.15;}
 var lineStartX=nodes['To Mons Concordia'].x-camOX;var lineStartY=nodes['To Mons Concordia'].y-camOY;
 var lineEndX=destX-camOX;var lineEndY=destY-camOY;
 var dx=lineEndX-lineStartX;var dy=lineEndY-lineStartY;
@@ -832,49 +838,28 @@ var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
 var px=baseX+perpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
 var py=baseY+perpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
 var distFromHead=Math.abs(pt-headPos);
-var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI);
+var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI)*envAlpha;
 var flare=p.bright?2.2:1;
 var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
 whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
 whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
-whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*3),0,Math.PI*2);
-whCtx.fillStyle='rgba(160,140,220,'+(al*0.12)+')';whCtx.fill();
+whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*2.5),0,Math.PI*2);
+whCtx.fillStyle='rgba(160,140,220,'+(al*0.09)+')';whCtx.fill();
 });
-if(pr<1){requestAnimationFrame(drawMonsTravel);}else{
+// Trigger swirl at 60% of travel
+if(pr>0.6&&!monsSwirlTriggered){
+monsSwirlTriggered=true;
 travelState='cluster-mons';monsState='cluster';
-// Start swirl animation
 monsSwirlAnim=true;monsSwirlStart=performance.now();
 requestAnimationFrame(animateMonsSwirl);
-// Scatter trail particles
-var scatterStart=performance.now();
-var scatterPts=trailPts.map(function(p){
-var pt=p.sp*p.t;if(pt>1)pt=1;
-var baseX=lineStartX+(lineEndX-lineStartX)*pt;
-var baseY=lineStartY+(lineEndY-lineStartY)*pt;
-var helixAngle=pt*p.helixSpeed*Math.PI*2+now*0.003*p.helixDir+p.phase;
-var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
-return{x:baseX+perpX*Math.sin(helixAngle)*hr,y:baseY+perpY*Math.sin(helixAngle)*hr,
-vx:(Math.random()-0.5)*3,vy:(Math.random()-0.5)*3,
-life:Math.random()*40+20,maxLife:60,sz:p.sz,bright:p.bright,
-drag:0.94+Math.random()*0.04};
-});
-function drawScatter(now2){
-whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
-var alive=false;
-scatterPts.forEach(function(sp){
-if(sp.life<=0)return;
-sp.x+=sp.vx;sp.y+=sp.vy;sp.vx*=sp.drag;sp.vy*=sp.drag;sp.life--;
-var t=Math.max(0,sp.life/sp.maxLife);
-var al=t*0.6;
-var sz=Math.max(0.1,sp.sz*t);
-whCtx.beginPath();whCtx.arc(sp.x,sp.y,sz,0,Math.PI*2);
-whCtx.fillStyle='rgba('+(sp.bright?'200,180,255':'160,140,220')+','+al+')';whCtx.fill();
-alive=true;
-});
-if(alive){requestAnimationFrame(drawScatter);}
-else{whDiv.style.opacity='0';}
 }
-requestAnimationFrame(drawScatter);
+if(pr<1){requestAnimationFrame(drawMonsTravel);}else{
+if(!monsSwirlTriggered){
+travelState='cluster-mons';monsState='cluster';
+monsSwirlAnim=true;monsSwirlStart=performance.now();
+requestAnimationFrame(animateMonsSwirl);
+}
+whDiv.style.opacity='0';
 }}
 requestAnimationFrame(drawMonsTravel);
 }
@@ -958,7 +943,9 @@ monsCluster[i].wx=cx+Math.cos(curAngle)*curDist;
 monsCluster[i].wy=cy+Math.sin(curAngle)*curDist;
 }
 monsLabelAlpha=0;
-renderMonsCluster();
+// During return travel, render() already draws the cluster via the MC block
+// Only call renderMonsCluster directly when not traveling
+if(travelState!=='traveling-mons'){renderMonsCluster();}
 if(pr<1){requestAnimationFrame(stepCollapse);}
 else{
 monsCollapsing=false;
@@ -975,6 +962,7 @@ requestAnimationFrame(stepCollapse);
 
 function renderMonsCluster(appendOnly){
 if(calendarActive)return;
+if(monsState==='inactive')return;
 if(!appendOnly){
 svg.innerHTML='';
 var defs=document.createElementNS(NS,'defs');
@@ -1015,17 +1003,12 @@ svg.appendChild(linkG);svg.appendChild(nodeG);
 var mcNode=nodes['To Mons Concordia'];
 var rwNode=monsCluster[4];
 if(mcNode&&rwNode.wx){
-var tLine=document.createElementNS(NS,'line');
-tLine.setAttribute('x1',mcNode.x-camOX);tLine.setAttribute('y1',mcNode.y-camOY);
-tLine.setAttribute('x2',rwNode.wx-camOX);tLine.setAttribute('y2',rwNode.wy-camOY);
-tLine.setAttribute('stroke','#8070a0');tLine.setAttribute('stroke-width','1');tLine.setAttribute('stroke-opacity','0.35');
-svg.appendChild(tLine);
+drawTransitLine(svg,mcNode.x-camOX,mcNode.y-camOY,rwNode.wx-camOX,rwNode.wy-camOY,monsTransitPr);
 }
 }
 
-// Start return: fade labels, then collapse, then travel
+// Start return: fade labels, then travel (collapse triggers during travel at 25%)
 function startMonsReturn(){
-// Quick label fade-out first
 var fadeStart=performance.now();
 var fadeDur=300;
 function fadeLabelsOut(now){
@@ -1035,9 +1018,7 @@ renderMonsCluster();
 if(pr<1){requestAnimationFrame(fadeLabelsOut);}
 else{
 monsLabelAlpha=0;
-animateMonsCollapse(function(){
 travelBackFromMons();
-});
 }
 }
 requestAnimationFrame(fadeLabelsOut);
@@ -1055,16 +1036,22 @@ var startCamX=camOX;var startCamY=camOY;
 whCanvas.width=W();whCanvas.height=H();whDiv.style.opacity='1';
 var dur=7000;var st=performance.now();
 var trailPts=[];
-for(var i=0;i<400;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*30,oy:(Math.random()-0.5)*30,sz:Math.random()*2.5+0.5,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*20+5,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
+for(var i=0;i<300;i++){trailPts.push({t:Math.random(),ox:(Math.random()-0.5)*22,oy:(Math.random()-0.5)*22,sz:Math.random()*1.9+0.4,sp:Math.random()*0.3+0.7,phase:Math.random()*Math.PI*2,helixR:Math.random()*15+4,helixSpeed:Math.random()*8+4,helixDir:Math.random()>0.5?1:-1,bright:Math.random()<0.08});}
 drawMonsReturn._headerFaded=false;
 function drawMonsReturn(now){
 var el=now-st;var pr=Math.min(el/dur,1);
 var ease=pr<0.5?2*pr*pr:(1-Math.pow(-2*pr+2,2)/2);
+monsTransitPr=1-ease;
 camOX=startCamX*(1-ease);
 camOY=startCamY*(1-ease);
 starOffX=camOX;starOffY=camOY;
 render();
 whCtx.clearRect(0,0,whCanvas.width,whCanvas.height);
+// Fade envelope: invisible first 30%, fade in by 45%, fade out last 15%
+var envAlpha=1;
+if(pr<0.30){envAlpha=0;}
+else if(pr<0.45){envAlpha=(pr-0.30)/0.15;}
+else if(pr>0.85){envAlpha=1-(pr-0.85)/0.15;}
 var mc=nodes['To Mons Concordia'];
 var rwNode=monsCluster[4];
 var fromX=rwNode.wx-camOX;var fromY=rwNode.wy-camOY;
@@ -1083,14 +1070,18 @@ var hr=p.helixR*(1-Math.abs(pt-0.5)*1.2);
 var px=baseX+rpX*Math.sin(helixAngle)*hr+p.ox*Math.sin(now*0.001+p.phase)*0.3;
 var py=baseY+rpY*Math.sin(helixAngle)*hr+p.oy*Math.cos(now*0.001+p.phase)*0.3;
 var distFromHead=Math.abs(pt-headPos);
-var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI);
+var al=Math.max(0,0.7-distFromHead*2.5)*Math.sin(pt*Math.PI)*envAlpha;
 var flare=p.bright?2.2:1;
 var sz=Math.max(0.1,p.sz*(1-distFromHead*1.5)*flare);
 whCtx.beginPath();whCtx.arc(px,py,sz,0,Math.PI*2);
 whCtx.fillStyle='rgba('+(p.bright?'200,180,255':'160,140,220')+','+Math.min(1,al*flare)+')';whCtx.fill();
-whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*3),0,Math.PI*2);
-whCtx.fillStyle='rgba(160,140,220,'+(al*0.12)+')';whCtx.fill();
+whCtx.beginPath();whCtx.arc(px,py,Math.max(0.1,sz*2.5),0,Math.PI*2);
+whCtx.fillStyle='rgba(160,140,220,'+(al*0.09)+')';whCtx.fill();
 });
+// Trigger collapse at 25% of return travel
+if(pr>0.25&&!monsCollapsing&&!monsSwirlAnim){
+animateMonsCollapse(null);
+}
 if(pr>0.6&&!drawMonsReturn._headerFaded){
 drawMonsReturn._headerFaded=true;
 var te=document.querySelector('#title-bar h1');
@@ -1103,13 +1094,15 @@ document.getElementById('infobtn').style.opacity='0.7';document.getElementById('
 },800);
 }
 if(pr<1){requestAnimationFrame(drawMonsReturn);}else{
+whDiv.style.opacity='0';
 camOX=0;camOY=0;
-travelState='web';monsState='inactive';
+monsState='inactive';
+monsCollapsing=false;monsSwirlAnim=false;
 selectedNode='Gateway';
 layoutFocused('Gateway');
 Object.values(nodes).forEach(function(n){n.x=n.tx;n.y=n.ty;});
+travelState='web';
 render();
-setTimeout(function(){whDiv.style.opacity='0';},200);
 }}
 requestAnimationFrame(drawMonsReturn);
 }
@@ -1244,6 +1237,25 @@ if(sparkles.length>0)requestAnimationFrame(drawSparkles);
 
 const svg=document.getElementById('svg');const NS='http://www.w3.org/2000/svg';
 
+function drawTransitLine(svgEl,x1,y1,x2,y2,transitPr){
+var lPr=Math.min(1,transitPr*2.5);
+if(lPr<0.01)return;
+var ex=x1+(x2-x1)*lPr;var ey=y1+(y2-y1)*lPr;
+// Base line
+var tLine=document.createElementNS(NS,'line');
+tLine.setAttribute('x1',x1);tLine.setAttribute('y1',y1);
+tLine.setAttribute('x2',ex);tLine.setAttribute('y2',ey);
+tLine.setAttribute('stroke','#8070a0');tLine.setAttribute('stroke-width','1');tLine.setAttribute('stroke-opacity',0.35*lPr);
+svgEl.appendChild(tLine);
+// Green shimmer overlay
+var shimmer=Math.sin(performance.now()*0.003)*0.5+0.5;
+var gLine=document.createElementNS(NS,'line');
+gLine.setAttribute('x1',x1);gLine.setAttribute('y1',y1);
+gLine.setAttribute('x2',ex);gLine.setAttribute('y2',ey);
+gLine.setAttribute('stroke','#50c870');gLine.setAttribute('stroke-width','1');gLine.setAttribute('stroke-opacity',0.04+shimmer*0.08*lPr);
+svgEl.appendChild(gLine);
+}
+
 function render(){
 var maxPan=Math.max(W(),H())*0.1;var panX=Math.max(-maxPan,Math.min(maxPan,-camOX*0.1));var panY=Math.max(-maxPan,Math.min(maxPan,-camOY*0.1));
 canvas.style.transform='translate('+panX+'px,'+panY+'px)';
@@ -1314,11 +1326,7 @@ svg.appendChild(linkG);svg.appendChild(nodeG);
 if(travelState==='traveling'||travelState==='cluster'){
 var hfNode=nodes['To Halcyon Fold'];
 if(hfNode&&secondCluster[2].wx){
-var tLine=document.createElementNS(NS,'line');
-tLine.setAttribute('x1',hfNode.x-camOX);tLine.setAttribute('y1',hfNode.y-camOY);
-tLine.setAttribute('x2',secondCluster[2].wx-camOX);tLine.setAttribute('y2',secondCluster[2].wy-camOY);
-tLine.setAttribute('stroke','#8070a0');tLine.setAttribute('stroke-width','1');tLine.setAttribute('stroke-opacity','0.35');
-svg.appendChild(tLine);
+drawTransitLine(svg,hfNode.x-camOX,hfNode.y-camOY,secondCluster[2].wx-camOX,secondCluster[2].wy-camOY,hfTransitPr);
 }
 var clG=document.createElementNS(NS,'g');
 var clLG=document.createElementNS(NS,'g');
@@ -1339,7 +1347,7 @@ if(travelState==='cluster'){
 (function(name,px,py){
 g.addEventListener('click',function(e){e.stopPropagation();emitSparkle(px,py);requestAnimationFrame(drawSparkles);
 if(name==='Atlas'){showAtlas();}
-else if(name==='Relationship Web'){travelBackAnim();}
+else if(name==='To Relationship Web'){travelBackAnim();}
 else if(name==='Roadmap'){showRoadmap();}
 else if(name==='Imperial Calendar'){showCalendar();}
 });
@@ -5693,7 +5701,7 @@ calCtx.clearRect(0,0,innerWidth,innerHeight);calSpCtx.clearRect(0,0,innerWidth,i
 calClockworkExiting=false;
 calClockworkStartTime=performance.now()+1200;
 
-var CAL_NODES=[{label:'Atlas',color:'#8070b0'},{label:'Roadmap',color:'#8070b0'},{label:'Imperial Calendar',color:'#a090c0'},{label:'Relationship Web',color:'#8070b0'}];
+var CAL_NODES=[{label:'Atlas',color:'#8070b0'},{label:'Roadmap',color:'#8070b0'},{label:'Imperial Calendar',color:'#a090c0'},{label:'To Relationship Web',color:'#8070b0'}];
 var gatherDur=1200;var orbitDur=2500;var mergeDur=800;var totalDur=gatherDur+orbitDur+mergeDur;
 var st=performance.now();
 // Map CAL_NODES to real cluster screen positions:
@@ -5804,7 +5812,7 @@ calExitClockwork();
 // Reset overlay lines/nodes to visible for reverse animation
 for(var ri=0;ri<calSvgLines.length;ri++){calSvgLines[ri].el.style.opacity='1';calSvgLines[ri].el.setAttribute('stroke-opacity','0.3');}
 for(var rn=0;rn<calSvgNodes.length;rn++){if(calSvgNodes[rn])calSvgNodes[rn].el.style.opacity='0';}
-var CAL_NODES=[{label:'Atlas',color:'#8070b0'},{label:'Roadmap',color:'#8070b0'},{label:'Imperial Calendar',color:'#a090c0'},{label:'Relationship Web',color:'#8070b0'}];
+var CAL_NODES=[{label:'Atlas',color:'#8070b0'},{label:'Roadmap',color:'#8070b0'},{label:'Imperial Calendar',color:'#a090c0'},{label:'To Relationship Web',color:'#8070b0'}];
 // Mirror the forward durations
 var unmergeDur=800;var orbitDur=2500;var scatterDur=1200;var totalDur2=unmergeDur+orbitDur+scatterDur;
 var st=performance.now();var nodeOrbitOffsets=[0,Math.PI/2,Math.PI,Math.PI*1.5];var travelArc=Math.PI;
@@ -6028,7 +6036,7 @@ calClusterScreenPos.push({x:secondCluster[i].wx-camOX,y:secondCluster[i].wy-camO
 }
 
 // Build SVG node groups at origin, positioned via transform
-var clusterNames=['Atlas','Roadmap','Relationship Web','Imperial Calendar'];
+var clusterNames=['Atlas','Roadmap','To Relationship Web','Imperial Calendar'];
 for(var i=0;i<secondCluster.length;i++){
 var sx=calClusterScreenPos[i].x;
 var sy=calClusterScreenPos[i].y;
