@@ -1046,7 +1046,7 @@ requestAnimationFrame(fadeLabelsOut);
 
 function travelBackFromMons(){
 travelState='traveling-mons';monsState='traveling';
-showTravelQuote('\u201CThe truth is not always kind enough to be simple.\u201D',7000);
+showTravelQuote('\u201CSo be it.\u201D',7000);
 var titleElR=document.querySelector('#title-bar h1');
 var subElR=document.querySelector('#title-bar .sub');
 titleElR.style.opacity='0';subElR.style.opacity='0';
@@ -6247,7 +6247,7 @@ setTimeout(function(){ov.style.display='none';document.getElementById('quote-tex
 },1200);
 },3500);
 },1250);
-},1000);
+},withMusic?2500:1000);
 }
 document.getElementById("bgmbtn").onclick=function(ev){
 ev.stopPropagation();
@@ -6408,6 +6408,42 @@ document.addEventListener('DOMContentLoaded', function(){
     window.travelToCluster = function(){
       track('cluster_travel', { destination: 'Halcyon Fold' });
       origTravelToCluster.apply(this, arguments);
+    };
+  }
+
+  /* ── Cluster navigation: track when visitor travels to Mons Concordia ── */
+  var origTravelToMons = window.travelToMons;
+  if(typeof origTravelToMons === 'function'){
+    window.travelToMons = function(){
+      track('cluster_travel', { destination: 'Mons Concordia' });
+      origTravelToMons.apply(this, arguments);
+    };
+  }
+
+  /* ── Mons Concordia: track return trip ── */
+  var origStartMonsReturn = window.startMonsReturn;
+  if(typeof origStartMonsReturn === 'function'){
+    window.startMonsReturn = function(){
+      track('cluster_travel', { destination: 'Relationship Web', origin: 'Mons Concordia' });
+      origStartMonsReturn.apply(this, arguments);
+    };
+  }
+
+  /* ── About: track section opened ── */
+  var origShowAbout = window.showAbout;
+  if(typeof origShowAbout === 'function'){
+    window.showAbout = function(section){
+      track('about_open', { section: section || 'all' });
+      origShowAbout.apply(this, arguments);
+    };
+  }
+
+  /* ── About: track section closed ── */
+  var origHideAbout = window.hideAbout;
+  if(typeof origHideAbout === 'function'){
+    window.hideAbout = function(){
+      track('about_close', {});
+      origHideAbout.apply(this, arguments);
     };
   }
 
