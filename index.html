@@ -246,6 +246,42 @@ font-family:'EB Garamond',serif;font-size:13px;
 color:rgba(140,155,175,0.35);
 pointer-events:none;
 }
+.contact-form{margin-top:24px}
+.contact-form input,.contact-form textarea{
+display:block;width:100%;box-sizing:border-box;
+font-family:'EB Garamond',serif;font-size:15px;
+color:rgba(180,190,205,0.85);
+background:rgba(30,38,50,0.5);
+border:1px solid rgba(100,130,170,0.2);
+border-radius:4px;
+padding:10px 14px;margin-bottom:12px;
+outline:none;transition:border-color 0.3s;
+}
+.contact-form input:focus,.contact-form textarea:focus{
+border-color:rgba(100,130,170,0.45);
+}
+.contact-form input::placeholder,.contact-form textarea::placeholder{
+color:rgba(140,155,175,0.4);
+}
+.contact-form textarea{resize:vertical;min-height:100px;line-height:1.7}
+.contact-form button{
+font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:500;
+letter-spacing:0.1em;text-transform:uppercase;
+color:rgba(160,175,195,0.6);
+background:rgba(30,38,50,0.5);
+border:1px solid rgba(100,130,170,0.2);
+border-radius:4px;
+padding:10px 28px;cursor:pointer;
+transition:color 0.3s,border-color 0.3s;
+}
+.contact-form button:hover{
+color:rgba(160,175,195,0.85);
+border-color:rgba(100,130,170,0.45);
+}
+.contact-form .form-msg{
+font-family:'EB Garamond',serif;font-size:14px;
+color:rgba(140,180,160,0.7);margin-top:10px;
+}
 </style>
 </head>
 <body>
@@ -280,7 +316,7 @@ pointer-events:none;
 
 <div id="about-overlay" onclick="hideAbout()">
 <button id="about-close" onclick="hideAbout()">Return</button>
-<div id="about-content" ontouchstart="this._touchY=event.touches[0].clientY;this._scrolled=false" ontouchmove="this._scrolled=true" ontouchend="if(!this._scrolled)hideAbout()" onclick="if(!navigator.maxTouchPoints)hideAbout()">
+<div id="about-content" ontouchstart="this._touchY=event.touches[0].clientY;this._scrolled=false" ontouchmove="this._scrolled=true" ontouchend="if(!this._scrolled&&window._aboutSection!=='avail')hideAbout()" onclick="if(!navigator.maxTouchPoints&&window._aboutSection!=='avail')hideAbout()">
 
 <div class="about-section" id="about-book">
 <h2>About the Saga</h2>
@@ -307,14 +343,28 @@ pointer-events:none;
 
 <div class="about-section" id="about-avail">
 <h2>Availability</h2>
-<p>The Covenant of the Flowers is not available for public purchase. Copies for personal, review, or other purposes may be requested through the contact information to be posted here at a later date.</p>
+<p>The Covenant of the Flowers is not available for public purchase. Copies for personal, review, or other purposes may be requested through the contact form below. Mailing list sign-ups and general inquiries are also welcome.</p>
+<div class="contact-form" id="contact-form" onclick="event.stopPropagation()" ontouchend="event.stopPropagation()">
+<input type="text" id="cf-name" placeholder="Name" autocomplete="name">
+<input type="email" id="cf-email" placeholder="Email" autocomplete="email">
+<textarea id="cf-message" placeholder="Your message"></textarea>
+<button type="button" id="cf-submit">Send</button>
+<div class="form-msg" id="cf-msg"></div>
+</div>
 </div>
 
 <div class="about-section" id="about-credits">
 <h2>Credits</h2>
 <div class="credits">
-Site Music &mdash; Pedro Macedo Camacho<br>
-Website Assistance &mdash; Mr. Jeffrey Bresch
+Site Music &mdash; Mr. Pedro Macedo Camacho<br>
+Website Assistance &amp; Testing &mdash; Mr. Bresch, J. &ensp;&middot;&ensp; Mr. Gonzalez, R. &ensp;&middot;&ensp; Mr. Karshbaum, C.<br>
+Early Manuscript Feedback &mdash; Mr. Mack, R.
+</div>
+<div class="archival-note" style="margin-top:32px;margin-bottom:14px;font-style:normal;color:rgba(150,165,185,0.55);line-height:1.8">The following individuals have contributed to the preservation and presentation of this work through their encouragement, counsel, and steadfast support.</div>
+<div class="credits" style="text-align:center;letter-spacing:0.04em;line-height:2.2">
+Pickens, E. &ensp;&middot;&ensp; Johnson, J. &ensp;&middot;&ensp; Ball, M. &ensp;&middot;&ensp; Burnfield, B.<br>
+Boulais, A. &ensp;&middot;&ensp; Mack, J. &ensp;&middot;&ensp; Mack, M. &ensp;&middot;&ensp; Vancleve, A.<br>
+Collins, K. &ensp;&middot;&ensp; Davis, G. &ensp;&middot;&ensp; Shigematsu, K.
 </div>
 </div>
 
@@ -933,6 +983,7 @@ requestAnimationFrame(drawMonsReturn);
 // About overlay
 function showAbout(section){
 monsState='about';
+window._aboutSection=section||'all';
 var ao=document.getElementById('about-overlay');
 // Hide all sections first
 var sections=ao.querySelectorAll('.about-section');
@@ -6301,5 +6352,46 @@ document.addEventListener('DOMContentLoaded', function(){
 
 });
 })();
+</script>
+<script>
+document.getElementById('cf-submit').addEventListener('click',function(){
+var name=document.getElementById('cf-name').value.trim();
+var email=document.getElementById('cf-email').value.trim();
+var message=document.getElementById('cf-message').value.trim();
+var msg=document.getElementById('cf-msg');
+if(!name||!email||!message){msg.textContent='Please fill in all fields.';msg.style.color='rgba(200,140,140,0.7)';return;}
+var btn=document.getElementById('cf-submit');
+btn.disabled=true;btn.textContent='Sending...';
+fetch('https://api.staticforms.dev/submit',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+accessKey:'sf_4ea0902e05324258a01c2a95',
+name:name,
+email:email,
+message:message,
+subject:'Covenant Site Contact: '+name,
+replyTo:email
+})
+}).then(function(r){return r.json();}).then(function(d){
+if(d.success){
+msg.textContent='Thank you. Your message has been sent.';
+msg.style.color='rgba(140,180,160,0.7)';
+document.getElementById('cf-name').value='';
+document.getElementById('cf-email').value='';
+document.getElementById('cf-message').value='';
+btn.textContent='Sent';
+setTimeout(function(){btn.textContent='Send';btn.disabled=false;},3000);
+}else{
+msg.textContent='Something went wrong. Please try again.';
+msg.style.color='rgba(200,140,140,0.7)';
+btn.textContent='Send';btn.disabled=false;
+}
+}).catch(function(){
+msg.textContent='Something went wrong. Please try again.';
+msg.style.color='rgba(200,140,140,0.7)';
+btn.textContent='Send';btn.disabled=false;
+});
+});
 </script>
 </body></html>
