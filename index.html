@@ -444,6 +444,50 @@ function getConnected(name){const c=[];DATA.relationships.forEach(r=>{if(r.sourc
 function getSecondary(centerName,primaryNames){const s=new Set();primaryNames.forEach(p=>{getConnected(p).forEach(n=>{if(n!==centerName&&!primaryNames.includes(n))s.add(n);});});return[...s];}
 
 let selectedNode=null;let animating=false;var travelState='web';var camOX=0;var camOY=0;var travelStartTime=0;
+var gatewayClicked=false;
+var gatewayPulseId=null;
+var gatewayPulseEls=null;
+function startGatewayPulse(){
+if(gatewayPulseId)return;
+// Create persistent pulse elements in a layer above the SVG
+var pulseDiv=document.createElement('div');
+pulseDiv.id='gw-pulse';
+pulseDiv.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1';
+var pSvg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+pSvg.setAttribute('width','100%');pSvg.setAttribute('height','100%');
+pSvg.style.cssText='position:absolute;top:0;left:0';
+var ring1=document.createElementNS('http://www.w3.org/2000/svg','circle');
+ring1.setAttribute('fill','none');ring1.setAttribute('stroke','rgba(180,160,220,0.1)');ring1.setAttribute('stroke-width','1.5');
+var ring2=document.createElementNS('http://www.w3.org/2000/svg','circle');
+ring2.setAttribute('fill','rgba(160,140,200,0.02)');
+pSvg.appendChild(ring2);pSvg.appendChild(ring1);
+pulseDiv.appendChild(pSvg);
+document.body.appendChild(pulseDiv);
+gatewayPulseEls={div:pulseDiv,ring1:ring1,ring2:ring2};
+function pulse(){
+if(gatewayClicked||selectedNode){
+if(gatewayPulseEls){gatewayPulseEls.div.remove();gatewayPulseEls=null;}
+gatewayPulseId=null;return;
+}
+var gw=nodes['Gateway'];
+if(gw){
+var nx=gw.x-camOX;var ny=gw.y-camOY;
+var baseR=gw.r;
+var now=performance.now();
+var breath=Math.sin(now*0.0018)*0.5+0.5;
+var r1=baseR*3.5+breath*baseR*3;
+var r2=baseR*2.2+breath*baseR*1.5;
+var a1=0.2+breath*0.35;
+var a2=(0.2+breath*0.35)*0.35;
+ring1.setAttribute('cx',nx);ring1.setAttribute('cy',ny);ring1.setAttribute('r',r1);
+ring1.setAttribute('stroke','rgba(190,170,240,'+a1+')');ring1.setAttribute('stroke-width','2.5');
+ring2.setAttribute('cx',nx);ring2.setAttribute('cy',ny);ring2.setAttribute('r',r2);
+ring2.setAttribute('fill','rgba(170,150,220,'+a2+')');
+}
+gatewayPulseId=requestAnimationFrame(pulse);
+}
+gatewayPulseId=requestAnimationFrame(pulse);
+}
 var hfTransitPr=0;
 var clusterAngle=Math.PI*7/6;var clusterDist=0;
 var secondCluster=[{name:'Atlas'},{name:'Roadmap'},{name:'To Relationship Web'},{name:'Imperial Calendar'}];
@@ -1190,6 +1234,7 @@ var text=document.createElementNS(NS,'text');text.setAttribute('x',nx);
 text.setAttribute('y',ny-baseR-10);
 text.setAttribute('font-size',selectedNode===name?'18':name==='Gateway'?'16':n.isMain?'15':'12');text.setAttribute('filter','url(#textshadow)');text.textContent=name;g.appendChild(text);
 g.addEventListener('click',e=>{e.stopPropagation();
+if(isGW&&!gatewayClicked)gatewayClicked=true;
 if(selectedNode===name){emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);selectedNode=null;layoutNodes();if(nodes['Gateway']){nodes['Gateway'].x=CX();nodes['Gateway'].y=CY();}startAnimation();}
 else if(name==='To Halcyon Fold'){emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);travelToCluster();}
 else if(name==='To Mons Concordia'){emitSparkle(n.x-camOX,n.y-camOY);requestAnimationFrame(drawSparkles);travelToMons();}
@@ -6132,6 +6177,7 @@ setTimeout(function(){
 var ov=document.getElementById('opening-overlay');
 ov.style.transition='opacity 3.5s';
 ov.style.opacity='0';
+startGatewayPulse();
 setTimeout(function(){ov.style.display='none';document.getElementById('quote-text').classList.remove('crawl-mode');},4000);
 },1200);
 },3500);
