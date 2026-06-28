@@ -164,7 +164,7 @@ function setBed(b){ if((b&&b.id)===(curBed&&curBed.id)) return; var cf=Math.max(
   if(b&&trackSrc[b.trackId]&&!muted){ var a=getAudio(trackSrc[b.trackId]); a.loop=b.loop!==false; a.currentTime=b.startTime||0; a.volume=0; var tv=b.volume!=null?b.volume:.8; var pr=a.play(); if(pr&&pr.then){ pr.then(function(){ _fadeVol(a,0,tv,cf); }).catch(function(){ try{a.volume=tv;}catch(e){} }); } else { _fadeVol(a,0,tv,cf); } curEl=a; } }
 const firedSt={};
 var _audioUnlocked=false;
-function _unlockAudio(){ if(_audioUnlocked) return; _audioUnlocked=true; try{ Object.keys(trackSrc).forEach(function(tid){ try{ var a=getAudio(trackSrc[tid]); var pr=a.play(); if(pr&&pr.catch) pr.catch(function(){}); a.pause(); try{a.currentTime=0;}catch(e){} }catch(e){} }); }catch(e){} }
+function _unlockAudio(){ if(_audioUnlocked) return; _audioUnlocked=true; try{ var s=new Audio('data:audio/wav;base64,UklGRkQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA=='); s.volume=0; var pr=s.play(); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){} }
 document.addEventListener('touchend',_unlockAudio,{once:true}); document.addEventListener('mousedown',_unlockAudio,{once:true});
 var baseBg='#0a0a0d', baseInk='#e7e3d9', curTintKey=null;
 function applyTint(){ if(!RBFX) return; var vt=V.getBoundingClientRect().top, lim=V.clientHeight*0.45; var act=null;
@@ -246,14 +246,14 @@ function startReading(){ mb.hidden=false; dirStarted=true; _unlockAudio();
   function _pwScreen(){ var p=_panel();
     var i=document.createElement('input'); i.type='password'; i.setAttribute('data-focus',''); i.placeholder='\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7';
     var b=bigBtn('ENTER'); b.style.fontSize='.64rem'; b.style.padding='12px 34px';
-    function tr(){ er.textContent=''; var inp=(i.value||'').trim(); var ok=pwcs?(inp===pw.trim()):(inp.toLowerCase()===pw.trim().toLowerCase()); if(ok){ _mount(_onboard(), true); } else { er.textContent='that is not the word'; } }
+    function tr(){ er.textContent=''; var inp=(i.value||'').trim(); var ok=pwcs?(inp===pw.trim()):(inp.toLowerCase()===pw.trim().toLowerCase()); if(ok){ _mount(_onboard(), true); var _sw=document.getElementById('subwrap'); if(_sw) _sw.style.display=''; } else { er.textContent='that is not the word'; } }
     b.onclick=tr; i.onkeydown=function(e){ if(e.key==='Enter') tr(); };
     p.appendChild(i); p.appendChild(b); p.appendChild(er); return p;
   }
   if(pw){ _mount(_pwScreen(), false); } else { _mount(_onboard(), false); }
 })();
 // ---- subscribe to updates (optional, unobtrusive) ----
-(function(){ var wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:11px;margin-top:10px';
+(function(){ var wrap=document.createElement('div'); wrap.id='subwrap'; wrap.style.cssText='display:flex;flex-direction:column;align-items:center;gap:11px;margin-top:10px'; if(pw){ wrap.style.display='none'; }
   var done=localStorage.getItem('rb-subscribed')==='1';
   var link=document.createElement('button'); link.textContent=done?'✓ you’re on the list':'✦ notify me when new chapters arrive';
   link.style.cssText='background:none;border:none;color:'+(done?'#7faf86':'#8f8a7e')+';font-family:JetBrains Mono,monospace;font-size:.56rem;letter-spacing:.14em;cursor:'+(done?'default':'pointer')+';text-decoration:'+(done?'none':'underline')+';text-underline-offset:3px';
@@ -412,7 +412,7 @@ async function openForum(){ var key=curSection||(curChapter?curChapter+'::intro'
   /* ---- radial menu ---- */
   var FABG='◎';
   var fab=document.createElement('button'); fab.id='rbfab'; fab.textContent=FABG; fab.title='Reader controls'; fab.setAttribute('aria-label','Reader controls'); document.body.appendChild(fab);
-  var defs=[]; if(FS_OK) defs.push({id:'fs',g:'⛶',l:'Fullscreen'}); defs.push({id:'audio',g:'♪',l:'Sound'},{id:'theme',g:(themePref==='dark'?'☀':'☾'),l:'Light / Dark'},{id:'chapters',g:'≡',l:'Chapters'},{id:'forum',g:'❝',l:'Discussion'});
+  var defs=[]; if(FS_OK) defs.push({id:'fs',g:'⛶',l:'Fullscreen'}); defs.push({id:'chapters',g:'≡',l:'Chapters'},{id:'forum',g:'❝',l:'Discussion'},{id:'audio',g:'♪',l:'Sound'},{id:'theme',g:(themePref==='dark'?'☀':'☾'),l:'Light / Dark'});
   var items=defs.map(function(d){ var b=document.createElement('button'); b.className='rbitem'; b.textContent=d.g; b.title=d.l; b.setAttribute('aria-label',d.l); document.body.appendChild(b); return {b:b,id:d.id}; });
   var n=items.length, R=124; items.forEach(function(it,i){ var a=(Math.PI/2)*(n>1?i/(n-1):0); it.dx=-Math.round(R*Math.sin(a)); it.dy=-Math.round(R*Math.cos(a)); });
   function syncItem(it){ if(it.id==='audio') it.b.classList.toggle('on',!muted); else if(it.id==='theme'){ it.b.textContent=(themePref==='dark')?'☀':'☾'; it.b.classList.toggle('on',themePref==='light'); } else if(it.id==='fs') it.b.classList.toggle('on',fsOn()); }
