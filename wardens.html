@@ -159,9 +159,13 @@ let muted=false, curBed=null, curEl=null; const cache={};
 function getAudio(src){ if(!cache[src]){ const a=new Audio(); a.src=src; a.preload='none'; cache[src]=a; } return cache[src]; }
 const beds=(M.beds||[]).filter(b=>!b.silence), sil=(M.beds||[]).filter(b=>b.silence);
 function activeBedFor(cid,oi){ let best=null,bi=-1; (M.beds||[]).forEach(b=>{ if(b.chapterId!==cid) return; const o=paraOrder[cid+':'+b.paraId]; if(o==null) return; if(o<=oi&&o>=bi){bi=o;best=b;} }); return best&&!best.silence?best:null; }
-function _fadeVol(el,from,to,ms,done){ try{el.volume=Math.max(0,Math.min(1,from));}catch(e){} var steps=Math.max(1,Math.round(ms/40)),i=0; var f=setInterval(function(){ i++; var v=from+(to-from)*(i/steps); try{ el.volume=Math.max(0,Math.min(1,v)); }catch(e){} if(i>=steps){ clearInterval(f); if(done)done(); } },40); return f; }
-function setBed(b){ if((b&&b.id)===(curBed&&curBed.id)) return; var cf=Math.max(300,((b&&b.fadeIn!=null)?b.fadeIn:1.6)*1000); if(curEl){ var e=curEl; _fadeVol(e,e.volume,0,cf,function(){ try{e.pause();}catch(x){} }); } curBed=b; curEl=null;
-  if(b&&trackSrc[b.trackId]&&!muted){ var a=getAudio(trackSrc[b.trackId]); a.loop=b.loop!==false; a.currentTime=b.startTime||0; a.volume=0; var tv=b.volume!=null?b.volume:.8; var pr=a.play(); if(pr&&pr.then){ pr.then(function(){ _fadeVol(a,0,tv,cf); }).catch(function(){ try{a.volume=tv;}catch(e){} }); } else { _fadeVol(a,0,tv,cf); } curEl=a; } }
+function _fadeVol(el,from,to,ms,done){ try{ if(el&&el.__fadeT){ clearInterval(el.__fadeT); el.__fadeT=null; } }catch(e){} try{el.volume=Math.max(0,Math.min(1,from));}catch(e){} var steps=Math.max(1,Math.round(ms/40)),i=0; var f=setInterval(function(){ i++; var v=from+(to-from)*(i/steps); try{ el.volume=Math.max(0,Math.min(1,v)); }catch(e){} if(i>=steps){ clearInterval(f); try{ if(el.__fadeT===f) el.__fadeT=null; }catch(e){} if(done)done(); } },40); try{ el.__fadeT=f; }catch(e){} return f; }
+function setBed(b){ var newEl=(b&&trackSrc[b.trackId]&&!muted)?getAudio(trackSrc[b.trackId]):null;
+  if(newEl && curEl===newEl && (b&&b.id)===(curBed&&curBed.id) && !newEl.paused) return;
+  var cf=Math.max(300,((b&&b.fadeIn!=null)?b.fadeIn:1.6)*1000);
+  if(curEl && curEl!==newEl){ var e=curEl; _fadeVol(e,e.volume,0,cf,function(){ try{e.pause();}catch(x){} }); }
+  curBed=b;
+  if(newEl){ var a=newEl; a.loop=b.loop!==false; if(a!==curEl){ try{a.currentTime=b.startTime||0;}catch(_){} a.volume=0; } var tv=b.volume!=null?b.volume:.8; var pr=a.play(); if(pr&&pr.then){ pr.then(function(){ _fadeVol(a,a.volume,tv,cf); }).catch(function(){ try{a.volume=tv;}catch(e){} }); } else { _fadeVol(a,a.volume,tv,cf); } curEl=a; } else { curEl=null; } }
 const firedSt={};
 var _audioUnlocked=false;
 function _unlockAudio(){ if(_audioUnlocked) return; _audioUnlocked=true; try{ var s=new Audio('data:audio/wav;base64,UklGRkQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA=='); s.volume=0; var pr=s.play(); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){} }
