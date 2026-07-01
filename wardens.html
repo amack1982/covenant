@@ -575,7 +575,7 @@ async function openForum(forceKey){ var key=forceKey||curSection||(curChapter?cu
   var FABG='◎';
   var fab=document.createElement('button'); fab.id='rbfab'; fab.textContent=FABG; fab.title='Reader controls'; fab.setAttribute('aria-label','Reader controls'); document.body.appendChild(fab);
   // top bar (shown while the radial menu is open): digital progress widget + About / Privacy
-  var rbtop=document.createElement('div'); rbtop.id='rbtop'; rbtop.style.cssText='position:fixed;top:45%;left:0;right:0;transform:translateY(-50%);z-index:16;display:none;flex-direction:column;align-items:center;gap:13px;justify-content:center;flex-wrap:wrap;padding:0 14px;background:none;pointer-events:none';
+  var rbtop=document.createElement('div'); rbtop.id='rbtop'; rbtop.style.cssText='position:fixed;top:50%;left:0;right:0;transform:translateY(-50%);z-index:16;display:none;flex-direction:column;align-items:center;gap:13px;justify-content:center;flex-wrap:wrap;padding:0 14px;background:none;pointer-events:none';
   var progPill=document.createElement('div'); progPill.style.cssText='font-family:JetBrains Mono,monospace;font-size:.58rem;letter-spacing:.06em;display:flex;align-items:center;gap:4px;margin-top:7px';
   document.body.appendChild(rbtop);
   // Imperial Calendar (Orbital) — maps the reader's real local date to a cycle-of-the-year
