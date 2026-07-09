@@ -589,6 +589,7 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
   // the header moves to the next page (and a following image is scaled tighter to fit under it).
   function flipHdrKeep(){ if(RBMODE!=='flip') return;
     BOOK.querySelectorAll('p[data-oi][data-hbrk]').forEach(function(el){ el.style.breakBefore=''; el.style.webkitColumnBreakBefore=''; el.removeAttribute('data-hbrk'); });
+    BOOK.querySelectorAll('figure[data-hcap]').forEach(function(f){ f.removeAttribute('data-hcap'); });
     flipLayout();
     var pageH=Math.max(240,(V.clientHeight||window.innerHeight));
     for(var pass=0; pass<3; pass++){
@@ -604,7 +605,7 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
         if(!el.getAttribute('data-hbrk')){ el.style.breakBefore='column'; el.style.webkitColumnBreakBefore='always'; el.setAttribute('data-hbrk','1'); changed=true; return; }
         // already on a fresh page and the next block STILL doesn't fit beside it:
         // if it's a figure, squeeze its image so header + image share the page.
-        if(nx.tagName==='FIGURE'&&!nx.getAttribute('data-hcap')){ var img=nx.querySelector('img'); if(img){ var hH=el.getBoundingClientRect().height; var cap=Math.max(120,Math.round(pageH*0.9-hH-60)); img.style.maxHeight=cap+'px'; nx.setAttribute('data-hcap','1'); changed=true; } }
+        if(nx.tagName==='FIGURE'&&!nx.getAttribute('data-hcap')){ var img=nx.querySelector('img'); if(img){ var hH=el.getBoundingClientRect().height; var cap=Math.max(120,Math.round(pageH*0.9-hH-60)); img.style.maxHeight=cap+'px'; nx.style.breakBefore=''; nx.style.webkitColumnBreakBefore=''; nx.setAttribute('data-hcap','1'); changed=true; } }
       });
       if(!changed) break;
       flipLayout();
