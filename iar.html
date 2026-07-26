@@ -603,6 +603,7 @@ try{ document.addEventListener('DOMContentLoaded',_hushAll); setTimeout(_hushAll
 function chapBgSrc(cid){ try{ var k=cid||curChapter||((M.chapters||[])[0]||{}).id; return CHBG[k]||null; }catch(e){ return null; } }
 function _rgba(hex,a){ try{ var h=String(hex).replace('#',''); if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2]; var n=parseInt(h,16); return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')'; }catch(e){ return hex; } }
 var _disv=null;
+try{ document.addEventListener('DOMContentLoaded',function(){ try{ var s0=chapBgSrc(); if(!s0) return; var w=document.createElement('video'); w.muted=true; w.playsInline=true; w.preload='auto'; w.style.cssText='position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px'; w.src=s0; document.body.appendChild(w); w.load(); }catch(e){} }); }catch(e){}
 function _disBg(host,src,bg){
   if(!src){ if(_disv){ _disv.style.opacity='0'; _disv.style.display='none'; } return; }
   if(!_disv){ _disv=document.createElement('video'); _disv.muted=true; _disv.loop=true; _disv.playsInline=true;
@@ -1200,6 +1201,7 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
   rbchbg.setAttribute('playsinline',''); rbchbg.setAttribute('preload','auto');
   rbchbg.style.cssText='position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:10;pointer-events:none;display:none;opacity:0;transition:opacity .45s ease';
   document.body.appendChild(rbchbg);
+  try{ var _bg0=chapBgSrc(); if(_bg0){ rbchbg._src=_bg0; rbchbg.src=_bg0; rbchbg.load(); } }catch(e){}
   function _syncPetals(show){ try{ var s=chapBgSrc();
       if(!s){ rbchbg.style.opacity='0'; rbchbg.style.display='none'; return; }
       if(rbchbg._src!==s){ rbchbg._src=s; rbchbg.src=s; }
