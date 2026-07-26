@@ -521,14 +521,14 @@ button{cursor:pointer;font-family:'JetBrains Mono',monospace}
 body.lunar #gate{background:radial-gradient(120% 95% at 50% 118%,#111a26 0%,#070b13 52%,#020306 100%)!important}
 body.lunar #gate>.ll,body.lunar #gate>#gx{position:relative;z-index:2}
 body.lunar .ll>div{font-family:'JetBrains Mono',monospace!important;font-weight:400!important;font-size:clamp(.82rem,2.5vw,1.35rem)!important;letter-spacing:.4em!important;text-transform:uppercase;color:#d3e6f6!important;text-shadow:0 0 30px rgba(140,195,240,.4)}
-body.lunar #gate input{border-radius:3px!important;border:1px solid rgba(150,200,235,.35)!important;background:rgba(120,170,215,.07)!important;color:#dceaf6!important;font-family:'JetBrains Mono',monospace!important;font-size:.8rem!important;letter-spacing:.16em!important}
+body.lunar #gate input{width:min(80vw,330px)!important;box-sizing:border-box;border-radius:3px!important;border:1px solid rgba(150,200,235,.35)!important;background:rgba(120,170,215,.07)!important;color:#dceaf6!important;font-family:'JetBrains Mono',monospace!important;font-size:.72rem!important;letter-spacing:.12em!important}
 body.lunar #gate input::placeholder{color:#61798f!important}
-body.lunar #gx button{border-radius:3px!important;border-color:rgba(150,200,235,.5)!important;color:#bfdcf0!important;letter-spacing:.26em!important;background:rgba(120,170,215,.06)!important}
+body.lunar #gx button{white-space:nowrap;border-radius:3px!important;border-color:rgba(150,200,235,.5)!important;color:#bfdcf0!important;letter-spacing:.18em!important;background:rgba(120,170,215,.06)!important}
 body.lunar #gx button[data-on="1"]{background:rgba(140,195,240,.18)!important;color:#e2f1ff!important;border-color:rgba(170,215,250,.7)!important}
 #lunar{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 #lunar .lstar{position:absolute;top:0;left:0;width:1.5px;height:1.5px;border-radius:50%;background:transparent;animation:ltwink 7s ease-in-out infinite}
 #lunar .lstar.b{width:2.2px;height:2.2px;animation-duration:11s;animation-delay:-3s}
-#lunar .lmoon{position:absolute;left:50%;top:50%;width:min(80vmin,780px);height:min(80vmin,780px);margin:-40vmin 0 0 -40vmin;border-radius:50%;opacity:.9;animation:lmoonrise 46s ease-in-out infinite alternate;background:radial-gradient(circle at 68% 74%,rgba(255,255,255,.05) 0 6%,rgba(0,0,0,0) 7%),radial-gradient(circle at 40% 62%,rgba(0,0,0,.28) 0 9%,rgba(0,0,0,0) 10%),radial-gradient(circle at 56% 34%,rgba(0,0,0,.22) 0 5%,rgba(0,0,0,0) 6%),radial-gradient(circle at 30% 42%,rgba(0,0,0,.2) 0 4%,rgba(0,0,0,0) 5%),radial-gradient(circle at 33% 30%,#2b3444 0%,#1b222d 36%,#0e131b 60%,#080b11 76%,rgba(4,6,10,0) 79%);box-shadow:inset -34px -24px 90px rgba(0,0,0,.85),inset 28px 20px 76px rgba(150,200,240,.1),0 0 140px rgba(110,165,220,.12)}
+#lunar .lmoon{position:absolute;left:calc(50% - min(40vmin,390px));top:calc(50% - min(40vmin,390px));width:min(80vmin,780px);height:min(80vmin,780px);border-radius:50%;opacity:.78;animation:lmoonrise 46s ease-in-out infinite alternate;background:radial-gradient(circle at 68% 74%,rgba(255,255,255,.05) 0 6%,rgba(0,0,0,0) 7%),radial-gradient(circle at 40% 62%,rgba(0,0,0,.28) 0 9%,rgba(0,0,0,0) 10%),radial-gradient(circle at 56% 34%,rgba(0,0,0,.22) 0 5%,rgba(0,0,0,0) 6%),radial-gradient(circle at 30% 42%,rgba(0,0,0,.2) 0 4%,rgba(0,0,0,0) 5%),radial-gradient(circle at 33% 30%,#2b3444 0%,#1b222d 36%,#0e131b 60%,#080b11 76%,rgba(4,6,10,0) 79%);box-shadow:inset -34px -24px 90px rgba(0,0,0,.85),inset 28px 20px 76px rgba(150,200,240,.1),0 0 140px rgba(110,165,220,.12)}
 #lunar .lmoon::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 25% 23%,rgba(196,225,252,.26),rgba(196,225,252,0) 44%)}
 #lunar .lhaze{position:absolute;left:0;right:0;bottom:0;height:36vh;background:linear-gradient(to top,rgba(96,150,205,.13),rgba(96,150,205,0))}
 @keyframes ltwink{0%,100%{opacity:.35}50%{opacity:1}}
@@ -572,6 +572,7 @@ body.lefty #rbfab{right:auto;left:18px}
 body.lefty .rbitem{right:auto;left:21px}
 body.lefty .rbitem.ul{left:auto;right:21px}
 body.lefty #fbtn{left:0!important;right:auto!important;border-radius:0 12px 12px 0!important;border-left:none!important;border-right:1px solid rgba(255,255,255,.14)!important}
+#gx input::placeholder{color:rgba(232,199,135,.32);letter-spacing:.14em}
 @keyframes rbwfade{from{opacity:0}to{opacity:1}}@keyframes rbpetalfade{from{opacity:0}to{opacity:1}}#rbpetals{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:11;pointer-events:none;display:none}@keyframes rbflowin{from{opacity:0;transform:translate(-46%,50%) rotate(-74deg)}to{opacity:.19;transform:translate(-31%,41%) rotate(-13deg)}}@keyframes rbflowin-l{from{opacity:0;transform:translate(46%,50%) rotate(74deg)}to{opacity:.19;transform:translate(31%,41%) rotate(13deg)}}#rbflower,#rbflower2{position:fixed;width:300px;height:300px;z-index:11;pointer-events:none;display:none;opacity:0;background-repeat:no-repeat;background-size:contain;background-position:center;transform-origin:50% 50%;filter:drop-shadow(0 6px 22px rgba(0,0,0,.35))}#rbflower{left:0;bottom:0}body.lefty #rbflower{left:auto;right:0}#rbflower2{right:0;top:0}body.lefty #rbflower2{right:auto;left:0}@keyframes rbflowin2{from{opacity:0;transform:translate(46%,-50%) rotate(106deg)}to{opacity:.19;transform:translate(31%,-41%) rotate(167deg)}}@keyframes rbflowin2-l{from{opacity:0;transform:translate(-46%,-50%) rotate(-106deg)}to{opacity:.19;transform:translate(-31%,-41%) rotate(-167deg)}}</style></head>
 <body>
 <div id="bar"><i></i></div>
@@ -772,7 +773,7 @@ function persistFScale(){ try{ localStorage.setItem('rb-fscale',String(rbFScale)
 applyFScale(false);
 // landing gate + opening transition (gate exit paired with book entrance)
 const gx=document.getElementById('gx'), gate=document.getElementById('gate'), pw=(M.publish&&M.publish.password||''), pwcs=!!(M.publish&&M.publish.passwordCaseSensitive);
-if(((M.publish&&M.publish.landingTheme)||'')==='lunar'){ try{ document.body.classList.add('lunar');
+if(((M.chapters||[]).length===1)&&((((M.chapters[0]||{}).landingTheme)||'')==='lunar')){ try{ document.body.classList.add('lunar');
   var _lu=document.createElement('div'); _lu.id='lunar';
   var _mo=document.createElement('div'); _mo.className='lmoon'; _lu.appendChild(_mo);
   function _field(cls,n){ var d=document.createElement('div'); d.className='lstar'+(cls?' b':''); var s=''; for(var i=0;i<n;i++){ s+=(i?',':'')+(Math.random()*100).toFixed(2)+'vw '+(Math.random()*100).toFixed(2)+'vh 0 rgba('+(cls?'205,228,250':'255,255,255')+','+(0.2+Math.random()*0.65).toFixed(2)+')'; } d.style.boxShadow=s; return d; }
@@ -829,17 +830,29 @@ function _startReadingReveal(onFade){ var _fadeSignal=function(){ try{ if(onFade
 (function(){
   var remembered=false, savedName=''; try{ remembered=localStorage.getItem('rb-remember')==='1'; savedName=(localStorage.getItem('rb-name')||'').trim(); }catch(e){}
   var llEl=document.getElementById('ll');
+  try{ if(Object.keys(CINE||{}).length&&llEl){ llEl.style.fontFamily="'JetBrains Mono',monospace"; llEl.style.fontSize='clamp(1.1rem,3vw,1.9rem)'; llEl.style.letterSpacing='.3em'; llEl.style.textTransform='uppercase'; llEl.style.color='#f2dba8'; llEl.style.textShadow='0 0 26px rgba(216,180,106,.35)'; } }catch(e){}
   var _greetTxt=((M.publish&&M.publish.landingLine)||'').trim();
+  var CINEUI=false; try{ CINEUI=Object.keys(CINE||{}).length>0; }catch(e){}
+  var _askLine=CINEUI?'Welcome to the Future':'What’s your name, friend?';
+  var _askPh=CINEUI?'name here, optional':'your name (optional)';
   function setLine(txt){ if(!llEl) return; llEl.style.transition='transform .4s cubic-bezier(.4,0,.2,1),opacity .4s ease'; llEl.style.transform='translateY(-105%)'; llEl.style.opacity='0'; setTimeout(function(){ llEl.textContent=txt; llEl.style.transition='none'; llEl.style.transform='translateY(105%)'; llEl.style.opacity='0'; requestAnimationFrame(function(){ requestAnimationFrame(function(){ llEl.style.transition='transform .5s cubic-bezier(.2,.7,.2,1),opacity .5s ease'; llEl.style.transform='none'; llEl.style.opacity='1'; }); }); }, 400); }
   var chosenAudio=!muted, chosenTheme=themePref, chosenRemember=false;
   var er=document.createElement('div'); er.style.cssText='color:#b06a5c;font-family:JetBrains Mono,monospace;font-size:.56rem;min-height:1em';
-  function bigBtn(txt){ var b=document.createElement('button'); b.textContent=txt; b.style.cssText='padding:15px 40px;border-radius:100px;background:transparent;border:1.5px solid #d8b46a;color:#d8b46a;font-size:.7rem;letter-spacing:.22em;cursor:pointer'; return b; }
+  function bigBtn(txt){ var b=document.createElement('button'); b.textContent=txt;
+    if(CINEUI){ b.style.cssText='padding:15px 42px;border-radius:2px;background:linear-gradient(180deg,rgba(216,180,106,.14),rgba(216,180,106,.04));border:1px solid rgba(232,199,135,.75);color:#f2dba8;font-family:JetBrains Mono,monospace;font-size:.62rem;letter-spacing:.34em;cursor:pointer;box-shadow:0 0 22px rgba(216,180,106,.12),inset 0 0 18px rgba(216,180,106,.06);transition:box-shadow .35s ease,border-color .35s ease,color .35s ease';
+      b.onmouseenter=function(){ b.style.boxShadow='0 0 34px rgba(216,180,106,.3),inset 0 0 22px rgba(216,180,106,.12)'; b.style.borderColor='rgba(244,222,172,.95)'; b.style.color='#fdf1d4'; };
+      b.onmouseleave=function(){ b.style.boxShadow='0 0 22px rgba(216,180,106,.12),inset 0 0 18px rgba(216,180,106,.06)'; b.style.borderColor='rgba(232,199,135,.75)'; b.style.color='#f2dba8'; }; }
+    else b.style.cssText='padding:15px 40px;border-radius:100px;background:transparent;border:1.5px solid #d8b46a;color:#d8b46a;font-size:.7rem;letter-spacing:.22em;cursor:pointer';
+    return b; }
   function tog(labelFn,on,fn){ var t=document.createElement('button'); function paint(){ t.textContent=labelFn(on); t.setAttribute('data-on',on?'1':'0'); t.style.cssText='padding:9px 16px;border-radius:100px;border:1px solid '+(on?'rgba(216,180,106,.6)':'rgba(255,255,255,.2)')+';background:'+(on?'rgba(216,180,106,.16)':'transparent')+';color:'+(on?'#d8b46a':'#9a958a')+';font-family:JetBrains Mono,monospace;font-size:.56rem;letter-spacing:.14em;cursor:pointer'; } paint(); t.onclick=function(){ on=!on; paint(); fn(on); }; return t; }
   var togRow=document.createElement('div'); togRow.style.cssText='display:flex;gap:9px;flex-wrap:wrap;justify-content:center';
   togRow.appendChild(tog(function(v){return '♪  MUSIC '+(v?'ON':'OFF');}, chosenAudio, function(v){ chosenAudio=v; }));
   togRow.appendChild(tog(function(v){return (v?'☾  LIGHT':'☀  DARK');}, chosenTheme==='light', function(v){ chosenTheme=v?'light':'dark'; applyTheme(chosenTheme); }));
   function commit(name){ muted=!chosenAudio; try{ localStorage.setItem('rb-sound',muted?'off':'on'); }catch(e){} applyTheme(chosenTheme); window.__rbName=name||''; try{ if(chosenRemember){ localStorage.setItem('rb-remember','1'); if(name) localStorage.setItem('rb-name',name); else localStorage.removeItem('rb-name'); } else { localStorage.removeItem('rb-remember'); localStorage.removeItem('rb-name'); } }catch(e){} startReading(); }
   var curPanel=null;
+  function _cineField(i){ if(!CINEUI) return; i.style.cssText='text-align:center;background:rgba(255,255,255,.035);border:1px solid rgba(232,199,135,.35);border-radius:2px;padding:14px 26px;color:#f2dba8;font-family:JetBrains Mono,monospace;font-size:.68rem;letter-spacing:.16em;caret-color:#d8b46a;outline:none;min-width:16rem;box-shadow:inset 0 0 18px rgba(216,180,106,.05)';
+    i.onfocus=function(){ i.style.borderColor='rgba(244,222,172,.8)'; i.style.boxShadow='0 0 24px rgba(216,180,106,.18),inset 0 0 18px rgba(216,180,106,.08)'; };
+    i.onblur=function(){ i.style.borderColor='rgba(232,199,135,.35)'; i.style.boxShadow='inset 0 0 18px rgba(216,180,106,.05)'; }; }
   function _panel(){ var p=document.createElement('div'); p.style.cssText='display:flex;flex-direction:column;align-items:center;gap:14px'; return p; }
   function _focus(p){ var fi=p.querySelector('[data-focus]'); if(fi) setTimeout(function(){ try{ fi.focus(); }catch(e){} },90); }
   function _mount(p,animate){ if(animate && curPanel){ var old=curPanel; old.style.transition='transform .38s ease, opacity .38s ease'; requestAnimationFrame(function(){ old.style.transform='translateX(-44px)'; old.style.opacity='0'; }); setTimeout(function(){ if(old.parentNode) old.remove(); p.style.opacity='0'; p.style.transform='translateX(44px)'; p.style.transition='transform .5s cubic-bezier(.2,.7,.2,1), opacity .5s ease'; gx.insertBefore(p, gx.firstChild); requestAnimationFrame(function(){ requestAnimationFrame(function(){ p.style.transform='none'; p.style.opacity='1'; }); }); _focus(p); }, 400); } else { gx.insertBefore(p, gx.firstChild); _focus(p); } curPanel=p; }
@@ -849,14 +862,14 @@ function _startReadingReveal(onFade){ var _fadeSignal=function(){ try{ if(onFade
       var b1=bigBtn('BEGIN READING'); b1.setAttribute('data-focus',''); b1.onclick=function(){ commit(savedName); };
       p.appendChild(hi); p.appendChild(togRow); p.appendChild(b1);
     } else if(!_greetTxt){
-      llEl.textContent='What’s your name, friend?';
-      var nameI=document.createElement('input'); nameI.type='text'; nameI.setAttribute('maxlength','40'); nameI.setAttribute('data-focus',''); nameI.placeholder='your name (optional)';
+      llEl.textContent=_askLine;
+      var nameI=document.createElement('input'); nameI.type='text'; nameI.setAttribute('maxlength','40'); nameI.setAttribute('data-focus',''); nameI.placeholder=_askPh; _cineField(nameI);
       var b2=bigBtn('BEGIN READING'); b2.onclick=function(){ commit((nameI.value||'').trim()); };
       nameI.onkeydown=function(e){ if(e.key==='Enter') b2.click(); };
       p.appendChild(nameI); p.appendChild(togRow); p.appendChild(b2);
     } else {
-      setLine('What’s your name, friend?');
-      var nameI=document.createElement('input'); nameI.type='text'; nameI.setAttribute('maxlength','40'); nameI.setAttribute('data-focus',''); nameI.placeholder='your name (optional)';
+      setLine(_askLine);
+      var nameI=document.createElement('input'); nameI.type='text'; nameI.setAttribute('maxlength','40'); nameI.setAttribute('data-focus',''); nameI.placeholder=_askPh; _cineField(nameI);
       var b2=bigBtn('BEGIN READING'); b2.onclick=function(){ commit((nameI.value||'').trim()); };
       nameI.onkeydown=function(e){ if(e.key==='Enter') b2.click(); };
       p.appendChild(nameI); p.appendChild(togRow); p.appendChild(b2);
@@ -864,7 +877,7 @@ function _startReadingReveal(onFade){ var _fadeSignal=function(){ try{ if(onFade
     return p;
   }
   function _pwScreen(){ var p=_panel();
-    var i=document.createElement('input'); i.type='password'; i.setAttribute('data-focus',''); i.placeholder='\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7';
+    var i=document.createElement('input'); i.type='password'; i.setAttribute('data-focus',''); i.placeholder='\u00b7\u00b7\u00b7\u00b7\u00b7\u00b7'; _cineField(i);
     var b=bigBtn('ENTER'); b.style.fontSize='.64rem'; b.style.padding='12px 34px';
     function tr(){ er.textContent=''; var inp=(i.value||'').trim(); var ok=pwcs?(inp===pw.trim()):(inp.toLowerCase()===pw.trim().toLowerCase()); if(ok){ _mount(_onboard(), true); var _sw=document.getElementById('subwrap'); if(_sw) _sw.style.display=''; } else { er.textContent='Password Incorrect'; } }
     b.onclick=tr; i.onkeydown=function(e){ if(e.key==='Enter') tr(); };
