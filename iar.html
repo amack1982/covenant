@@ -1454,12 +1454,16 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
   function _autoPt(t){ var a=Math.PI+t*Math.PI; return {x:75+52*Math.cos(a), y:75+52*Math.sin(a)}; }
   function _autoRing(){ if(AUTO.ring) return AUTO.ring;
     var w=document.createElement('div');
-    w.style.cssText='position:fixed;z-index:14;width:150px;height:150px;pointer-events:none;opacity:0;transform:scale(.9);transition:opacity .25s ease,transform .25s cubic-bezier(.2,.85,.25,1)';
+    w.style.cssText='position:fixed;z-index:15;width:150px;height:150px;pointer-events:none;visibility:hidden;opacity:0;transform:scale(.9);transition:opacity .25s ease,transform .25s cubic-bezier(.2,.85,.25,1);touch-action:none';
     var e0=_autoPt(0), e1=_autoPt(1);
-    w.innerHTML='<svg width="150" height="150" viewBox="0 0 150 150" style="overflow:visible">'
-      +'<path d="M'+e0.x+' '+e0.y+' A52 52 0 0 1 '+e1.x+' '+e1.y+'" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="7" stroke-linecap="round" data-hit style="pointer-events:auto;cursor:pointer"></path>'
+    var arcD='M'+e0.x+' '+e0.y+' A52 52 0 0 1 '+e1.x+' '+e1.y;
+    w.innerHTML='<svg width="150" height="150" viewBox="0 0 150 150" style="overflow:visible;touch-action:none">'
+      +'<path d="'+arcD+'" fill="none" stroke="rgba(8,9,12,.55)" stroke-width="13" stroke-linecap="round"></path>'
+      +'<path d="'+arcD+'" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="7" stroke-linecap="round"></path>'
       +'<path d="" fill="none" stroke="#d8b46a" stroke-width="7" stroke-linecap="round" data-fill></path>'
-      +'<circle r="8.5" fill="#d8b46a" stroke="#15110a" stroke-width="2" data-knob style="pointer-events:auto;cursor:grab"></circle>'
+      +'<path d="'+arcD+'" fill="none" stroke="transparent" stroke-width="34" stroke-linecap="round" data-hit style="pointer-events:stroke;cursor:pointer"></path>'
+      +'<circle r="17" fill="transparent" data-grab style="pointer-events:auto;cursor:grab"></circle>'
+      +'<circle r="8.5" fill="#d8b46a" stroke="#15110a" stroke-width="2" data-knob style="pointer-events:none;transition:r .18s ease"></circle>'
       +'<text data-lbl x="75" y="112" text-anchor="middle" fill="#d8b46a" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.4"></text></svg>';
     document.body.appendChild(w); AUTO.ring=w;
     var svg=w.querySelector('svg');
@@ -1467,12 +1471,25 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
       var a=Math.atan2(ev.clientY-cy, ev.clientX-cx); var t;
       if(a<=0) t=(a+Math.PI)/Math.PI; else t=(ev.clientX>=cx)?1:0;
       _autoSet(_autoSpd(Math.max(0,Math.min(1,t)))); }
-    var drag=false;
-    function down(ev){ ev.preventDefault(); ev.stopPropagation(); drag=true; fromEvent(ev); window.addEventListener('pointermove',move); window.addEventListener('pointerup',up); }
-    function move(ev){ if(drag) fromEvent(ev); }
-    function up(){ drag=false; window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); try{ localStorage.setItem('rb-autospeed',String(AUTO.spd)); }catch(e){} }
-    w.querySelector('[data-knob]').addEventListener('pointerdown',down);
+    var drag=false, knob=null;
+    function down(ev){ ev.preventDefault(); ev.stopPropagation(); drag=true;
+      knob=knob||w.querySelector('[data-knob]');
+      knob.setAttribute('r','11'); knob.style.filter='drop-shadow(0 0 9px rgba(216,180,106,.85))';
+      w.querySelector('[data-grab]').style.cursor='grabbing';
+      try{ ev.target.setPointerCapture(ev.pointerId); }catch(e){}
+      clearTimeout(AUTO.hideT); fromEvent(ev);
+      window.addEventListener('pointermove',move); window.addEventListener('pointerup',up); window.addEventListener('pointercancel',up); }
+    function move(ev){ if(!drag) return; ev.preventDefault(); clearTimeout(AUTO.hideT); fromEvent(ev); }
+    function up(){ if(!drag) return; drag=false;
+      if(knob){ knob.setAttribute('r','8.5'); knob.style.filter='none'; }
+      w.querySelector('[data-grab]').style.cursor='grab';
+      window.removeEventListener('pointermove',move); window.removeEventListener('pointerup',up); window.removeEventListener('pointercancel',up);
+      try{ localStorage.setItem('rb-autospeed',String(AUTO.spd)); }catch(e){} _autoRingPoke(); }
+    w.querySelector('[data-grab]').addEventListener('pointerdown',down);
     w.querySelector('[data-hit]').addEventListener('pointerdown',down);
+    w.addEventListener('wheel',function(ev){ ev.preventDefault(); ev.stopPropagation();
+      var t=Math.max(0,Math.min(1,_autoT()+(ev.deltaY<0?0.035:-0.035)));
+      _autoSet(_autoSpd(t)); try{ localStorage.setItem('rb-autospeed',String(AUTO.spd)); }catch(e){} },{passive:false});
     return w; }
   function _autoPaint(){ var w=_autoRing(), t=_autoT(), p=_autoPt(t), s=_autoPt(0);
     w.querySelector('[data-fill]').setAttribute('d','M'+s.x+' '+s.y+' A52 52 0 0 1 '+p.x+' '+p.y);
@@ -1481,11 +1498,11 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
   function _autoSet(v){ AUTO.spd=Math.max(AMIN,Math.min(AMAX,v)); _autoPaint(); try{ _autoRingPoke(); }catch(e){} }
   function _autoPlace(){ if(!AUTO.btn||!AUTO.ring) return; var r=AUTO.btn.getBoundingClientRect();
     AUTO.ring.style.left=(r.left+r.width/2-75)+'px'; AUTO.ring.style.top=(r.top+r.height/2-75)+'px'; }
-  function _autoRingPoke(){ if(!AUTO.ring) return; clearTimeout(AUTO.hideT); AUTO.ring.style.opacity='1'; AUTO.ring.style.transform='scale(1)';
-    AUTO.hideT=setTimeout(function(){ if(!AUTO.ring) return; AUTO.ring.style.opacity='0'; AUTO.ring.style.transform='scale(.9)'; },2600); }
+  function _autoRingPoke(){ if(!AUTO.ring) return; clearTimeout(AUTO.hideT); AUTO.ring.style.visibility='visible'; AUTO.ring.style.opacity='1'; AUTO.ring.style.transform='scale(1)';
+    AUTO.hideT=setTimeout(function(){ if(!AUTO.ring) return; AUTO.ring.style.opacity='0'; AUTO.ring.style.transform='scale(.9)'; setTimeout(function(){ if(AUTO.ring&&AUTO.ring.style.opacity==='0') AUTO.ring.style.visibility='hidden'; },300); },2600); }
   function autoRingSync(){ if(!AUTO.ring) return; var show=AUTO.on&&menuOpen;
     if(show){ _autoPlace(); AUTO.ring.style.pointerEvents='none'; _autoRingPoke(); }
-    else { clearTimeout(AUTO.hideT); AUTO.ring.style.opacity='0'; AUTO.ring.style.transform='scale(.9)'; } }
+    else { clearTimeout(AUTO.hideT); AUTO.ring.style.opacity='0'; AUTO.ring.style.transform='scale(.9)'; AUTO.ring.style.visibility='hidden'; } }
   function _autoStep(){ if(!AUTO.on) return; AUTO.acc+=AUTO.spd; var d=Math.floor(AUTO.acc);
     if(d){ AUTO.acc-=d; V.scrollTop+=d; if(V.scrollTop+V.clientHeight>=V.scrollHeight-2){ autoToggle(false); return; } } }
   function autoToggle(on){ AUTO.on=(on!=null)?!!on:!AUTO.on;
