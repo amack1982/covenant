@@ -1521,8 +1521,11 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
   function _autoSet(v){ AUTO.spd=Math.max(AMIN,Math.min(AMAX,v)); _autoPaint(); try{ _autoRingPoke(); }catch(e){} }
   function _autoItem(){ try{ return allItems.filter(function(x){return x.id==='auto';})[0]||null; }catch(e){ return null; } }
   function _autoPlace(){ if(!AUTO.btn||!AUTO.ring) return; var cx,cy, it=_autoItem();
-    if(menuOpen&&it&&fab){ var fr=fab.getBoundingClientRect(); cx=fr.left+fr.width/2+(it.dx||0); cy=fr.top+fr.height/2+(it.dy||0); }
-    else { var r=AUTO.btn.getBoundingClientRect(); cx=r.left+r.width/2; cy=r.top+r.height/2; }
+    var b=AUTO.btn, op=b.offsetParent, orx=0, ory=0;
+    if(op&&op!==document.body){ var opr=op.getBoundingClientRect(); orx=opr.left; ory=opr.top; }
+    else if(op===document.body){ var br=document.body.getBoundingClientRect(); orx=br.left; ory=br.top; }
+    if(menuOpen&&it){ cx=orx+b.offsetLeft+b.offsetWidth/2+(it.dx||0); cy=ory+b.offsetTop+b.offsetHeight/2+(it.dy||0); }
+    else { var r=b.getBoundingClientRect(); cx=r.left+r.width/2; cy=r.top+r.height/2; }
     var M=10, W=window.innerWidth||1024, H=window.innerHeight||768;
     var L=Math.max(M,Math.min(W-150-M,cx-75)), T=Math.max(M,Math.min(H-150-M,cy-75));
     AUTO.ring.style.left=L+'px'; AUTO.ring.style.top=T+'px'; }
