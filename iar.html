@@ -1526,7 +1526,8 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
       try{ var tm=getComputedStyle(AUTO.btn).transform; if(tm&&tm!=='none'){ var m=tm.match(/matrix(([^)]+))/); if(m){ var v=m[1].split(','); cx-=parseFloat(v[4])||0; cy-=parseFloat(v[5])||0; } }
         cx+=(it.dx||0); cy+=(it.dy||0); }catch(e){} }
     var M=10, W=window.innerWidth||1024, H=window.innerHeight||768;
-    var L=Math.max(M,Math.min(W-150-M,cx-75)), T=Math.max(M,Math.min(H-150-M,cy-75));
+    /* the visible dial occupies only the TOP half of the 150px box — clamp that, not the empty bottom half */
+    var L=Math.max(M,Math.min(W-150-M,cx-75)), T=Math.max(M,Math.min(H-92-M,cy-75));
     AUTO.ring.style.left=L+'px'; AUTO.ring.style.top=T+'px'; }
   function _autoRingPoke(){ if(!AUTO.ring) return; clearTimeout(AUTO.hideT); AUTO.ring.style.visibility='visible'; AUTO.ring.style.opacity='1'; AUTO.ring.style.transform='scale(1)';
     if(AUTO.on&&menuOpen) return; /* autoplay on + menu open: dial stays put until autoplay is switched off */
