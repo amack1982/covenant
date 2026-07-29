@@ -1522,6 +1522,9 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
   function _autoItem(){ try{ return allItems.filter(function(x){return x.id==='auto';})[0]||null; }catch(e){ return null; } }
   function _autoPlace(){ if(!AUTO.btn||!AUTO.ring) return; var cx,cy, it=_autoItem();
     var r=AUTO.btn.getBoundingClientRect(); cx=r.left+r.width/2; cy=r.top+r.height/2;
+    if(menuOpen&&it){ /* subtract the button's CURRENT transform translation (it may be mid-flight), add its FINAL radial offset */
+      try{ var tm=getComputedStyle(AUTO.btn).transform; if(tm&&tm!=='none'){ var m=tm.match(/matrix(([^)]+))/); if(m){ var v=m[1].split(','); cx-=parseFloat(v[4])||0; cy-=parseFloat(v[5])||0; } }
+        cx+=(it.dx||0); cy+=(it.dy||0); }catch(e){} }
     var M=10, W=window.innerWidth||1024, H=window.innerHeight||768;
     var L=Math.max(M,Math.min(W-150-M,cx-75)), T=Math.max(M,Math.min(H-150-M,cy-75));
     AUTO.ring.style.left=L+'px'; AUTO.ring.style.top=T+'px'; }
