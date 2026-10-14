@@ -283,6 +283,7 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
+<!-- covenant-studio: built 2026-10-14T14:14:43.933Z -->
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6442,5 +6443,68 @@ msg.style.color='rgba(200,140,140,0.7)';
 btn.textContent='Send';btn.disabled=false;
 });
 });
+</script>
+<script id="covenant-compendium">
+(function(CFG){
+    /* anonymous visit ping — always on, once per browser session; no name, no location */
+    try{ if(CFG.sbu&&CFG.sbk&&!sessionStorage.getItem('cov-visit')){ sessionStorage.setItem('cov-visit','1');
+      var sid=''; try{ sid=localStorage.getItem('cov-vid')||''; if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('cov-vid',sid); } }catch(e){}
+      fetch(CFG.sbu+'/rest/v1/events',{method:'POST',headers:{'Content-Type':'application/json',apikey:CFG.sbk,Authorization:'Bearer '+CFG.sbk,Prefer:'return=minimal'},body:JSON.stringify({book_id:'site',session_id:sid,type:'visit',chapter_id:'',para_order:0})}).catch(function(){}); } }catch(e){}
+    if(typeof monsCluster==='undefined'||typeof layoutMonsConstellation!=='function') return;
+    if(!monsCluster.some(function(n){ return n.name==='Compendium'; })) monsCluster.push({name:'Compendium',section:'__compendium'});
+    /* Relationship Web must stay at index 4 (the swirl code treats it as the centre); Compendium fills the pentagon's empty fifth seat */
+    var _lay=layoutMonsConstellation;
+    layoutMonsConstellation=function(cx,cy){ var c=monsCluster.length>5?monsCluster.splice(5,1)[0]:null; /* the site's layout only knows 5 seats — hide Compendium from it */
+      try{ _lay.apply(this,arguments); } finally{ if(c) monsCluster.push(c); } if(!c) return; var r=Math.min(W(),H())*0.22, a=-Math.PI/2+Math.PI*8/5; c.tx=cx+Math.cos(a)*r; c.ty=cy+Math.sin(a)*r; };
+    /* Studio-edited site text: roadmap statuses, travel quotes, Mons Concordia pages */
+    try{ if(typeof chapters==='object'&&chapters) Object.keys(CFG.roadmap||{}).forEach(function(k){ var p=k.split(':'), arr=chapters[p[0]]; (arr||[]).forEach(function(c){ if(String(c.num)===p[1]) c.status=CFG.roadmap[k]; }); }); }catch(e){}
+    try{ if(typeof showTravelQuote==='function'){ var _q=showTravelQuote; showTravelQuote=function(t,d){ if(CFG.quotes&&Object.prototype.hasOwnProperty.call(CFG.quotes,t)) t=CFG.quotes[t]; return _q.call(this,t,d); }; } }catch(e){}
+    try{ var AB=CFG.about||{}, byId={}; Object.keys(AB).forEach(function(k){ var i=k.lastIndexOf(':'); (byId[k.slice(0,i)]=byId[k.slice(0,i)]||{})[k.slice(i+1)]=AB[k]; });
+      Object.keys(byId).forEach(function(id){ var root=document.getElementById(id); if(!root) return; var out=[];
+        (function walk(n){ for(var c=n.firstElementChild;c;c=c.nextElementSibling){ if(c.classList&&c.classList.contains('contact-form')) continue; var only=true; for(var j=0;j<c.children.length;j++){ if(c.children[j].tagName!=='BR'){ only=false; break; } } if(only){ if(c.textContent.trim()) out.push(c); } else walk(c); } })(root);
+        Object.keys(byId[id]).forEach(function(i){ var el=out[+i]; if(!el) return; var d=document.createElement('div'); d.textContent=byId[id][i]; el.innerHTML=d.innerHTML.split('\n').join('<br>'); }); }); }catch(e){}
+    var _about=showAbout;
+    showAbout=function(section){ if(section==='__compendium'){ openCompendium(); return; } return _about.apply(this,arguments); };
+    var box=null, busy=false;
+    function el(id){ return document.getElementById(id); }
+    /* one player: site music runs on into the reader and fades out the moment the reader's first audio cue fires (or on exit) */
+    function fadeSite(ms){ var a=el('bgm-web'); if(!a||a.paused) return; clearInterval(a.__covF); var v0=a.volume, t0=Date.now();
+      a.__covF=setInterval(function(){ var k=Math.min(1,(Date.now()-t0)/ms); try{ a.volume=Math.max(0,v0*(1-k)); }catch(e){} if(k>=1){ clearInterval(a.__covF); try{ a.pause(); a.volume=v0; }catch(e){} } },50); }
+    function sitePlaying(){ var a=el('bgm-web'); return !!(a&&!a.paused); }
+    window.addEventListener('message',function(e){ var d=e.data; if(!d||!d.cov||!box) return;
+      if(d.type==='cue') fadeSite(1800); else if(d.type==='exit') closeCompendium(); });
+    function chrome(show){ ['infobtn','musicbtn'].forEach(function(i){ var e=el(i); if(e) e.style.display=show?'':'none'; }); }
+    function openCompendium(){ if(busy||box) return; busy=true; chrome(false);
+      var ov=el('fade-overlay'); ov.style.pointerEvents='auto'; ov.style.opacity='1';
+      if(CFG.quoteIn) showTravelQuote(CFG.quoteIn,5000);
+      box=document.createElement('div'); box.id='compendium'; box.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;background:#050506;visibility:hidden'; /* visibility, not display:none — the reader must lay out at full size while it loads behind the quote */
+      var f=document.createElement('iframe'); f.src=CFG.book+'?site=1&bgm='+(sitePlaying()?1:0); f.title='Compendium'; f.setAttribute('allow','fullscreen; autoplay'); f.setAttribute('allowfullscreen','');
+      f.style.cssText='border:0;width:100%;height:100%;display:block;background:#050506'; box.appendChild(f); document.body.appendChild(box);
+      /* quote rolls away fully (750ms) before the seams start to part */
+      setTimeout(function(){ if(CFG.quoteIn) rollAwayQuote(); }, CFG.quoteIn?3000:0);
+      setTimeout(function(){ var sl=el('seam-left'), sr=el('seam-right');
+        sl.style.display='block'; sr.style.display='block'; void sl.offsetWidth; box.style.visibility='visible';
+        setTimeout(function(){ ov.style.opacity='0'; ov.style.pointerEvents='none'; sl.classList.add('open'); sr.classList.add('open'); busy=false; try{ f.focus(); }catch(e){} },100);
+      }, CFG.quoteIn?3950:900); }
+    /* leaving: whatever the reader is playing carries on as the site's music (same track, same moment); otherwise site music is left as it was */
+    function closeCompendium(){ if(!box||busy) return; busy=true; var done=false;
+      function onH(e){ var d=e.data; if(d&&d.cov&&d.type==='handoff') go(d); }
+      function go(h){ if(done) return; done=true; window.removeEventListener('message',onH);
+        if(h&&h.src){ var a=el('bgm-web'); if(a){ clearInterval(a.__covF); var T=h.t||0; try{ a.src=h.src; a.loop=true; a.volume=Math.min(1,Math.max(0.05,h.vol||0.8)); }catch(e){}
+          var seek=function(){ try{ a.currentTime=T; }catch(e){} }; a.addEventListener('loadedmetadata',seek,{once:true}); seek(); var pl=a.play(); if(pl&&pl.catch) pl.catch(function(){}); } }
+        shut(); }
+      window.addEventListener('message',onH);
+      try{ box.firstChild.contentWindow.postMessage({cov:1,type:'handoff?'},'*'); }catch(e){}
+      setTimeout(function(){ go(null); },350); }
+    function shut(){ var sl=el('seam-left'), sr=el('seam-right');
+      sl.classList.remove('open'); sr.classList.remove('open');
+      setTimeout(function(){ if(box) box.remove(); box=null;
+        var ov=el('fade-overlay'); ov.style.transition='none'; ov.style.opacity='1'; ov.style.pointerEvents='auto'; void ov.offsetWidth;
+        sl.style.display='none'; sr.style.display='none';
+        ov.style.transition='opacity 1.4s'; ov.style.opacity='0'; ov.style.pointerEvents='none';
+        setTimeout(function(){ ov.style.transition='opacity 2.25s'; chrome(true); busy=false; },1400);
+      },1300); }
+    window.CovenantSite={ openCompendium:openCompendium, closeCompendium:closeCompendium };
+  })({"quoteIn":"At last, we begin.","book":"book.html","roadmap":{},"quotes":{},"about":{},"sbu":"https://qnnkguvmzdvnsbnxxpbz.supabase.co","sbk":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubmtndXZtemR2bnNibnh4cGJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMDE4OTksImV4cCI6MjA5Nzg3Nzg5OX0.txBQjtXReYpFRU0p0YaBeyy3_3CjuLAPHJsmlwNHjyE"});
 </script>
 </body></html>
