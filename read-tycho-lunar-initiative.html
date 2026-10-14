@@ -860,12 +860,14 @@ function firstBed(){ try{ var fp=document.querySelector('p[data-oi]'); if(!fp) r
 function warmBed(b){ if(!b||!trackSrc[b.trackId]) return null; var a=getAudio(trackSrc[b.trackId]); try{ a.preload='auto'; a.load(); }catch(e){} return a; }
 (function(){ var b=firstBed(); if(b) warmBed(b); })();
 function _fadeVol(el,from,to,ms,done){ try{ if(el&&el.__fadeT){ clearInterval(el.__fadeT); el.__fadeT=null; } }catch(e){} try{el.volume=Math.max(0,Math.min(1,from));}catch(e){} var steps=Math.max(1,Math.round(ms/25)),i=0; var f=setInterval(function(){ i++; var t=i/steps; t=t*t*(3-2*t); var v=from+(to-from)*t; try{ el.volume=Math.max(0,Math.min(1,v)); }catch(e){} if(i>=steps){ clearInterval(f); try{ if(el.__fadeT===f) el.__fadeT=null; }catch(e){} if(done)done(); } },25); try{ el.__fadeT=f; }catch(e){} return f; }
-function setBed(b){ if(!dirStarted) return; if(b) _siteCue(); var newEl=(b&&trackSrc[b.trackId]&&!muted)?getAudio(trackSrc[b.trackId]):null;
+function setBed(b){ if(!dirStarted) return; var newEl=(b&&trackSrc[b.trackId]&&!muted)?getAudio(trackSrc[b.trackId]):null; if(b&&!newEl) _siteCue();
   if(newEl && curEl===newEl && (b&&b.id)===(curBed&&curBed.id)){ if(!newEl.paused) return; if(newEl.ended && b && b.loop===false) return; }
   var cf=Math.max(300,((b&&b.fadeIn!=null)?b.fadeIn:1.6)*1000); if(!curEl) cf=Math.max(cf,700);
   if(curEl && curEl!==newEl){ var e=curEl; _fadeVol(e,e.volume,0,cf,function(){ try{e.pause();}catch(x){} }); }
   curBed=b; curBgm=(b&&!b.silence&&trackName[b.trackId])||'';
-  if(newEl){ var a=newEl; a.loop=b.loop!==false; if(a!==curEl){ try{a.currentTime=b.startTime||0;}catch(_){} } try{ if(a.paused) a.volume=0; }catch(_){} var tv=b.volume!=null?b.volume:.8; var pr=a.play(); if(pr&&pr.then){ pr.then(function(){ _fadeVol(a,a.volume,tv,cf); }).catch(function(){ try{a.volume=tv;}catch(e){} }); } else { _fadeVol(a,a.volume,tv,cf); } curEl=a; } else { curEl=null; } }
+  if(newEl){ var a=newEl; a.loop=b.loop!==false; if(a!==curEl){ try{a.currentTime=b.startTime||0;}catch(_){} } try{ if(a.paused) a.volume=0; }catch(_){} var tv=b.volume!=null?b.volume:.8; var pr=a.play(); if(pr&&pr.then){ pr.then(function(){ _siteCue(); _fadeVol(a,a.volume,tv,cf); }).catch(function(){ _bedRetry(a,tv,cf); }); } else { _siteCue(); _fadeVol(a,a.volume,tv,cf); } curEl=a; } else { curEl=null; } }
+/* the browser refused to start sound without a tap in this page (each work is a fresh page): keep the site music going, and start this bed on the reader's first tap/key */
+var _bedPend=null; function _bedRetry(a,tv,cf){ _bedPend={a:a,tv:tv,cf:cf}; if(_bedRetry._on) return; _bedRetry._on=true; var go=function(){ var p=_bedPend; if(!p) return; _bedPend=null; if(curEl!==p.a||muted) return; var q=p.a.play(); if(q&&q.then) q.then(function(){ _siteCue(); _fadeVol(p.a,p.a.volume,p.tv,p.cf); }).catch(function(){ _bedPend=p; }); }; ['pointerdown','touchend','keydown'].forEach(function(ev){ document.addEventListener(ev,go,true); }); }
 const firedSt={};
 var _audioUnlocked=false;
 function _unlockAudio(){ if(_audioUnlocked) return; _audioUnlocked=true; try{ var s=new Audio('data:audio/wav;base64,UklGRkQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA=='); s.volume=0; var pr=s.play(); if(pr&&pr.catch) pr.catch(function(){}); }catch(e){} }

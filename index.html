@@ -283,7 +283,7 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-14T14:50:16.366Z -->
+<!-- covenant-studio: built 2026-10-14T22:21:25.894Z -->
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6446,6 +6446,7 @@ btn.textContent='Send';btn.disabled=false;
 </script>
 <script id="covenant-compendium">
 (function(CFG){
+    if(/(^|[#&])(access_token|error_description)=/.test(location.hash||'')){ location.replace(CFG.book+location.hash); return; }
     /* anonymous visit ping — always on, once per browser session; no name, no location */
     try{ if(CFG.sbu&&CFG.sbk&&!sessionStorage.getItem('cov-visit')){ sessionStorage.setItem('cov-visit','1');
       var sid=''; try{ sid=localStorage.getItem('cov-vid')||''; if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('cov-vid',sid); } }catch(e){}
