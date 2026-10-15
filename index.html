@@ -283,7 +283,7 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-15T11:26:01.746Z -->
+<!-- covenant-studio: built 2026-10-15T11:38:50.564Z -->
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6446,7 +6446,8 @@ btn.textContent='Send';btn.disabled=false;
 </script>
 <script id="covenant-compendium">
 (function(CFG){
-    if(/(^|[#&])(access_token|error_description)=/.test(location.hash||'')){ location.replace(CFG.book+location.hash); return; }
+    /* sign-in tokens arriving on the home page: open the Compendium INSIDE the site and hand them over (never leave the site — the reader would lose site mode) */
+    var _tokH=/(^|[#&])(access_token|error_description)=/.test(location.hash||'')?location.hash:'';
     /* anonymous visit ping — always on, once per browser session; no name, no location */
     try{ if(CFG.sbu&&CFG.sbk&&!sessionStorage.getItem('cov-visit')){ sessionStorage.setItem('cov-visit','1');
       var sid=''; try{ sid=localStorage.getItem('cov-vid')||''; if(!sid){ sid=Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('cov-vid',sid); } }catch(e){}
@@ -6468,8 +6469,8 @@ btn.textContent='Send';btn.disabled=false;
     showAbout=function(section){ if(section==='__compendium'){ openCompendium(); return; } return _about.apply(this,arguments); };
     var box=null, busy=false;
     /* back from Google sign-in: the whole site tab went to Google, so reopen the Compendium straight away and hand it the sign-in tokens */
-    var _ret=/[?&]compendium=1/.test(location.search), _retH=_ret?location.hash:'';
-    if(_ret){ try{ history.replaceState(null,'',location.pathname); }catch(e){} setTimeout(function(){ openCompendium(true,_retH); },0); }
+    var _ret=/[?&]compendium=1/.test(location.search)||!!_tokH, _retH=_tokH||(_ret?location.hash:'');
+    if(_ret){ try{ history.replaceState(null,'',location.pathname+location.search.replace(/[?&]compendium=1/,'').replace(/^&/,'?')); }catch(e){} setTimeout(function(){ openCompendium(true,_retH); },0); }
     function el(id){ return document.getElementById(id); }
     /* one player: site music runs on into the reader and fades out the moment the reader's first audio cue fires (or on exit) */
     function fadeSite(ms){ var a=el('bgm-web'); if(!a||a.paused) return; clearInterval(a.__covF); var v0=a.volume, t0=Date.now();
