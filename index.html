@@ -283,7 +283,7 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-15T12:08:49.481Z -->
+<!-- covenant-studio: built 2026-10-15T12:22:53.645Z -->
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6491,8 +6491,9 @@ btn.textContent='Send';btn.disabled=false;
       if(d.op==='leave'){ poolEls().forEach(function(x){ if(x.__page===d.page){ x.__orphan=true; if(x.paused) release(x); } }); return; }
       if(d.op==='src'){ if(a&&a.__srcUrl===d.v) return;
         var ad=null; poolEls().forEach(function(x){ if(!ad&&x.__orphan&&!x.paused&&x.__srcUrl===d.v) ad=x; });
-        if(ad){ ad.__orphan=false; ad.__page=d.page; ad.__adoptP=true; ad.__adopt=0; if(carried===ad) carried=null; pool[key]=ad; return; }
+        if(ad){ ad.__orphan=false; ad.__page=d.page; ad.__id=d.id; ad.__adoptP=true; ad.__adopt=0; if(carried===ad) carried=null; pool[key]=ad; try{ src.postMessage({cov:1,type:'auev',page:d.page,id:d.id,ev:'canplay',rs:4},'*'); }catch(e){} return; }
         if(!a){ a=alloc(); pool[key]=a; a.__page=d.page; a.__id=d.id;
+          ['canplay','canplaythrough'].forEach(function(t){ a.addEventListener(t,function(){ var w=srcWin[a.__page]; if(w){ try{ w.postMessage({cov:1,type:'auev',page:a.__page,id:a.__id,ev:t,rs:a.readyState},'*'); }catch(e){} } }); });
           a.addEventListener('ended',function(){ var w=srcWin[a.__page]; if(w&&!a.loop){ try{ w.postMessage({cov:1,type:'auend',page:a.__page,id:a.__id},'*'); }catch(e){} } }); }
         a.__srcUrl=d.v; try{ a.src=d.v; }catch(e){} return; }
       if(!a) return;

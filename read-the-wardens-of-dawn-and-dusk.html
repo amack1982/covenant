@@ -855,11 +855,14 @@ if(SITEMODE&&/[?&]bgm=/.test(location.search)){ var _sbgm=/[?&]bgm=1/.test(locat
 var PROXY=SITEMODE&&window.parent&&window.parent!==window;
 var _PXP='pg'+Math.random().toString(36).slice(2,9), _pxN=0, _pxWait={}, _pxEls={};
 function _pxPost(m){ m.cov=1; m.page=_PXP; try{ window.parent.postMessage(m,'*'); }catch(e){} }
-function ProxyAudio(){ this._id='a'+(++_pxN); this._src=''; this._vol=1; this._loop=false; this.paused=true; this.ended=false; this._ct=0; this._ctAt=Date.now(); this.preload='none'; this.__fadeT=null; _pxEls[this._id]=this; }
+function ProxyAudio(){ this.readyState=0; this._ev={}; this._id='a'+(++_pxN); this._src=''; this._vol=1; this._loop=false; this.paused=true; this.ended=false; this._ct=0; this._ctAt=Date.now(); this.preload='none'; this.__fadeT=null; _pxEls[this._id]=this; }
 Object.defineProperty(ProxyAudio.prototype,'src',{get:function(){ return this._src; },set:function(v){ var u=v; try{ u=new URL(v,location.href).href; }catch(e){} this._src=u; _pxPost({type:'au',op:'src',id:this._id,v:u}); }});
 Object.defineProperty(ProxyAudio.prototype,'volume',{get:function(){ return this._vol; },set:function(v){ v=Math.max(0,Math.min(1,+v||0)); if(Math.abs(v-this._vol)<0.002&&v!==0&&v!==1) return; this._vol=v; _pxPost({type:'au',op:'vol',id:this._id,v:v}); }});
 Object.defineProperty(ProxyAudio.prototype,'loop',{get:function(){ return this._loop; },set:function(v){ this._loop=!!v; _pxPost({type:'au',op:'loop',id:this._id,v:!!v}); }});
 Object.defineProperty(ProxyAudio.prototype,'currentTime',{get:function(){ return this.paused?this._ct:this._ct+(Date.now()-this._ctAt)/1000; },set:function(v){ this._ct=+v||0; this._ctAt=Date.now(); _pxPost({type:'au',op:'seek',id:this._id,v:this._ct}); }});
+ProxyAudio.prototype.addEventListener=function(t,fn,o){ (this._ev[t]=this._ev[t]||[]).push({fn:fn,once:!!(o&&(o===true||o.once))}); };
+ProxyAudio.prototype.removeEventListener=function(t,fn){ var l=this._ev[t]; if(l) this._ev[t]=l.filter(function(x){ return x.fn!==fn; }); };
+ProxyAudio.prototype._fire=function(t){ var l=(this._ev[t]||[]).slice(), s=this; this._ev[t]=(this._ev[t]||[]).filter(function(x){ return !x.once; }); l.forEach(function(x){ try{ x.fn.call(s,{type:t,target:s}); }catch(e){} }); };
 ProxyAudio.prototype.load=function(){ _pxPost({type:'au',op:'load',id:this._id}); };
 ProxyAudio.prototype.pause=function(){ if(!this.paused){ this._ct=this.currentTime; } this.paused=true; _pxPost({type:'au',op:'pause',id:this._id}); };
 ProxyAudio.prototype.play=function(){ var s=this; if(s.paused){ s._ctAt=Date.now(); } s.paused=false; s.ended=false;
@@ -867,7 +870,8 @@ ProxyAudio.prototype.play=function(){ var s=this; if(s.paused){ s._ctAt=Date.now
     setTimeout(function(){ var w=_pxWait[k]; if(w){ delete _pxWait[k]; w.res(); } },4000); }); };
 if(PROXY){ window.addEventListener('message',function(e){ var d=e.data; if(!d||!d.cov||d.page!==_PXP) return;
     if(d.type==='aured'){ var w=_pxWait[d.k]; if(w){ delete _pxWait[d.k]; if(d.ok) w.res(); else w.rej(); } }
-    else if(d.type==='auend'){ var a=_pxEls[d.id]; if(a){ a.ended=true; a.paused=true; a._ct=0; } }
+    else if(d.type==='auend'){ var a=_pxEls[d.id]; if(a){ a.ended=true; a.paused=true; a._ct=0; a._fire('ended'); } }
+    else if(d.type==='auev'){ var a3=_pxEls[d.id]; if(a3){ if(d.rs!=null) a3.readyState=d.rs; a3._fire(d.ev); } }
     else if(d.type==='autime'){ var a2=_pxEls[d.id]; if(a2){ a2._ct=+d.t||0; a2._ctAt=Date.now(); } } });
   window.addEventListener('pagehide',function(){ _pxPost({type:'au',op:'leave'}); });
   _pxPost({type:'au',op:'hello'}); }
@@ -928,7 +932,7 @@ function persistFScale(){ try{ localStorage.setItem('rb-fscale',String(rbFScale)
 applyFScale(false);
 // landing gate + opening transition (gate exit paired with book entrance)
 const gx=document.getElementById('gx'), gate=document.getElementById('gate'), pw=(M.publish&&M.publish.password||''), pwcs=!!(M.publish&&M.publish.passwordCaseSensitive);
-(function(){ var _L=M.library||null; if(!_L&&!SITEMODE) return; var bk=document.createElement('button'); bk.textContent=_L?'◂ CONTENTS':'◂ MONS CONCORDIA'; bk.title=_L?'Back to the Compendium contents':'Back to Mons Concordia';
+(function(){ var _L=M.library||null; if(!_L&&!SITEMODE) return; if(!pw) return; var bk=document.createElement('button'); bk.textContent=_L?'◂ CONTENTS':'◂ MONS CONCORDIA'; bk.title=_L?'Back to the Compendium contents':'Back to Mons Concordia';
   bk.style.cssText='position:absolute;top:18px;left:18px;z-index:5;background:rgba(5,5,6,.55);border:1px solid rgba(216,180,106,.4);color:#d8b46a;font-family:JetBrains Mono,monospace;font-size:10px;letter-spacing:.22em;padding:10px 14px;border-radius:999px;cursor:pointer';
   bk.onclick=function(e){ e.stopPropagation(); if(_L){ try{ var pv=window.__covPrevLast; if(pv&&pv!==_L.file) localStorage.setItem('cov-last',pv); else localStorage.removeItem('cov-last'); }catch(x){} location.href=_L.contents+'?contents=1'+(SITEMODE?'&site=1':''); } else _siteSend('exit'); };
   gate.appendChild(bk); })();
