@@ -283,7 +283,7 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-15T11:38:50.564Z -->
+<!-- covenant-studio: built 2026-10-15T12:08:49.481Z -->
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6475,11 +6475,51 @@ btn.textContent='Send';btn.disabled=false;
     /* one player: site music runs on into the reader and fades out the moment the reader's first audio cue fires (or on exit) */
     function fadeSite(ms){ var a=el('bgm-web'); if(!a||a.paused) return; clearInterval(a.__covF); var v0=a.volume, t0=Date.now();
       a.__covF=setInterval(function(){ var k=Math.min(1,(Date.now()-t0)/ms); try{ a.volume=Math.max(0,v0*(1-k)); }catch(e){} if(k>=1){ clearInterval(a.__covF); try{ a.pause(); a.volume=v0; }catch(e){} } },50); }
-    function sitePlaying(){ var a=el('bgm-web'); return !!(a&&!a.paused); }
-    window.addEventListener('message',function(e){ var d=e.data; if(!d||!d.cov||!box) return;
-      if(d.type==='cue') fadeSite(1800); else if(d.type==='exit') closeCompendium(); });
+    function sitePlaying(){ var a=el('bgm-web'); return !!((a&&!a.paused)||(carried&&!carried.paused)); }
+    /* ONE PLAYER: every sound in the Compendium plays here, so music never stops or restarts as the reader moves between pages */
+    var SIL='data:audio/wav;base64,UklGRkQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSAAAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
+    var pool={}, free=[], srcOf={}, carried=null;
+    function unlockPool(){ for(var i=free.length;i<4;i++){ (function(){ var a=new Audio(); a.__free=1; try{ a.src=SIL; a.volume=0; var p=a.play(); if(p&&p.then) p.then(function(){ a.pause(); }).catch(function(){}); }catch(e){} free.push(a); })(); } }
+    function alloc(){ var a=free.pop()||new Audio(); a.__free=0; a.preload='auto'; return a; }
+    function release(a){ try{ a.pause(); }catch(e){} Object.keys(pool).forEach(function(k){ if(pool[k]===a) delete pool[k]; }); if(carried===a) carried=null; a.__page=null; a.__orphan=false; a.__adopt=0; a.__adoptP=false; try{ a.removeAttribute('src'); a.load(); }catch(e){} a.__free=1; if(free.length<6) free.push(a); }
+    function poolEls(){ var out=[]; Object.keys(pool).forEach(function(k){ if(out.indexOf(pool[k])<0) out.push(pool[k]); }); if(carried&&out.indexOf(carried)<0) out.push(carried); return out; }
+    function fadeOut(a,ms){ clearInterval(a.__covF); var v0=a.volume, t0=Date.now(); a.__covF=setInterval(function(){ var k=Math.min(1,(Date.now()-t0)/ms); try{ a.volume=Math.max(0,v0*(1-k)); }catch(e){} if(k>=1){ clearInterval(a.__covF); release(a); } },50); }
+    function takeOver(page){ fadeSite(1800); poolEls().forEach(function(a){ if((a.__orphan||a.__page!==page||a.__adoptP)&&!a.paused) fadeOut(a,1800); }); carried=null; }
+    var srcWin={};
+    function onAu(d,src){ var key=d.page+':'+d.id, a=pool[key]; srcWin[d.page]=src;
+      if(d.op==='hello'){ return; }
+      if(d.op==='leave'){ poolEls().forEach(function(x){ if(x.__page===d.page){ x.__orphan=true; if(x.paused) release(x); } }); return; }
+      if(d.op==='src'){ if(a&&a.__srcUrl===d.v) return;
+        var ad=null; poolEls().forEach(function(x){ if(!ad&&x.__orphan&&!x.paused&&x.__srcUrl===d.v) ad=x; });
+        if(ad){ ad.__orphan=false; ad.__page=d.page; ad.__adoptP=true; ad.__adopt=0; if(carried===ad) carried=null; pool[key]=ad; return; }
+        if(!a){ a=alloc(); pool[key]=a; a.__page=d.page; a.__id=d.id;
+          a.addEventListener('ended',function(){ var w=srcWin[a.__page]; if(w&&!a.loop){ try{ w.postMessage({cov:1,type:'auend',page:a.__page,id:a.__id},'*'); }catch(e){} } }); }
+        a.__srcUrl=d.v; try{ a.src=d.v; }catch(e){} return; }
+      if(!a) return;
+      var adopting=a.__adoptP||(a.__adopt&&(Date.now()-a.__adopt<2500));
+      if(d.op==='vol'){ if(adopting&&d.v<a.volume) return; clearInterval(a.__covF); try{ a.volume=d.v; }catch(e){} }
+      else if(d.op==='loop'){ a.loop=!!d.v; }
+      else if(d.op==='seek'){ if(adopting) return; try{ a.currentTime=d.v; }catch(e){} }
+      else if(d.op==='load'){ if(a.paused&&!adopting){ a.preload='auto'; try{ a.load(); }catch(e){} } }
+      else if(d.op==='pause'){ try{ a.pause(); }catch(e){} }
+      else if(d.op==='play'){ if(a.__adoptP){ a.__adoptP=false; a.__adopt=Date.now(); } var reply=function(ok){ try{ src.postMessage({cov:1,type:'aured',page:d.page,k:d.k,ok:ok},'*'); }catch(e){} };
+        if(adopting&&!a.paused){ reply(true); try{ src.postMessage({cov:1,type:'autime',page:d.page,id:d.id,t:a.currentTime},'*'); }catch(e){} return; }
+        var p; try{ p=a.play(); }catch(e){ reply(false); return; } if(p&&p.then) p.then(function(){ reply(true); }).catch(function(){ reply(false); }); else reply(true); } }
+    /* after leaving the Compendium, the site's music button controls whatever the reader was playing */
+    function hookBtn(){ var mb=el('musicbtn'); if(!mb||mb.__covHook) return; mb.__covHook=1;
+      mb.addEventListener('click',function(ev){ if(!carried) return; ev.stopImmediatePropagation(); ev.stopPropagation();
+        if(carried.paused){ var p=carried.play(); if(p&&p.catch) p.catch(function(){}); mb.innerHTML='&#9208;'; } else { carried.pause(); mb.innerHTML='&#9654;'; } },true); }
+    function playAt(h){ var a=el('bgm-web'); if(!a||!h||!h.src) return; clearInterval(a.__covF);
+      var T=(h.t||0)+(h.at?Math.max(0,(Date.now()-h.at)/1000):0), want=true;
+      var fix=function(){ if(!want) return; try{ var d=a.duration; var t=(d&&isFinite(d)&&d>0)?(T%d):T; if(Math.abs(a.currentTime-t)>0.6) a.currentTime=t; }catch(e){} };
+      if(a.src!==h.src){ try{ a.src=h.src; }catch(e){} }
+      a.loop=true; try{ a.volume=Math.min(1,Math.max(0.05,h.vol||0.8)); }catch(e){}
+      if(a.readyState>=1) fix(); a.addEventListener('loadedmetadata',fix,{once:true}); a.addEventListener('canplay',fix,{once:true}); a.addEventListener('playing',function(){ fix(); setTimeout(function(){ want=false; },400); },{once:true});
+      var pl=a.play(); if(pl&&pl.catch) pl.catch(function(){}); }
+    window.addEventListener('message',function(e){ var d=e.data; if(!d||!d.cov) return; if(d.type==='au'){ onAu(d,e.source); return; } if(!box) return;
+      if(d.type==='cue') takeOver(d.page); else if(d.type==='carry') playAt(d); else if(d.type==='exit') closeCompendium(); });
     function chrome(show){ ['infobtn','musicbtn'].forEach(function(i){ var e=el(i); if(e) e.style.display=show?'':'none'; }); }
-    function openCompendium(fast,hash){ if(busy||box) return; busy=true; chrome(false); var QI=fast===true?null:CFG.quoteIn;
+    function openCompendium(fast,hash){ if(busy||box) return; busy=true; chrome(false); unlockPool(); var QI=fast===true?null:CFG.quoteIn;
       var ov=el('fade-overlay'); ov.style.pointerEvents='auto'; ov.style.opacity='1';
       if(QI) showTravelQuote(QI,5000);
       box=document.createElement('div'); box.id='compendium'; box.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;background:#050506;visibility:hidden'; /* visibility, not display:none — the reader must lay out at full size while it loads behind the quote */
@@ -6492,11 +6532,16 @@ btn.textContent='Send';btn.disabled=false;
         setTimeout(function(){ ov.style.opacity='0'; ov.style.pointerEvents='none'; sl.classList.add('open'); sr.classList.add('open'); busy=false; try{ f.focus(); }catch(e){} },100);
       }, QI?3950:(fast===true?200:900)); }
     /* leaving: whatever the reader is playing carries on as the site's music (same track, same moment); otherwise site music is left as it was */
-    function closeCompendium(){ if(!box||busy) return; busy=true; var done=false;
+    function closeCompendium(){ if(!box||busy) return;
+      var live=poolEls().filter(function(a){ return !a.paused&&a.volume>0.01; });
+      if(live.length){ busy=true; var keep=live.filter(function(a){ return a.loop; }).sort(function(x,y){ return y.volume-x.volume; })[0]||null;
+        live.forEach(function(a){ if(a!==keep) fadeOut(a,900); }); Object.keys(pool).forEach(function(k){ if(pool[k]===keep) delete pool[k]; });
+        if(keep){ keep.__orphan=true; keep.__page=null; carried=keep; hookBtn(); var mb=el('musicbtn'); if(mb) mb.innerHTML='&#9208;'; }
+        shut(); return; }
+      busy=true; var done=false;
       function onH(e){ var d=e.data; if(d&&d.cov&&d.type==='handoff') go(d); }
       function go(h){ if(done) return; done=true; window.removeEventListener('message',onH);
-        if(h&&h.src){ var a=el('bgm-web'); if(a){ clearInterval(a.__covF); var T=h.t||0; try{ a.src=h.src; a.loop=true; a.volume=Math.min(1,Math.max(0.05,h.vol||0.8)); }catch(e){}
-          var seek=function(){ try{ a.currentTime=T; }catch(e){} }; a.addEventListener('loadedmetadata',seek,{once:true}); seek(); var pl=a.play(); if(pl&&pl.catch) pl.catch(function(){}); } }
+        if(h&&h.src) playAt(h);
         shut(); }
       window.addEventListener('message',onH);
       try{ box.firstChild.contentWindow.postMessage({cov:1,type:'handoff?'},'*'); }catch(e){}
