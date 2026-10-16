@@ -283,7 +283,7 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-15T12:39:05.502Z -->
+<!-- covenant-studio: built 2026-10-16T13:13:36.577Z -->
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6470,7 +6470,52 @@ btn.textContent='Send';btn.disabled=false;
     var box=null, busy=false;
     /* back from Google sign-in: the whole site tab went to Google, so reopen the Compendium straight away and hand it the sign-in tokens */
     var _ret=/[?&]compendium=1/.test(location.search)||!!_tokH, _retH=_tokH||(_ret?location.hash:'');
-    if(_ret){ try{ history.replaceState(null,'',location.pathname+location.search.replace(/[?&]compendium=1/,'').replace(/^&/,'?')); }catch(e){} setTimeout(function(){ openCompendium(true,_retH); },0); }
+    function instantMons(){ try{
+      var ip=el('infopanel'); if(ip) ip.style.display='none'; var cg=el('cov-gate'); if(cg) cg.remove(); var pc=el('preload-cover'); if(pc) pc.remove(); var oo=el('opening-overlay'); if(oo) oo.style.display='none';
+      if(monsState==='cluster') return;
+      var mc=nodes['To Mons Concordia']; if(!mc) return; mc.x=mc.tx; mc.y=mc.ty; monsDist=Math.max(W(),H())*0.9;
+      var dx=mc.x+Math.cos(monsAngle)*monsDist, dy=mc.y+Math.sin(monsAngle)*monsDist; layoutMonsConstellation(dx,dy);
+      for(var i=0;i<monsCluster.length;i++){ monsCluster[i].wx=monsCluster[i].tx; monsCluster[i].wy=monsCluster[i].ty; }
+      camOX=dx-CX(); camOY=dy-CY(); starOffX=camOX; starOffY=camOY; monsTransitPr=1; monsLabelAlpha=1; travelState='cluster-mons'; monsState='cluster';
+      var t=document.querySelector('#title-bar h1'), sb=document.querySelector('#title-bar .sub'); if(t){ t.textContent='MONS CONCORDIA'; t.style.opacity='1'; } if(sb){ sb.textContent='The Covenant of The Flowers'; sb.style.opacity='1'; }
+      ['legend','instructions'].forEach(function(i2){ var e2=el(i2); if(e2) e2.style.opacity='0'; }); var ib=el('infobtn'); if(ib){ ib.style.opacity='0'; ib.style.pointerEvents='none'; }
+      try{ whDiv.style.opacity='0'; }catch(e){} try{ render(); }catch(e){}
+    }catch(e){} }
+    /* SITE GATE: replaces the old "Note to the Visitor". Sign-in, music and theme are set here once for the whole site; ENTER starts the opening. */
+    var _door=!!_tokH&&LS0('cov-auth-door')==='1'; window.__covDoorReturn=_door; if(_door){ _ret=false; try{ localStorage.removeItem('cov-auth-door'); }catch(e){} }
+    (function gate(){ if(_ret) return; var ip=el('infopanel'); if(ip) ip.style.display='none'; if(typeof openingSequence!=='function') { if(ip) ip.style.display=''; return; }
+      var st=document.createElement('style'); st.textContent='#cov-gate{position:fixed;inset:0;z-index:205;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse 70% 55% at 50% 40%,rgba(74,144,217,.10),transparent 70%),#0a0e14;transition:opacity .6s ease}'+
+        '#cov-gate .p{max-width:440px;width:100%;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}#cov-gate .s{font-family:"EB Garamond",serif;font-style:italic;color:#7888a0;font-size:1.05rem;margin:0 0 6px;line-height:1.5}'+
+        '#cov-gate .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}#cov-gate .tg{white-space:nowrap;background:rgba(74,144,217,.08);border:1px solid rgba(74,144,217,.3);color:#8aaac8;font-family:"Cormorant Garamond",serif;font-weight:600;font-size:14px;letter-spacing:.14em;padding:9px 18px;border-radius:999px;cursor:pointer}#cov-gate .tg:hover{background:rgba(74,144,217,.16)}'+
+        '#cov-gate #wm{position:fixed;bottom:18px;right:18px;width:44px;height:44px;border-radius:50%;background:rgba(74,144,217,.08);border:1px solid rgba(74,144,217,.35);color:#8aaac8;font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:opacity .25s,background .25s}#cov-gate #wm:hover{background:rgba(74,144,217,.18)}#cov-gate #wm.off{opacity:.45}#cov-gate #wm.off:after{content:"";position:absolute;width:24px;height:1.5px;background:currentColor;transform:rotate(-45deg)}'+
+        '#cov-gate .go{margin-top:6px;background:rgba(74,144,217,.18);border:1px solid rgba(138,170,200,.6);color:#c8d6e6;font-family:"Cormorant Garamond",serif;font-weight:600;font-size:15px;letter-spacing:.22em;padding:12px 30px;border-radius:999px;cursor:pointer}#cov-gate .go:hover{background:rgba(74,144,217,.3)}#cov-gate .n{font-size:.95rem;color:#5c6c80;font-family:"EB Garamond",serif;font-style:italic}';
+      document.head.appendChild(st);
+      var G=document.createElement('div'); G.id='cov-gate';
+      G.innerHTML='<div class="p"><h1 style="margin:0;font-family:Cormorant Garamond,serif;font-weight:500;font-size:clamp(2rem,6vw,2.8rem);line-height:1.1;color:#a8b8cc;letter-spacing:.02em">The Covenant of the Flowers</h1><div class="s">Establish a presence within our in-book forum by using an account.</div>'+
+        (CFG.sb?'<div id="wacct" style="display:flex;flex-direction:column;align-items:center;gap:10px;width:min(22rem,84vw)"><button class="tg" id="wgg" style="width:100%;background:#e8ecf2;color:#1d2430;border:none;font-family:EB Garamond,serif;font-weight:400;font-size:1.02rem;letter-spacing:0;padding:11px">Continue with Google</button><button class="tg" id="wa" style="width:100%;font-family:EB Garamond,serif;font-weight:400;font-size:1rem;letter-spacing:0;padding:11px">Sign in or create an account</button></div>':'')+
+        '<button class="go" id="wg">ENTER AS A GUEST</button></div><button id="wm" aria-label="Music"></button>';
+      document.body.appendChild(G);
+      var snd=LS0('rb-sound')!=='off'; var wm=G.querySelector('#wm');
+      function paint(){ wm.textContent='\u266A'; wm.classList.toggle('off',!snd); wm.title=snd?'Music on \u2014 tap to turn off':'Music off \u2014 tap to turn on'; } paint();
+      var wg=G.querySelector('#wg'); function signedIn(){ try{ var a=JSON.parse(localStorage.getItem('cov-auth')||'null'); return !!(a&&a.handle); }catch(x){ return false; } }
+      function label(){ wg.textContent=signedIn()?'ENTER':'ENTER AS A GUEST'; } label();
+      /* signing in (email, or a new handle) carries straight on into the opening. A Google return reloaded the page, so it waits for one tap on ENTER — browsers only allow music after a tap. */
+      window.addEventListener('cov-signed-in',function(){ label(); if(window.__covDoorReturn){ window.__covDoorReturn=false; return; } setTimeout(function(){ if(document.body.contains(G)) wg.click(); },900); });
+      wm.onclick=function(e){ e.stopPropagation(); snd=!snd; paint(); };
+      var wa=G.querySelector('#wa'); if(wa) wa.onclick=function(e){ e.stopPropagation(); if(window.CovAcct) window.CovAcct.open(); };
+      var wgg=G.querySelector('#wgg'); if(wgg) wgg.onclick=function(e){ e.stopPropagation(); try{ localStorage.setItem('cov-auth-door','1'); }catch(x){} if(window.CovAcct) window.CovAcct.google(); };
+      G.onclick=function(e){ e.stopPropagation(); };
+      wg.onclick=function(e){ if(e) e.stopPropagation(); try{ localStorage.setItem('rb-sound',snd?'on':'off'); localStorage.setItem('cov-welcomed','1'); localStorage.setItem('rb-remember','1'); }catch(x){}
+        G.style.opacity='0'; G.style.pointerEvents='none'; setTimeout(function(){ G.remove(); },650); openingSequence(snd); };
+      setTimeout(function(){ try{ wg.focus(); }catch(x){} },300);
+    })();
+    var _wantBgm=false;
+    if(_ret){ try{ history.replaceState(null,'',location.pathname+location.search.replace(/[?&]compendium=1/,'').replace(/^&/,'?')); }catch(e){}
+      _wantBgm=LS0('rb-sound')==='on';
+      var _go=function(){ instantMons(); openCompendium(true,_retH); }; if(document.readyState==='complete') setTimeout(_go,60); else window.addEventListener('load',function(){ setTimeout(_go,60); }); }
+    function LS0(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+    /* after a page reload there has been no tap on the site yet: the first tap inside the Compendium unlocks sound */
+    function gestureOnce(){ unlockPool(); if(_wantBgm&&!carried){ _wantBgm=false; var a=el('bgm-web'); if(a&&a.paused&&poolEls().every(function(x){ return x.paused; })){ a.volume=1; var p=a.play(); if(p&&p.catch) p.catch(function(){}); var mb=el('musicbtn'); if(mb) mb.innerHTML='&#9208;'; } } }
     function el(id){ return document.getElementById(id); }
     /* one player: site music runs on into the reader and fades out the moment the reader's first audio cue fires (or on exit) */
     function fadeSite(ms){ var a=el('bgm-web'); if(!a||a.paused) return; clearInterval(a.__covF); var v0=a.volume, t0=Date.now();
@@ -6524,7 +6569,7 @@ btn.textContent='Send';btn.disabled=false;
       var ov=el('fade-overlay'); ov.style.pointerEvents='auto'; ov.style.opacity='1';
       if(QI) showTravelQuote(QI,5000);
       box=document.createElement('div'); box.id='compendium'; box.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;background:#050506;visibility:hidden'; /* visibility, not display:none — the reader must lay out at full size while it loads behind the quote */
-      var f=document.createElement('iframe'); f.src=CFG.book+'?site=1&bgm='+(sitePlaying()?1:0)+(typeof hash==='string'?hash:''); f.title='Compendium'; f.setAttribute('allow','fullscreen; autoplay'); f.setAttribute('allowfullscreen','');
+      var f=document.createElement('iframe'); f.src=CFG.book+'?site=1&bgm='+(sitePlaying()?1:0)+(typeof hash==='string'?hash:''); f.title='Compendium'; f.addEventListener('load',function(){ try{ var d=f.contentDocument; if(d&&!d.__covG){ d.__covG=1; d.addEventListener('pointerdown',gestureOnce,true); d.addEventListener('keydown',gestureOnce,true); } }catch(e){} }); f.setAttribute('allow','fullscreen; autoplay'); f.setAttribute('allowfullscreen','');
       f.style.cssText='border:0;width:100%;height:100%;display:block;background:#050506'; box.appendChild(f); document.body.appendChild(box);
       /* quote rolls away fully (750ms) before the seams start to part */
       setTimeout(function(){ if(QI) rollAwayQuote(); }, QI?3000:0);
@@ -6533,7 +6578,7 @@ btn.textContent='Send';btn.disabled=false;
         setTimeout(function(){ ov.style.opacity='0'; ov.style.pointerEvents='none'; sl.classList.add('open'); sr.classList.add('open'); busy=false; try{ f.focus(); }catch(e){} },100);
       }, QI?3950:(fast===true?200:900)); }
     /* leaving: whatever the reader is playing carries on as the site's music (same track, same moment); otherwise site music is left as it was */
-    function closeCompendium(){ if(!box||busy) return;
+    function closeCompendium(){ if(!box||busy) return; instantMons();
       var live=poolEls().filter(function(a){ return !a.paused&&a.volume>0.01; });
       if(live.length){ busy=true; var keep=live.filter(function(a){ return a.loop; }).sort(function(x,y){ return y.volume-x.volume; })[0]||null;
         live.forEach(function(a){ if(a!==keep) fadeOut(a,900); }); Object.keys(pool).forEach(function(k){ if(pool[k]===keep) delete pool[k]; });
@@ -6556,6 +6601,162 @@ btn.textContent='Send';btn.disabled=false;
         setTimeout(function(){ ov.style.transition='opacity 2.25s'; chrome(true); busy=false; },1400);
       },1300); }
     window.CovenantSite={ openCompendium:openCompendium, closeCompendium:closeCompendium };
-  })({"quoteIn":"At last, we begin.","book":"book.html","roadmap":{},"quotes":{},"about":{"about-avail:1":"The Covenant of the Flowers is slated for publication and release in the holiday season of 2027. The work is not currently available for public purchase. Copies for personal, review, or other purposes may be requested through the contact form below. Mailing list sign-ups and general inquiries are also welcome."},"sbu":"https://qnnkguvmzdvnsbnxxpbz.supabase.co","sbk":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubmtndXZtemR2bnNibnh4cGJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMDE4OTksImV4cCI6MjA5Nzg3Nzg5OX0.txBQjtXReYpFRU0p0YaBeyy3_3CjuLAPHJsmlwNHjyE"});
+  })({"sb":{"u":"https://qnnkguvmzdvnsbnxxpbz.supabase.co","k":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubmtndXZtemR2bnNibnh4cGJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMDE4OTksImV4cCI6MjA5Nzg3Nzg5OX0.txBQjtXReYpFRU0p0YaBeyy3_3CjuLAPHJsmlwNHjyE"},"quoteIn":"At last, we begin.","book":"book.html","roadmap":{},"quotes":{},"about":{"about-avail:1":"The Covenant of the Flowers is slated for publication and release in the holiday season of 2027. The work is not currently available for public purchase. Copies for personal, review, or other purposes may be requested through the contact form below. Mailing list sign-ups and general inquiries are also welcome."},"sbu":"https://qnnkguvmzdvnsbnxxpbz.supabase.co","sbk":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubmtndXZtemR2bnNibnh4cGJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMDE4OTksImV4cCI6MjA5Nzg3Nzg5OX0.txBQjtXReYpFRU0p0YaBeyy3_3CjuLAPHJsmlwNHjyE"});
+</script>
+<script id="covenant-accounts">
+(function(C){
+    var AU=C.u+'/auth/v1', RS=C.u+'/rest/v1', HERE=location.href.split('#')[0].split('?')[0];
+    function LS(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} return null; }
+    function get(){ try{ return JSON.parse(LS('cov-auth')||'null'); }catch(e){ return null; } }
+    function put(a){ LS('cov-auth',a?JSON.stringify(a):null); if(a&&a.handle){ LS('rb-name',a.handle); LS('rb-remember','1'); } paintPill(); }
+    function H(tok){ var h={apikey:C.k,'Content-Type':'application/json'}; h.Authorization='Bearer '+(tok||C.k); return h; }
+    async function J(r){ var t=''; try{ t=await r.text(); }catch(e){} try{ return t?JSON.parse(t):{}; }catch(e){ return {msg:t}; } }
+    function errOf(j){ return (j&&(j.error_description||j.msg||j.message||j.error))||'Something went wrong'; }
+    function sess(j,user){ return { access_token:j.access_token, refresh_token:j.refresh_token, expires_at:j.expires_at||(Math.floor(Date.now()/1000)+(+j.expires_in||3600)), user:{id:(user||j.user).id,email:(user||j.user).email} }; }
+    async function profile(a){ var r=await fetch(RS+'/profiles?id=eq.'+a.user.id+'&select=handle',{headers:H(a.access_token)}); var j=await J(r); return (Array.isArray(j)&&j[0])?j[0].handle:''; }
+    /* returning from Google, or from a password-reset email */
+    var hp=new URLSearchParams((location.hash||'').replace(/^#/,'')); var pend=null, recovery=false;
+    if(hp.get('access_token')){ recovery=hp.get('type')==='recovery'; pend={access_token:hp.get('access_token'),refresh_token:hp.get('refresh_token'),expires_in:hp.get('expires_in')}; try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} }
+    var css='#acp{white-space:nowrap;position:fixed;top:18px;right:18px;z-index:12;background:rgba(10,14,20,.7);border:1px solid rgba(74,144,217,.4);color:#8aaac8;font-family:"Cormorant Garamond",serif;font-weight:600;font-size:13px;letter-spacing:.16em;padding:9px 16px;border-radius:999px;cursor:pointer;backdrop-filter:blur(6px)}#acp:hover{background:rgba(74,144,217,.14);color:#b9c9e6}'+
+      '#acv{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(6,9,14,.86);backdrop-filter:blur(8px)}#acv.on{display:flex}'+
+      '#acv .b{width:min(400px,100%);background:#0d131c;border:1px solid rgba(74,144,217,.28);border-radius:14px;padding:26px 26px 22px;display:flex;flex-direction:column;gap:12px;box-shadow:0 30px 80px rgba(0,0,0,.5)}'+
+      '#acv h3{margin:0 0 2px;font-family:"Cormorant Garamond",serif;font-weight:500;font-size:1.6rem;color:#a8b8cc}#acv .sub{font-family:"EB Garamond",serif;font-style:italic;color:#7888a0;font-size:1rem;margin-bottom:4px}'+
+      '#acv input{box-sizing:border-box;width:100%;background:rgba(74,144,217,.06);border:1px solid rgba(74,144,217,.28);border-radius:9px;padding:11px 14px;color:#c8cdd4;font-family:"EB Garamond",serif;font-size:1.05rem;outline:none}#acv input:focus{border-color:rgba(138,170,200,.8)}'+
+      '#acv .pr{background:rgba(74,144,217,.2);border:1px solid rgba(138,170,200,.6);color:#d6e0ec;font-family:"Cormorant Garamond",serif;font-weight:600;font-size:14px;letter-spacing:.18em;padding:11px;border-radius:9px;cursor:pointer}#acv .pr:hover{background:rgba(74,144,217,.32)}'+
+      '#acv .gg{display:flex;align-items:center;justify-content:center;gap:10px;background:#e8ecf2;border:none;color:#1d2430;font-family:"EB Garamond",serif;font-size:1.02rem;padding:10px;border-radius:9px;cursor:pointer}'+
+      '#acv .ln{background:none;border:none;color:#8aaac8;font-family:"EB Garamond",serif;font-style:italic;font-size:1rem;cursor:pointer;padding:2px}#acv .ln:hover{color:#b9c9e6}#acv .row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}'+
+      '#acv .or{display:flex;align-items:center;gap:10px;color:#4c5a6c;font-size:.9rem;font-family:"EB Garamond",serif}#acv .or:before,#acv .or:after{content:"";flex:1;height:1px;background:rgba(74,144,217,.18)}'+
+      '#acv .er{color:#d9998c;font-family:"EB Garamond",serif;font-size:.98rem;min-height:1.2em}#acv .ok{color:#9cc8a8}#acv .dz{background:none;border:1px solid rgba(200,110,95,.5);color:#d9998c;font-family:"Cormorant Garamond",serif;font-weight:600;font-size:13px;letter-spacing:.16em;padding:10px;border-radius:9px;cursor:pointer}#acv .dz:hover{background:rgba(200,110,95,.12)}'+
+      '#acv .x{align-self:flex-end;background:none;border:none;color:#5c6c80;font-size:1.3rem;cursor:pointer;margin:-12px -10px -6px 0}#acv .hint{font-family:"EB Garamond",serif;font-size:.92rem;color:#5c6c80}'+'#acw{position:fixed;top:18px;right:18px;z-index:12;display:flex;align-items:center;gap:10px}#acw #acp{position:static}'+'@media (max-width:600px){#acw{right:12px;gap:8px}#acw #acp{font-size:10px;letter-spacing:.18em;padding:10px 12px;line-height:1.2}#acav{width:33px!important;height:33px!important;font-size:15px!important}#exit{left:12px!important}}'+'#acav{position:relative;width:38px;height:38px;border-radius:50%;flex:none;cursor:pointer;padding:0;border:1px solid rgba(138,170,200,.55);background:#141c28 center/cover no-repeat;color:#a8b8cc;font-family:"Cormorant Garamond",serif;font-weight:600;font-size:17px;display:none;align-items:center;justify-content:center}#acav:hover{border-color:#b9c9e6}'+'#acav i{position:absolute;top:-4px;right:-4px;min-width:17px;height:17px;padding:0 4px;box-sizing:border-box;border-radius:9px;background:#d8b46a;color:#0b0c0f;font:700 10px/17px "JetBrains Mono",monospace;font-style:normal;text-align:center;display:none;box-shadow:0 0 0 2px #0a0e14}'+'#acv .b.tall{width:min(520px,100%);max-height:86vh;overflow:auto}#acv .me{display:flex;align-items:center;gap:14px}#acv .bigav{width:64px;height:64px;border-radius:50%;flex:none;border:1px solid rgba(138,170,200,.5);background:#141c28 center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:#a8b8cc;font-family:"Cormorant Garamond",serif;font-size:28px}'+'#acv .cm{border-top:1px solid rgba(74,144,217,.16);padding-top:12px;display:flex;flex-direction:column;gap:6px}#acv .cw{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.14em;color:#6f88a6;text-decoration:none}#acv .cw:hover{color:#b9c9e6}'+'#acv .cb{font-family:"EB Garamond",serif;font-size:1.02rem;color:#c8cdd4;white-space:pre-wrap;word-break:break-word}#acv .rp{margin-left:12px;padding-left:12px;border-left:2px solid rgba(74,144,217,.22);display:flex;flex-direction:column;gap:2px}'+'#acv .rn{font-family:"JetBrains Mono",monospace;font-size:10px;color:#8aaac8;display:flex;gap:8px;align-items:center}#acv .nw{background:#d8b46a;color:#0b0c0f;font-size:9px;letter-spacing:.1em;padding:1px 6px;border-radius:5px}';
+    var st=document.createElement('style'); st.textContent=css; document.head.appendChild(st);
+    var wrap=document.createElement('div'); wrap.id='acw'; if(C.index) wrap.style.display='none'; document.body.appendChild(wrap); var avb=document.createElement('button'); avb.id='acav'; avb.title='Your discussion'; avb.innerHTML='<span></span><i></i>'; wrap.appendChild(avb); var pill=document.createElement('button'); pill.id='acp'; wrap.appendChild(pill); pill.style.display='none'; var MINE=null;
+    css+='#acv .pw{position:relative;display:block}#acv .pw input{padding-right:46px}#acv .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:none;background:none;color:#6f88a6;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:7px}#acv .eye:hover{color:#b9c9e6;background:rgba(74,144,217,.1)}';
+    css+='#acv .tabs{display:flex;gap:2px;border-bottom:1px solid rgba(74,144,217,.2);margin-top:6px;overflow-x:auto}#acv .tab{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;color:#6f88a6;font:600 11px "JetBrains Mono",monospace;letter-spacing:.16em;padding:10px 12px;cursor:pointer;display:flex;gap:7px;align-items:center;white-space:nowrap}#acv .tab:hover{color:#b9c9e6}#acv .tab.on{color:#d6e0ec;border-bottom-color:#d8b46a}#acv .tab b{background:#d8b46a;color:#0b0c0f;border-radius:8px;padding:2px 6px;font-size:9px;letter-spacing:.04em}#acv .pg{display:flex;justify-content:space-between;align-items:center;gap:10px;font:10px "JetBrains Mono",monospace;letter-spacing:.14em;color:#5c6c80}#acv .pg:empty{display:none}#acv .nw{background:#d8b46a;color:#0b0c0f;font:700 9px/1 "JetBrains Mono",monospace;letter-spacing:.1em;padding:3px 6px;border-radius:5px}#acv .sec{font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.2em;color:#d8b46a;margin-top:6px}#acv .nwk{display:flex;align-items:center;gap:10px;text-decoration:none;color:#c8cdd4;font-family:"EB Garamond",serif;font-size:1.08rem;padding:8px 0;border-top:1px solid rgba(74,144,217,.16)}#acv .nwk:hover{color:#fff}';
+    st.textContent=css;
+    var EYE_O='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', EYE_C='<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 20L20 4"/></svg>';
+    function eyes(){ B.querySelectorAll('input[type=password]').forEach(function(i){ if(i.__eye) return; i.__eye=1; var w=document.createElement('span'); w.className='pw'; i.parentNode.insertBefore(w,i); w.appendChild(i); var e=document.createElement('button'); e.type='button'; e.className='eye'; e.title='Show password'; e.setAttribute('aria-label','Show password'); e.innerHTML=EYE_O; e.onclick=function(){ var show=i.type==='password'; i.type=show?'text':'password'; e.innerHTML=show?EYE_C:EYE_O; e.title=show?'Hide password':'Show password'; e.setAttribute('aria-label',e.title); i.focus(); }; w.appendChild(e); }); }
+    var ov=document.createElement('div'); ov.id='acv'; ov.innerHTML='<div class="b"></div>'; document.body.appendChild(ov); var B=ov.firstChild; new MutationObserver(eyes).observe(B,{childList:true});
+    ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
+    function paintPill(){ var a=get(); pill.textContent=(a&&a.handle)?('@'+a.handle):'ACCOUNT SETTINGS'; paintAv(a); var wa2=document.getElementById('wacct'); if(wa2&&a&&a.handle){ wa2.innerHTML='<div class="n" style="font-size:1.05rem;color:#9cc8a8;font-style:normal">Signed in as @'+String(a.handle).replace(/</g,'&lt;')+'</div>'; } var wn=document.getElementById('wn'); if(wn&&a&&a.handle){ wn.value=a.handle; wn.style.display='none'; } }
+    function close(){ ov.classList.remove('on'); }
+    function el(t,cls,txt){ var e=document.createElement(t); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; }
+    function inp(ph,type){ var i=el('input'); i.placeholder=ph; i.type=type||'text'; return i; }
+    function frame(title,sub){ B.innerHTML=''; var x=el('button','x','\u00d7'); x.onclick=close; B.appendChild(x); B.appendChild(el('h3',null,title)); if(sub) B.appendChild(el('div','sub',sub)); var er=el('div','er'); return er; }
+    function gBtn(){ var g=el('button','gg'); g.innerHTML='<svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.2l7.8 6C12.4 13.3 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 7.1-10 7.1-17.5z"/><path fill="#FBBC05" d="M10.5 28.8c-.5-1.5-.8-3.1-.8-4.8s.3-3.3.8-4.8l-7.8-6C1 16.5 0 20.1 0 24s1 7.5 2.7 10.8l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.9 2.3-8.4 2.3-6.3 0-11.6-3.8-13.5-9.7l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg><span>Continue with Google</span>';
+      g.onclick=google; return g; }
+    function google(){ LS('cov-auth-popup',null); var W=window, ret=HERE; try{ if(window.top!==window&&window.top.location.href){ W=window.top; ret=W.location.origin+W.location.pathname+'?compendium=1'; } }catch(e){ W=window; ret=HERE; } W.location.href=AU+'/authorize?provider=google&redirect_to='+encodeURIComponent(ret); }
+    async function finish(a,er){ var h=''; try{ h=await profile(a); }catch(e){} a.handle=h; if(!h){ LS('cov-auth-pending',JSON.stringify(a)); showHandle(); return; } put(a); welcome(h); }
+    function showSignIn(){ var er=frame('Sign in',C.index?'Your handle signs your comments across every work.':'Signing in allows you to take full benefit of our built-in forum. Signing in with Google from here will briefly reload the site.'); var e=inp('email','email'), p=inp('password','password'); var go=el('button','pr','SIGN IN');
+      go.onclick=async function(){ er.textContent=''; go.disabled=true; try{ var r=await fetch(AU+'/token?grant_type=password',{method:'POST',headers:H(),body:JSON.stringify({email:e.value.trim(),password:p.value})}); var j=await J(r); if(!r.ok){ er.textContent=errOf(j); return; } await finish(sess(j),er); }catch(x){ er.textContent='Could not reach the server'; } finally{ go.disabled=false; } };
+      p.onkeydown=function(k){ if(k.key==='Enter') go.click(); };
+      var row=el('div','row'); var f=el('button','ln','Forgot password?'); f.onclick=showReset; var c=el('button','ln','Create an account'); c.onclick=showSignUp; row.appendChild(f); row.appendChild(c);
+      [e,p,go,el('div','or','or'),gBtn(),row,er].forEach(function(n){ B.appendChild(n); }); ov.classList.add('on'); setTimeout(function(){ e.focus(); },60); }
+    function showSignUp(){ var er=frame('Create an account','Pick a handle readers will see beside your comments.'); var h=inp('handle (3\u201324 letters, numbers, _ . -)'), e=inp('email','email'), p=inp('password (8+ characters)','password'); var go=el('button','pr','CREATE ACCOUNT');
+      go.onclick=async function(){ er.textContent=''; var hv=h.value.trim(); if(!/^[A-Za-z0-9_.-]{3,24}$/.test(hv)){ er.textContent='Handles are 3\u201324 letters, numbers, _ . or -'; return; } if((p.value||'').length<8){ er.textContent='Use at least 8 characters for your password'; return; } go.disabled=true;
+        try{ var r=await fetch(AU+'/signup',{method:'POST',headers:H(),body:JSON.stringify({email:e.value.trim(),password:p.value})}); var j=await J(r); if(!r.ok){ er.textContent=errOf(j); return; }
+          if(!j.access_token){ er.textContent='Account made, but Supabase is asking for email confirmation. Turn off \u201cConfirm email\u201d in Supabase \u2192 Authentication \u2192 Sign In / Providers.'; return; }
+          var a=sess(j); var ok=await setHandle(a,hv,er); if(ok) welcome(hv); }catch(x){ er.textContent='Could not reach the server'; } finally{ go.disabled=false; } };
+      var row=el('div','row'); var s=el('button','ln','I already have an account'); s.onclick=showSignIn; row.appendChild(s);
+      [h,e,p,go,el('div','or','or'),gBtn(),row,er].forEach(function(n){ B.appendChild(n); }); ov.classList.add('on'); setTimeout(function(){ h.focus(); },60); }
+    async function setHandle(a,hv,er){ var r=await fetch(RS+'/profiles',{method:'POST',headers:Object.assign(H(a.access_token),{Prefer:'return=minimal'}),body:JSON.stringify({id:a.user.id,handle:hv})});
+      if(!r.ok){ var j=await J(r); var m=errOf(j); er.textContent=(/duplicate|unique|23505/i.test(m+(j.code||'')))?'That handle is taken \u2014 try another':m; LS('cov-auth-pending',JSON.stringify(a)); if(!document.getElementById('achv')) showHandle(); return false; }
+      a.handle=hv; LS('cov-auth-pending',null); put(a); return true; }
+    function showHandle(){ var a=null; try{ a=JSON.parse(LS('cov-auth-pending')||'null'); }catch(e){} if(!a){ showSignIn(); return; } var er=frame('Choose your handle','This is the name readers see beside your comments.'); var h=inp('handle'); h.id='achv'; var go=el('button','pr','SAVE');
+      go.onclick=async function(){ er.textContent=''; var hv=h.value.trim(); if(!/^[A-Za-z0-9_.-]{3,24}$/.test(hv)){ er.textContent='Handles are 3\u201324 letters, numbers, _ . or -'; return; } go.disabled=true; try{ if(await setHandle(a,hv,er)) welcome(hv); }catch(x){ er.textContent='Could not reach the server'; } finally{ go.disabled=false; } };
+      h.onkeydown=function(k){ if(k.key==='Enter') go.click(); }; [h,go,er].forEach(function(n){ B.appendChild(n); }); ov.classList.add('on'); setTimeout(function(){ h.focus(); },60); }
+    function showReset(){ var er=frame('Reset your password','We\u2019ll email you a link to set a new one.'); var e=inp('email','email'); var go=el('button','pr','SEND LINK');
+      go.onclick=async function(){ er.className='er'; er.textContent=''; go.disabled=true; try{ var r=await fetch(AU+'/recover?redirect_to='+encodeURIComponent(HERE),{method:'POST',headers:H(),body:JSON.stringify({email:e.value.trim()})}); if(!r.ok){ er.textContent=errOf(await J(r)); return; } er.className='er ok'; er.textContent='If that email has an account, a link is on its way.'; }catch(x){ er.textContent='Could not reach the server'; } finally{ go.disabled=false; } };
+      var b=el('button','ln','Back to sign in'); b.onclick=showSignIn; [e,go,b,er].forEach(function(n){ B.appendChild(n); }); ov.classList.add('on'); }
+    function showNewPw(tok){ var er=frame('Set a new password'); var p=inp('new password (8+ characters)','password'); var go=el('button','pr','SAVE PASSWORD');
+      go.onclick=async function(){ er.textContent=''; if((p.value||'').length<8){ er.textContent='Use at least 8 characters'; return; } go.disabled=true; try{ var r=await fetch(AU+'/user',{method:'PUT',headers:H(tok.access_token),body:JSON.stringify({password:p.value})}); var j=await J(r); if(!r.ok){ er.textContent=errOf(j); return; } await finish(sess(tok,j),er); }catch(x){ er.textContent='Could not reach the server'; } finally{ go.disabled=false; } };
+      [p,go,er].forEach(function(n){ B.appendChild(n); }); ov.classList.add('on'); }
+    function welcome(h){ close(); try{ window.dispatchEvent(new Event('cov-signed-in')); }catch(e){} var t=document.createElement('div'); t.textContent='Signed in as @'+h; t.style.cssText='position:fixed;left:50%;top:22px;transform:translateX(-50%);z-index:30;background:rgba(13,19,28,.94);border:1px solid rgba(138,170,200,.45);color:#c8d6e6;font-family:"EB Garamond",serif;font-size:1rem;padding:9px 18px;border-radius:999px;transition:opacity .6s;pointer-events:none'; document.body.appendChild(t); setTimeout(function(){ t.style.opacity='0'; },2600); setTimeout(function(){ t.remove(); },3300); }
+    function showMe(msg){ showMineUI(null,msg); }
+    function acctBlock(a){ var out=[]; out.push(el('div','sec','ACCOUNT')); if(a.user.email) out.push(el('div','hint',a.user.email));
+      var so=el('button','pr','SIGN OUT'); so.onclick=async function(){ try{ await fetch(AU+'/logout',{method:'POST',headers:H(a.access_token)}); }catch(e){} put(null); LS('rb-name',null); close(); };
+      var dz=el('button','dz','DELETE MY ACCOUNT'); dz.onclick=function(){ var e2=frame('Are you sure?','Deleting your account erases your email, password, photo and handle for good. Your past comments stay, shown as \u201cformer reader\u201d.'); var c=inp('type yes to confirm'); var go=el('button','dz','DELETE'); var bk=el('button','ln','Keep my account'); bk.onclick=function(){ showMineUI(); };
+        go.onclick=async function(){ e2.textContent=''; if(c.value.trim().toLowerCase()!=='yes'){ e2.textContent='Type yes to delete your account'; return; } go.disabled=true; try{ var tk=await fresh(a); try{ await fetch(C.u+'/storage/v1/object/avatars/'+a.user.id+'/avatar.jpg',{method:'DELETE',headers:{apikey:C.k,Authorization:'Bearer '+tk}}); }catch(_e){} var r=await fetch(RS+'/rpc/delete_my_account',{method:'POST',headers:H(tk),body:'{}'}); if(!r.ok){ e2.textContent=errOf(await J(r)); return; } put(null); LS('rb-name',null); var d=frame('Account deleted','Everything tied to it has been erased.'); B.appendChild(d); setTimeout(close,2200); }catch(x){ e2.textContent='Could not reach the server'; } finally{ go.disabled=false; } };
+        [c,go,bk,e2].forEach(function(n){ B.appendChild(n); }); };
+      out.push(so); out.push(dz); return out; }
+    async function fresh(a){ if((a.expires_at||0)*1000>Date.now()+60000) return a.access_token; var r=await fetch(AU+'/token?grant_type=refresh_token',{method:'POST',headers:H(),body:JSON.stringify({refresh_token:a.refresh_token})}); var j=await J(r); if(!r.ok) throw new Error(errOf(j)); var n=sess(j,a.user); n.handle=a.handle; put(n); return n.access_token; }
+    pill.onclick=function(){ var a=get(); if(a) showMe(); else showSignIn(); };
+    window.addEventListener('storage',function(e){ if(e.key==='cov-auth'){ var _g=get(); if(_g&&_g.handle){ LS('rb-name',_g.handle); LS('rb-remember','1'); } paintPill(); if(get()&&ov.classList.contains('on')) showMe(); } if(e.key==='cov-auth-pending'&&e.newValue) showHandle(); });
+    function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    function ago(d){ var s=(Date.now()-new Date(d).getTime())/1000; if(s<60) return 'just now'; if(s<3600) return Math.floor(s/60)+'m ago'; if(s<86400) return Math.floor(s/3600)+'h ago'; if(s<2592000) return Math.floor(s/86400)+'d ago'; return new Date(d).toLocaleDateString(); }
+    function avStyle(n,a){ var sp=n.querySelector('span')||n; if(a&&a.avatar){ n.style.backgroundImage='url("'+a.avatar+'")'; sp.textContent=''; } else { n.style.backgroundImage=''; sp.textContent=a&&a.handle?a.handle.charAt(0).toUpperCase():''; } }
+    function _seenW(){ try{ return JSON.parse(LS('cov-seen-works')||'null'); }catch(e){ return null; } }
+    function newWorks(){ var ids=Object.keys(C.works||{}), seen=_seenW(); if(!seen){ LS('cov-seen-works',JSON.stringify(ids)); return []; } return ids.filter(function(i){ return seen.indexOf(i)<0; }).sort(function(x,y){ return ((C.works[y]||{}).d||0)-((C.works[x]||{}).d||0); }); }
+    function seeWork(id){ var seen=_seenW()||[]; if(seen.indexOf(id)<0){ seen.push(id); LS('cov-seen-works',JSON.stringify(seen)); } }
+    if(!C.index) newWorks();
+    document.addEventListener('click',function(e){ var a=e.target&&e.target.closest&&e.target.closest('a.w,a.cont'); if(!a) return; var f=a.getAttribute('data-f')||(a.getAttribute('href')||'').split('?')[0]; Object.keys(C.works||{}).forEach(function(id){ if(C.works[id].f===f) seeWork(id); }); },true);
+    var GUESTSVG='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 19.5c1.3-3.6 4-5.4 7.2-5.4s5.9 1.8 7.2 5.4"/></svg>';
+    function paintAv(a){ if(!a||!a.handle){ MINE=null; avb.style.display='flex'; avb.style.backgroundImage=''; avb.querySelector('span').innerHTML=GUESTSVG; avb.querySelector('i').style.display='none'; avb.title='Sign in or create an account'; return; } avb.style.display='flex'; avStyle(avb,a); var nr=MINE?MINE.unread:0, nw=C.index?0:newWorks().length, n=nr+nw, i=avb.querySelector('i'); i.textContent=n>9?'9+':String(n); i.style.display=n?'block':'none'; avb.title=n?[nr?(nr+' new '+(nr===1?'reply':'replies')):'',nw?(nw+' new in the Compendium'):''].filter(Boolean).join(' \u00b7 '):'Your discussion'; }
+    async function loadMine(){ var a=get(); if(!a||!a.handle) return null; var tk; try{ tk=await fresh(a); }catch(e){ return null; } a=get()||a; var h=H(tk);
+      var pr=await J(await fetch(RS+'/profiles?id=eq.'+a.user.id+'&select=avatar_url,replies_seen_at',{headers:h})); var p=(Array.isArray(pr)&&pr[0])||{};
+      if((p.avatar_url||'')!==(a.avatar||'')){ a.avatar=p.avatar_url||''; LS('cov-auth',JSON.stringify(a)); }
+      var mine=await J(await fetch(RS+'/comments?user_id=eq.'+a.user.id+'&select=id,book_id,chapter_id,body,created_at&order=created_at.desc&limit=200',{headers:h})); if(!Array.isArray(mine)) mine=[];
+      var reps=[]; if(mine.length){ var ids=mine.map(function(c){ return '"'+c.id+'"'; }).join(','); reps=await J(await fetch(RS+'/comments?parent_id=in.('+encodeURIComponent(ids)+')&select=id,parent_id,author_name,user_id,body,created_at&order=created_at.asc',{headers:h})); if(!Array.isArray(reps)) reps=[]; }
+      var seen=p.replies_seen_at?new Date(p.replies_seen_at).getTime():0; var unread=0; reps.forEach(function(r){ r._new=(r.user_id!==a.user.id)&&new Date(r.created_at).getTime()>seen; if(r._new) unread++; });
+      MINE={mine:mine,reps:reps,unread:unread}; paintAv(a); return MINE; }
+    async function pickPhoto(file,er){ var a=get(); if(!a) return; er.className='er'; er.textContent='Uploading\u2026';
+      try{ var url=URL.createObjectURL(file); var img=await new Promise(function(res,rej){ var im=new Image(); im.onload=function(){ res(im); }; im.onerror=rej; im.src=url; });
+        var S=256, cv=document.createElement('canvas'); cv.width=S; cv.height=S; var m=Math.min(img.width,img.height); cv.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S); URL.revokeObjectURL(url);
+        var blob=await new Promise(function(res){ cv.toBlob(res,'image/jpeg',0.86); }); var tk=await fresh(a);
+        var r=await fetch(C.u+'/storage/v1/object/avatars/'+a.user.id+'/avatar.jpg',{method:'POST',headers:{apikey:C.k,Authorization:'Bearer '+tk,'Content-Type':'image/jpeg','x-upsert':'true','cache-control':'3600'},body:blob}); if(!r.ok){ er.textContent=errOf(await J(r)); return; }
+        var pub=C.u+'/storage/v1/object/public/avatars/'+a.user.id+'/avatar.jpg?v='+Date.now();
+        var r2=await fetch(RS+'/profiles?id=eq.'+a.user.id,{method:'PATCH',headers:Object.assign(H(tk),{Prefer:'return=minimal'}),body:JSON.stringify({avatar_url:pub})}); if(!r2.ok){ er.textContent=errOf(await J(r2)); return; }
+        a=get(); a.avatar=pub; put(a); er.textContent=''; showMineUI(); }catch(x){ er.textContent='That photo couldn\u2019t be used \u2014 try a JPG or PNG'; } }
+    async function dropPhoto(er){ var a=get(); if(!a) return; try{ var tk=await fresh(a); await fetch(C.u+'/storage/v1/object/avatars/'+a.user.id+'/avatar.jpg',{method:'DELETE',headers:{apikey:C.k,Authorization:'Bearer '+tk}}); await fetch(RS+'/profiles?id=eq.'+a.user.id,{method:'PATCH',headers:Object.assign(H(tk),{Prefer:'return=minimal'}),body:JSON.stringify({avatar_url:null})}); a=get(); a.avatar=''; put(a); showMineUI(); }catch(x){ er.textContent='Could not reach the server'; } }
+    function showMineUI(want,msg){ var a=get(); if(!a){ showSignIn(); return; } var er=frame('Your profile'); B.classList.add('tall'); if(msg){ er.className='er ok'; er.textContent=msg; }
+      var me=el('div','me'); var big=el('div','bigav'); avStyle(big,a); var col=el('div'); col.style.cssText='display:flex;flex-direction:column;gap:4px;align-items:flex-start';
+      var hn=el('div','sub','@'+a.handle); hn.style.margin='0'; var fi=document.createElement('input'); fi.type='file'; fi.accept='image/*'; fi.style.display='none'; fi.onchange=function(){ if(fi.files&&fi.files[0]) pickPhoto(fi.files[0],er); };
+      var up=el('button','ln',a.avatar?'Change photo':'Add a photo'); up.onclick=function(){ fi.click(); }; col.appendChild(hn); col.appendChild(up); if(a.avatar){ var rm=el('button','ln','Remove photo'); rm.onclick=function(){ dropPhoto(er); }; col.appendChild(rm); }
+      me.appendChild(big); me.appendChild(col); me.appendChild(fi); B.appendChild(me); B.appendChild(er);
+      var NW=newWorks(), D=null, tab=null, page=0, PER=8;
+      var tabs=el('div','tabs'), body=el('div'); body.style.cssText='display:flex;flex-direction:column;gap:12px;min-height:120px'; var pager=el('div','pg');
+      var T=[{id:'replies',l:'REPLIES'},{id:'posts',l:'POSTS'},{id:'new',l:'NEW WORKS'}];
+      T.forEach(function(t){ var b=el('button','tab'); b.innerHTML='<span>'+t.l+'</span><b style="display:none"></b>'; b.onclick=function(){ go(t.id,0); }; t.b=b; tabs.appendChild(b); });
+      function badge(id,n){ T.forEach(function(t){ if(t.id===id){ var x=t.b.querySelector('b'); x.textContent=n>99?'99+':String(n); x.style.display=n?'inline-block':'none'; } }); }
+      function workLink(bid,when){ var w=(C.works||{})[bid]; return w?'<a class="cw" href="'+esc(w.f)+esc(location.search)+'">'+esc(String(w.t).toUpperCase())+(when?' \u00b7 '+esc(ago(when)):'')+' \u2192</a>':'<span class="cw">'+esc(when?ago(when):'')+'</span>'; }
+      function rows(){ if(tab==='new') return NW.map(function(id){ return {k:'w',id:id}; });
+        if(!D) return null;
+        if(tab==='posts') return D.mine.map(function(c){ return {k:'p',c:c}; });
+        var byId={}; D.mine.forEach(function(c){ byId[c.id]=c; });
+        return D.reps.filter(function(r){ return r.user_id!==a.user.id; }).sort(function(x,y){ return new Date(y.created_at)-new Date(x.created_at); }).map(function(r){ return {k:'r',r:r,p:byId[r.parent_id]}; }); }
+      function draw(){ T.forEach(function(t){ t.b.classList.toggle('on',t.id===tab); }); body.innerHTML=''; pager.innerHTML='';
+        var all=rows(); if(all===null){ body.appendChild(el('div','hint','Loading\u2026')); return; }
+        if(!all.length){ body.appendChild(el('div','hint',tab==='replies'?'No replies yet. When someone answers one of your comments, it appears here.':tab==='posts'?'You haven\u2019t commented yet. Your comments gather here.':'You\u2019re all caught up \u2014 nothing new since your last visit.')); return; }
+        var pages=Math.ceil(all.length/PER); if(page>=pages) page=pages-1;
+        all.slice(page*PER,page*PER+PER).forEach(function(x){ var d=el('div','cm'), h='';
+          if(x.k==='w'){ var w=C.works[x.id]; d.className='nwk'; d=document.createElement('a'); d.className='nwk'; d.href=w.f+location.search; d.innerHTML='<span class="nw">NEW</span><span>'+esc(w.t)+'</span>'+(w.d?'<span style="margin-left:auto;font-family:JetBrains Mono,monospace;font-size:10px;color:#5c6c80">'+esc(ago(w.d))+'</span>':''); body.appendChild(d); return; }
+          if(x.k==='p'){ var n=D.reps.filter(function(r){ return r.parent_id===x.c.id&&r.user_id!==a.user.id; }), nn=n.filter(function(r){ return r._new; }).length;
+            h=workLink(x.c.book_id,x.c.created_at)+'<div class="cb">'+esc(x.c.body)+'</div><div class="rn" style="color:#5c6c80">'+(n.length?(n.length+' '+(n.length===1?'reply':'replies')+(nn?' \u00b7 <span class="nw">'+nn+' NEW</span>':'')):'No replies yet')+'</div>'; }
+          else { var ex=x.p?String(x.p.body||''):''; if(ex.length>90) ex=ex.slice(0,88)+'\u2026';
+            h='<div class="rn"><span>'+esc(x.r.author_name||'Guest')+'</span><span style="color:#5c6c80">'+esc(ago(x.r.created_at))+'</span>'+(x.r._new?'<span class="nw">NEW</span>':'')+'</div><div class="cb">'+esc(x.r.body)+'</div>'+(x.p?'<div class="rp"><div class="cb" style="color:#7888a0;font-style:italic;font-size:.95rem">on your comment: \u201c'+esc(ex)+'\u201d</div></div>':'')+(x.p?workLink(x.p.book_id):''); }
+          d.innerHTML=h; body.appendChild(d); });
+        if(pages>1){ var pv=el('button','ln','\u2039 Newer'), nx=el('button','ln','Older \u203a'); pv.disabled=page===0; nx.disabled=page>=pages-1; pv.style.opacity=pv.disabled?'.3':''; nx.style.opacity=nx.disabled?'.3':''; pv.onclick=function(){ go(tab,page-1); }; nx.onclick=function(){ go(tab,page+1); };
+          pager.appendChild(pv); pager.appendChild(el('span',null,'PAGE '+(page+1)+' OF '+pages)); pager.appendChild(nx); } }
+      function go(t,p){ tab=t; page=Math.max(0,p||0); draw(); try{ B.scrollTop=Math.min(B.scrollTop,tabs.offsetTop-20); }catch(e){}
+        if(t==='new'&&NW.length){ NW.forEach(seeWork); setTimeout(function(){ paintAv(get()); },0); }
+        if(t==='replies'&&D&&D.unread&&!D._marked){ D._marked=1; fresh(get()).then(function(tk){ return fetch(RS+'/profiles?id=eq.'+a.user.id,{method:'PATCH',headers:Object.assign(H(tk),{Prefer:'return=minimal'}),body:JSON.stringify({replies_seen_at:new Date().toISOString()})}); }).then(function(){ if(MINE){ MINE.unread=0; paintAv(get()); } }).catch(function(){}); } }
+      B.appendChild(tabs); B.appendChild(body); B.appendChild(pager); acctBlock(a).forEach(function(n){ B.appendChild(n); }); ov.classList.add('on');
+      badge('new',NW.length); go(want||(NW.length?'new':'replies'),0);
+      loadMine().then(function(x){ D=x; if(!D){ body.innerHTML=''; body.appendChild(el('div','hint','Could not load your discussion.')); return; } badge('replies',D.unread);
+        if(!want&&D.unread) go('replies',0); else if(!want&&!NW.length&&!D.reps.filter(function(r){ return r.user_id!==a.user.id; }).length) go('posts',0); else go(tab,page); }); }
+    avb.onclick=function(){ if(get()) showMineUI(); else showSignIn(); };
+    var _fr=frame; frame=function(t,s2){ B.classList.remove('tall'); return _fr(t,s2); };
+    setInterval(function(){ if(!C.index&&get()&&document.visibilityState==='visible'&&!ov.classList.contains('on')) loadMine().catch(function(){}); },120000);
+    window.CovAcct={ open:function(){ pill.onclick(); }, google:google };
+    paintPill(); if(!C.index) loadMine().catch(function(){});
+    if(!pend&&!get()&&LS('cov-auth-pending')) setTimeout(showHandle,400);
+    if(C.index&&!window.__covDoorReturn) pend=null; /* a sign-in started inside the Compendium is finished by the Compendium itself */
+    if(pend){ (async function(){ try{ var r=await fetch(AU+'/user',{headers:H(pend.access_token)}); var u=await J(r); if(!r.ok) return; var a=sess(pend,u);
+        if(recovery){ showNewPw(Object.assign({},pend,{user:u})); return; }
+        var h=''; try{ h=await profile(a); }catch(e){} a.handle=h;
+        var isPop=false;
+        if(isPop){ LS('cov-auth-popup',null); if(h){ a.handle=h; LS('cov-auth',JSON.stringify(a)); } else LS('cov-auth-pending',JSON.stringify(a));
+          var _w=document.getElementById('wel'); if(_w) _w.style.display='none'; frame('You\u2019re signed in','Return to your other window \u2014 this one can be closed.'); ov.classList.add('on'); setTimeout(function(){ try{ window.close(); }catch(e){} },150); return; }
+        if(h){ put(a); welcome(h); } else { LS('cov-auth-pending',JSON.stringify(a)); showHandle(); } }catch(e){} })(); }
+  })({"u":"https://qnnkguvmzdvnsbnxxpbz.supabase.co","k":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubmtndXZtemR2bnNibnh4cGJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMDE4OTksImV4cCI6MjA5Nzg3Nzg5OX0.txBQjtXReYpFRU0p0YaBeyy3_3CjuLAPHJsmlwNHjyE","works":{},"index":true});
 </script>
 </body></html>
