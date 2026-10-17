@@ -281,7 +281,8 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-17T04:14:27.557Z -->
+<!-- covenant-studio: built 2026-10-17T04:25:49.343Z -->
+<style id="covenant-crawl">#quote-text.crawl-mode{font-size:23px!important}#opening-line2 div{font-size:23px!important}@media(max-width:600px){#quote-text.crawl-mode{font-size:16px!important}#opening-line2 div{font-size:16px!important}}</style>
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6144,7 +6145,7 @@ if(mb){mb.innerHTML="\u23F8";}
 }
 setTimeout(function(){
 var qt=document.getElementById('quote-text');
-showTravelQuote('WHO TRAVELS THE NIGHT WITH A LAMP IN SUCH STORMS',999999);
+showTravelQuote('WHO TRAVELS THE NIGHT',999999);
 qt.classList.add('crawl-mode');
 if(quoteHideTimer){clearTimeout(quoteHideTimer);quoteHideTimer=null;}
 setTimeout(function(){
@@ -6153,7 +6154,7 @@ secondLine.id='opening-line2';
 secondLine.style.cssText='position:fixed;top:35%;left:0;right:0;z-index:200;text-align:center;pointer-events:none;padding:0 10px';
 var inner=document.createElement('div');
 inner.style.cssText='font-family:Cormorant Garamond,serif;font-size:17px;font-style:italic;font-weight:400;color:rgba(180,160,210,0.85);letter-spacing:-0.01em;display:inline-block;max-width:90vw;margin:0 auto;clip-path:inset(0 100% 0 0)';
-inner.textContent='WHEN EVEN THE EARTH HIDES HER FACE';
+inner.textContent='WITH A LAMP IN SUCH STORMS';
 secondLine.appendChild(inner);
 document.body.appendChild(secondLine);
 var st2=performance.now();
@@ -6521,11 +6522,12 @@ btn.textContent='Send';btn.disabled=false;
     /* after a page reload there has been no tap on the site yet: the first tap inside the Compendium unlocks sound */
     function gestureOnce(){ unlockPool(); var R=_resume; _resume=null;
       if(R){ _wantBgm=false; if(R.none) return; var mb0=el('musicbtn'), b0=el('bgm-web');
-        if(R.site&&b0){ try{ b0.currentTime=R.t; }catch(e){} b0.volume=R.vol||1; var p0=b0.play(); if(p0&&p0.catch) p0.catch(function(){}); }
-        else { var a0=alloc(); a0.__srcUrl=R.src; a0.__orphan=true; a0.loop=!!R.loop; a0.volume=R.vol||1; a0.addEventListener('loadedmetadata',function(){ try{ a0.currentTime=R.t; }catch(e){} },{once:true}); a0.src=R.src; var p1=a0.play(); if(p1&&p1.catch) p1.catch(function(){}); carried=a0; hookBtn();
+        if(R.site&&b0){ try{ b0.currentTime=R.t; }catch(e){} b0.volume=R.vol||1; var p0=b0.play(); if(p0&&p0.catch) p0.catch(function(){ if(!_resume) _resume=R; }); }
+        else { var a0=alloc(); a0.__srcUrl=R.src; a0.__orphan=true; a0.loop=!!R.loop; a0.volume=R.vol||1; a0.addEventListener('loadedmetadata',function(){ try{ a0.currentTime=R.t; }catch(e){} },{once:true}); a0.src=R.src; var p1=a0.play(); if(p1&&p1.catch) p1.catch(function(e){ if(e&&e.name==='NotAllowedError'){ if(carried===a0) carried=null; try{ release(a0); }catch(x){} if(!_resume) _resume=R; } }); carried=a0; hookBtn();
           if(!a0.loop) a0.addEventListener('ended',function(){ if(carried!==a0||box) return; carried=null; release(a0); resumeSite(); },{once:true}); }
         if(mb0) mb0.innerHTML='&#9208;'; return; }
       if(_wantBgm&&!carried){ _wantBgm=false; var a=el('bgm-web'); if(a&&a.paused&&poolEls().every(function(x){ return x.paused; })){ a.volume=1; var p=a.play(); if(p&&p.catch) p.catch(function(){}); var mb=el('musicbtn'); if(mb) mb.innerHTML='&#9208;'; } } }
+    ['pointerup','touchend','click','keydown'].forEach(function(ev){ document.addEventListener(ev,function(){ if(_resume&&!_resume.none&&!box) gestureOnce(); },true); });
     function el(id){ return document.getElementById(id); }
     /* one player: site music runs on into the reader and fades out the moment the reader's first audio cue fires (or on exit) */
     function fadeSite(ms){ var a=el('bgm-web'); if(!a||a.paused) return; clearInterval(a.__covF); var v0=a.volume, t0=Date.now();
@@ -6615,7 +6617,7 @@ btn.textContent='Send';btn.disabled=false;
       var ov=el('fade-overlay'); ov.style.pointerEvents='auto'; ov.style.opacity='1';
       if(QI) showTravelQuote(QI,5000);
       box=document.createElement('div'); box.id='compendium'; box.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;background:#050506;visibility:hidden'; /* visibility, not display:none — the reader must lay out at full size while it loads behind the quote */
-      var f=document.createElement('iframe'); f.src=CFG.book+'?site=1&bgm='+((sitePlaying()||(_resume&&!_resume.none)||_wantBgm)?1:0)+(typeof hash==='string'?hash:''); f.title='Compendium'; f.addEventListener('load',function(){ try{ var d=f.contentDocument; if(d&&!d.__covG){ d.__covG=1; d.addEventListener('pointerdown',gestureOnce,true); d.addEventListener('keydown',gestureOnce,true); } }catch(e){} }); f.setAttribute('allow','fullscreen; autoplay'); f.setAttribute('allowfullscreen','');
+      var f=document.createElement('iframe'); f.src=CFG.book+'?site=1&bgm='+((sitePlaying()||(_resume&&!_resume.none)||_wantBgm)?1:0)+(typeof hash==='string'?hash:''); f.title='Compendium'; f.addEventListener('load',function(){ try{ var d=f.contentDocument; if(d&&!d.__covG){ d.__covG=1; ['pointerup','touchend','click','keydown'].forEach(function(ev){ d.addEventListener(ev,gestureOnce,true); }); } }catch(e){} }); f.setAttribute('allow','fullscreen; autoplay'); f.setAttribute('allowfullscreen','');
       f.style.cssText='border:0;width:100%;height:100%;display:block;background:#050506'; box.appendChild(f); document.body.appendChild(box);
       /* quote rolls away fully (750ms) before the seams start to part */
       setTimeout(function(){ if(QI) rollAwayQuote(); }, QI?3000:0);
@@ -6635,7 +6637,7 @@ btn.textContent='Send';btn.disabled=false;
       busy=true; var done=false;
       function onH(e){ var d=e.data; if(d&&d.cov&&d.type==='handoff') go(d); }
       function go(h){ if(done) return; done=true; window.removeEventListener('message',onH);
-        if(h&&h.src) playAt(h);
+        if(h&&h.src) playAt(h); else if(_resume&&!_resume.none){ try{ gestureOnce(); }catch(e){} }
         shut(); }
       window.addEventListener('message',onH);
       try{ box.firstChild.contentWindow.postMessage({cov:1,type:'handoff?'},'*'); }catch(e){}
