@@ -281,7 +281,7 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-17T03:08:16.084Z -->
+<!-- covenant-studio: built 2026-10-17T03:28:00.270Z -->
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6496,7 +6496,7 @@ btn.textContent='Send';btn.disabled=false;
       var snd=true; var wm=G.querySelector('#wm');
       function paint(){ wm.textContent='\u266A'; wm.classList.toggle('off',!snd); wm.title=snd?'Music on \u2014 tap to turn off':'Music off \u2014 tap to turn on'; } paint();
       var wg=G.querySelector('#wg'); function signedIn(){ try{ var a=JSON.parse(localStorage.getItem('cov-auth')||'null'); return !!(a&&a.handle); }catch(x){ return false; } }
-      var gs=G.querySelector('.s'); function label(){ var on=signedIn(); wg.textContent=on?'ENTER':'ENTER AS A GUEST'; if(gs) gs.style.display=on?'none':''; var _wa=G.querySelector('#wacct'); if(_wa) _wa.style.display=on?'none':'flex'; var _so=G.querySelector('#wso'); if(_so) _so.style.display=on?'':'none'; } label();
+      var gs=G.querySelector('.s'); function label(){ var on=signedIn(); wg.textContent=on?'ENTER':'ENTER AS A GUEST'; wg.style.width=on?'auto':''; wg.style.paddingLeft=on?'34px':''; wg.style.paddingRight=on?'34px':''; if(gs) gs.style.display=on?'none':''; var _wa=G.querySelector('#wacct'); if(_wa) _wa.style.display=on?'none':'flex'; var _so=G.querySelector('#wso'); if(_so) _so.style.display=on?'':'none'; } label();
       /* signing in (email, or a new handle) carries straight on into the opening. A Google return reloaded the page, so it waits for one tap on ENTER — browsers only allow music after a tap. */
       window.addEventListener('cov-signed-in',function(){ label(); if(window.__covDoorReturn){ window.__covDoorReturn=false; return; } setTimeout(function(){ if(document.body.contains(G)) wg.click(); },900); });
       wm.onclick=function(e){ e.stopPropagation(); snd=!snd; paint(); };
@@ -6576,7 +6576,7 @@ btn.textContent='Send';btn.disabled=false;
       if(d.type==='cue') takeOver(d.page); else if(d.type==='carry') playAt(d); else if(d.type==='exit') closeCompendium(); });
     function chrome(show){ ['infobtn','musicbtn'].forEach(function(i){ var e=el(i); if(e) e.style.display=show?'':'none'; }); }
     window.__covInMons=function(){ try{ return monsState==='cluster'&&(typeof travelState==='undefined'||travelState==='cluster-mons'); }catch(e){ return false; } };
-    (function(){ var mb=el('musicbtn'); if(!mb) return; var st=document.createElement('style'); st.textContent='#musicbtn{top:20px!important;right:20px!important;left:auto!important;bottom:auto!important;width:30px!important;height:30px!important;box-sizing:border-box;padding:0;background:rgba(74,144,217,.18)!important;border:1.5px solid rgba(190,208,228,.85)!important;color:#c8d6e6!important;font-family:serif!important;font-size:15px!important;line-height:1;opacity:1!important;z-index:40!important;transition:top .3s,opacity .25s}#musicbtn:hover{background:rgba(74,144,217,.3)!important}body.cov-in #musicbtn{top:60px!important}#musicbtn.off{opacity:.55!important}#musicbtn.off:after{content:"";position:absolute;width:17px;height:1.5px;background:currentColor;transform:rotate(-45deg)}'; document.head.appendChild(st);
+    (function(){ var mb=el('musicbtn'); if(!mb) return; var st=document.createElement('style'); st.textContent='#musicbtn{top:20px!important;right:20px!important;left:auto!important;bottom:auto!important;width:30px!important;height:30px!important;box-sizing:border-box;padding:0;background:rgba(74,144,217,.18)!important;border:1.5px solid rgba(190,208,228,.85)!important;color:#c8d6e6!important;font-family:serif!important;font-size:15px!important;line-height:1;opacity:1!important;z-index:40!important;transition:top .3s,opacity .25s}#musicbtn:hover{background:rgba(74,144,217,.3)!important}body.cov-in #musicbtn{top:60px!important}#infobtn{left:20px!important}#musicbtn.off{opacity:.55!important}#musicbtn.off:after{content:"";position:absolute;width:17px;height:1.5px;background:currentColor;transform:rotate(-45deg)}'; document.head.appendChild(st);
       function skin(){ var t=mb.textContent||''; if(t==='\u266A') return; var on=t.indexOf('\u23F8')>=0; mb.textContent='\u266A'; mb.classList.toggle('off',!on); mb.title=on?'Music on \u2014 tap to pause':'Music off \u2014 tap to play'; }
       new MutationObserver(skin).observe(mb,{childList:true,characterData:true,subtree:true}); skin(); })();
     window.__covOpenComp=function(f){ if(busy||box) return; try{ instantMons(); }catch(e){} openCompendium(true, f?('#open='+encodeURIComponent(f)):undefined); };
