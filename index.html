@@ -281,7 +281,7 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-17T03:50:38.785Z -->
+<!-- covenant-studio: built 2026-10-17T03:58:16.228Z -->
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6614,7 +6614,7 @@ btn.textContent='Send';btn.disabled=false;
       var ov=el('fade-overlay'); ov.style.pointerEvents='auto'; ov.style.opacity='1';
       if(QI) showTravelQuote(QI,5000);
       box=document.createElement('div'); box.id='compendium'; box.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;background:#050506;visibility:hidden'; /* visibility, not display:none — the reader must lay out at full size while it loads behind the quote */
-      var f=document.createElement('iframe'); f.src=CFG.book+'?site=1&bgm='+(sitePlaying()?1:0)+(typeof hash==='string'?hash:''); f.title='Compendium'; f.addEventListener('load',function(){ try{ var d=f.contentDocument; if(d&&!d.__covG){ d.__covG=1; d.addEventListener('pointerdown',gestureOnce,true); d.addEventListener('keydown',gestureOnce,true); } }catch(e){} }); f.setAttribute('allow','fullscreen; autoplay'); f.setAttribute('allowfullscreen','');
+      var f=document.createElement('iframe'); f.src=CFG.book+'?site=1&bgm='+((sitePlaying()||(_resume&&!_resume.none)||_wantBgm)?1:0)+(typeof hash==='string'?hash:''); f.title='Compendium'; f.addEventListener('load',function(){ try{ var d=f.contentDocument; if(d&&!d.__covG){ d.__covG=1; d.addEventListener('pointerdown',gestureOnce,true); d.addEventListener('keydown',gestureOnce,true); } }catch(e){} }); f.setAttribute('allow','fullscreen; autoplay'); f.setAttribute('allowfullscreen','');
       f.style.cssText='border:0;width:100%;height:100%;display:block;background:#050506'; box.appendChild(f); document.body.appendChild(box);
       /* quote rolls away fully (750ms) before the seams start to part */
       setTimeout(function(){ if(QI) rollAwayQuote(); }, QI?3000:0);
@@ -6694,7 +6694,7 @@ btn.textContent='Send';btn.disabled=false;
       g.onclick=google; return g; }
     function google(){ LS('cov-auth-popup',null); if(C.index&&window.top===window) LS('cov-auth-door','1'); var W=window, ret=HERE; try{ if(window.top!==window&&window.top.location.href){ W=window.top; ret=W.location.origin+W.location.pathname+'?compendium=1'; } }catch(e){ W=window; ret=HERE; } W.location.href=AU+'/authorize?provider=google&redirect_to='+encodeURIComponent(ret); }
     async function finish(a,er){ var h=''; try{ h=await profile(a); }catch(e){} a.handle=h; if(!h){ LS('cov-auth-pending',JSON.stringify(a)); showHandle(); return; } put(a); welcome(h); }
-    function showSignIn(){ var er=frame('Sign in',C.index?'Your handle signs your comments across every work.':'Signing in allows you to take full benefit of our built-in forum. Signing in with Google from here will briefly reload the site.'); var e=inp('email','email'), p=inp('password','password'); var go=el('button','pr','SIGN IN');
+    function showSignIn(){ var er=frame('Sign in',C.index?'For lasting identity in the forum.':'Signing in allows you to take full benefit of our built-in forum. Signing in with Google from here will briefly reload the site.'); var e=inp('email','email'), p=inp('password','password'); var go=el('button','pr','SIGN IN');
       go.onclick=async function(){ er.textContent=''; go.disabled=true; try{ var r=await fetch(AU+'/token?grant_type=password',{method:'POST',headers:H(),body:JSON.stringify({email:e.value.trim(),password:p.value})}); var j=await J(r); if(!r.ok){ er.textContent=errOf(j); return; } await finish(sess(j),er); }catch(x){ er.textContent='Could not reach the server'; } finally{ go.disabled=false; } };
       p.onkeydown=function(k){ if(k.key==='Enter') go.click(); };
       var row=el('div','row'); var f=el('button','ln','Forgot password?'); f.onclick=showReset; var c=el('button','ln','Create an account'); c.onclick=showSignUp; row.appendChild(f); row.appendChild(c);
