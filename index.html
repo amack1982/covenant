@@ -281,8 +281,8 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-17T04:25:49.343Z -->
-<style id="covenant-crawl">#quote-text.crawl-mode{font-size:23px!important}#opening-line2 div{font-size:23px!important}@media(max-width:600px){#quote-text.crawl-mode{font-size:16px!important}#opening-line2 div{font-size:16px!important}}</style>
+<!-- covenant-studio: built 2026-10-17T04:36:09.088Z -->
+<style id="covenant-crawl">#quote-text.crawl-mode{font-size:30px!important}#opening-line2 div{font-size:30px!important}@media(max-width:600px){#quote-text.crawl-mode{font-size:21px!important}#opening-line2 div{font-size:21px!important}}</style>
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6520,7 +6520,7 @@ btn.textContent='Send';btn.disabled=false;
       var _go=function(){ instantMons(); openCompendium(true,_retH); }; if(document.readyState==='complete') setTimeout(_go,60); else window.addEventListener('load',function(){ setTimeout(_go,60); }); }
     function LS0(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
     /* after a page reload there has been no tap on the site yet: the first tap inside the Compendium unlocks sound */
-    function gestureOnce(){ unlockPool(); var R=_resume; _resume=null;
+    function gestureOnce(ev){ unlockPool(); try{ var _tg=ev&&ev.target&&ev.target.closest&&ev.target.closest('a[data-aud]'); if(!_tg&&ev&&ev.target&&ev.target.closest){ var _c=ev.target.closest('a.cont'); if(_c){ var _f=(_c.getAttribute('href')||'').split('?')[0].split('#')[0]; if(_f&&/^[\w.-]+$/.test(_f)) _tg=_c.ownerDocument.querySelector('a.w[data-aud][data-f="'+_f+'"]'); } } if(_tg&&box){ _resume=null; _wantBgm=false; return; } }catch(x){} var R=_resume; _resume=null;
       if(R){ _wantBgm=false; if(R.none) return; var mb0=el('musicbtn'), b0=el('bgm-web');
         if(R.site&&b0){ try{ b0.currentTime=R.t; }catch(e){} b0.volume=R.vol||1; var p0=b0.play(); if(p0&&p0.catch) p0.catch(function(){ if(!_resume) _resume=R; }); }
         else { var a0=alloc(); a0.__srcUrl=R.src; a0.__orphan=true; a0.loop=!!R.loop; a0.volume=R.vol||1; a0.addEventListener('loadedmetadata',function(){ try{ a0.currentTime=R.t; }catch(e){} },{once:true}); a0.src=R.src; var p1=a0.play(); if(p1&&p1.catch) p1.catch(function(e){ if(e&&e.name==='NotAllowedError'){ if(carried===a0) carried=null; try{ release(a0); }catch(x){} if(!_resume) _resume=R; } }); carried=a0; hookBtn();
