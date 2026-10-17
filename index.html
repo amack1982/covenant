@@ -281,7 +281,7 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-17T03:38:23.716Z -->
+<!-- covenant-studio: built 2026-10-17T03:44:04.309Z -->
 </head>
 <body>
 <div id="preload-cover" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:197;background:#0a0e14"></div>
@@ -6496,11 +6496,11 @@ btn.textContent='Send';btn.disabled=false;
       var snd=true; var wm=G.querySelector('#wm');
       function paint(){ wm.textContent='\u266A'; wm.classList.toggle('off',!snd); wm.title=snd?'Music on \u2014 tap to turn off':'Music off \u2014 tap to turn on'; } paint();
       var wg=G.querySelector('#wg'); function signedIn(){ try{ var a=JSON.parse(localStorage.getItem('cov-auth')||'null'); return !!(a&&a.handle); }catch(x){ return false; } }
-      var gs=G.querySelector('.s'); function label(){ var on=signedIn(); wg.textContent=on?'ENTER':'ENTER AS A GUEST'; wg.style.width=on?'auto':''; wg.style.paddingLeft=on?'34px':''; wg.style.paddingRight=on?'34px':''; if(gs) gs.style.display=on?'none':''; var _wa=G.querySelector('#wacct'); if(_wa) _wa.style.display=on?'none':'flex'; var _so=G.querySelector('#wso'); if(_so) _so.style.display=on?'':'none'; } label();
+      var gs=G.querySelector('.s'); function label(){ var on=signedIn(); wg.textContent=on?'ENTER':'ENTER AS A GUEST'; wg.style.width=on?'auto':''; wg.style.paddingLeft=on?'34px':''; wg.style.paddingRight=on?'34px':''; if(gs) gs.style.display=on?'none':''; var _wa=G.querySelector('#wacct'); if(_wa) _wa.style.display=on?'none':'flex'; var _so=G.querySelector('#wso'); if(_so) _so.style.display=on?'':'none'; var _st=G.querySelector('#wsout'), _wa4=G.querySelector('#wacct'); if(on&&!_st&&_wa4){ _st=document.createElement('div'); _st.id='wsout'; _st.style.cssText='font-family:EB Garamond,serif;font-size:1.05rem;color:#9cc8a8;text-align:center;margin-bottom:4px'; _wa4.parentNode.insertBefore(_st,_wa4); } if(on&&_st){ var _h=''; try{ _h=(JSON.parse(localStorage.getItem('cov-auth')||'null')||{}).handle||''; }catch(x){} _st.textContent=_h?('Signed in as @'+_h):''; } else if(_st&&_st.textContent.indexOf('Signed in as')===0){ _st.textContent=''; } } label();
       /* signing in (email, or a new handle) carries straight on into the opening. A Google return reloaded the page, so it waits for one tap on ENTER — browsers only allow music after a tap. */
       window.addEventListener('cov-signed-in',function(){ label(); if(window.__covDoorReturn){ window.__covDoorReturn=false; return; } setTimeout(function(){ if(document.body.contains(G)) wg.click(); },900); });
       wm.onclick=function(e){ e.stopPropagation(); snd=!snd; paint(); };
-      var wso=G.querySelector('#wso'); if(wso) wso.onclick=async function(e){ e.stopPropagation(); wso.disabled=true; try{ if(window.CovAcct&&window.CovAcct.signOut) await window.CovAcct.signOut(); else localStorage.removeItem('cov-auth'); }catch(x){} wso.disabled=false; label(); };
+      var wso=G.querySelector('#wso'); if(wso) wso.onclick=async function(e){ e.stopPropagation(); wso.disabled=true; try{ if(window.CovAcct&&window.CovAcct.signOut) await window.CovAcct.signOut(); else localStorage.removeItem('cov-auth'); }catch(x){} wso.disabled=false; label(); var wa3=G.querySelector('#wacct'); var so=G.querySelector('#wsout'); if(!so&&wa3){ so=document.createElement('div'); so.id='wsout'; so.style.cssText='font-family:EB Garamond,serif;font-size:1.05rem;color:#9cc8a8;text-align:center;margin-bottom:4px'; wa3.parentNode.insertBefore(so,wa3); } if(so) so.textContent='You have successfully signed out.'; };
       var wa=G.querySelector('#wa'); if(wa) wa.onclick=function(e){ e.stopPropagation(); if(window.CovAcct) window.CovAcct.open(); };
       var wgg=G.querySelector('#wgg'); if(wgg) wgg.onclick=function(e){ e.stopPropagation(); try{ localStorage.setItem('cov-auth-door','1'); }catch(x){} if(window.CovAcct) window.CovAcct.google(); };
       G.onclick=function(e){ e.stopPropagation(); };
@@ -6685,7 +6685,7 @@ btn.textContent='Send';btn.disabled=false;
     function eyes(){ B.querySelectorAll('input[type=password]').forEach(function(i){ if(i.__eye) return; i.__eye=1; var w=document.createElement('span'); w.className='pw'; i.parentNode.insertBefore(w,i); w.appendChild(i); var e=document.createElement('button'); e.type='button'; e.className='eye'; e.title='Show password'; e.setAttribute('aria-label','Show password'); e.innerHTML=EYE_O; e.onclick=function(){ var show=i.type==='password'; i.type=show?'text':'password'; e.innerHTML=show?EYE_C:EYE_O; e.title=show?'Hide password':'Show password'; e.setAttribute('aria-label',e.title); i.focus(); }; w.appendChild(e); }); }
     var ov=document.createElement('div'); ov.id='acv'; ov.innerHTML='<div class="b"></div>'; document.body.appendChild(ov); var B=ov.firstChild; new MutationObserver(eyes).observe(B,{childList:true});
     ov.addEventListener('click',function(e){ if(e.target===ov) close(); });
-    function paintPill(){ var a=get(); pill.textContent=(a&&a.handle)?('@'+a.handle):'ACCOUNT SETTINGS'; paintAv(a); var wa2=document.getElementById('wacct'); if(wa2&&a&&a.handle){ wa2.innerHTML='<div class="n" style="font-size:1.05rem;color:#9cc8a8;font-style:normal">Signed in as @'+String(a.handle).replace(/</g,'&lt;')+'</div>'; } var wn=document.getElementById('wn'); if(wn&&a&&a.handle){ wn.value=a.handle; wn.style.display='none'; } }
+    function paintPill(){ var a=get(); pill.textContent=(a&&a.handle)?('@'+a.handle):'ACCOUNT SETTINGS'; paintAv(a); var wn=document.getElementById('wn'); if(wn&&a&&a.handle){ wn.value=a.handle; wn.style.display='none'; } }
     function close(){ ov.classList.remove('on'); }
     function el(t,cls,txt){ var e=document.createElement(t); if(cls) e.className=cls; if(txt!=null) e.textContent=txt; return e; }
     function inp(ph,type){ var i=el('input'); i.placeholder=ph; i.type=type||'text'; return i; }
