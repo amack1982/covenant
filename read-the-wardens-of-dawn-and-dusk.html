@@ -1578,7 +1578,7 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
   function _autoSpd(t){ return AMIN*Math.pow(AMAX/AMIN, Math.max(0,Math.min(1,t))); }
   try{ var _as=parseFloat(localStorage.getItem('rb-autospeed')); if(_as>0) AUTO.spd=Math.max(AMIN,Math.min(AMAX,_as)); }catch(e){}
   function _autoT(){ return Math.log(AUTO.spd/AMIN)/Math.log(AMAX/AMIN); }
-  function _autoMid(){ return (LEFTY?45:135)*Math.PI/180; }
+  function _autoMid(){ try{ var it=items2.filter(function(x){ return x.id==='auto'; })[0]; if(it&&(it.dx||it.dy)) return Math.atan2(it.dy,it.dx); }catch(e){} return (LEFTY?135:45)*Math.PI/180; }
   function _autoPt(t){ var SP=100*Math.PI/180, M=_autoMid(); var a=M+SP/2-t*SP; return {x:75+55*Math.cos(a), y:82+55*Math.sin(a)}; }
   function _autoArcD(){ var e0=_autoPt(0), e1=_autoPt(1); return 'M'+e0.x+' '+e0.y+' A55 55 0 0 0 '+e1.x+' '+e1.y; }
   function _autoRing(){ if(AUTO.ring) return AUTO.ring;
