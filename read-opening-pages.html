@@ -1578,12 +1578,12 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
   function _autoSpd(t){ return AMIN*Math.pow(AMAX/AMIN, Math.max(0,Math.min(1,t))); }
   try{ var _as=parseFloat(localStorage.getItem('rb-autospeed')); if(_as>0) AUTO.spd=Math.max(AMIN,Math.min(AMAX,_as)); }catch(e){}
   function _autoT(){ return Math.log(AUTO.spd/AMIN)/Math.log(AMAX/AMIN); }
-  function _autoPt(t){ var a=Math.PI-t*Math.PI; return {x:75+52*Math.cos(a), y:75+52*Math.sin(a)}; }
+  function _autoPt(t){ var _cut=Math.PI*25/180; var a=Math.PI-_cut-t*(Math.PI-2*_cut); return {x:75+55*Math.cos(a), y:82+55*Math.sin(a)}; }
   function _autoRing(){ if(AUTO.ring) return AUTO.ring;
     var w=document.createElement('div');
     w.style.cssText='position:fixed;z-index:15;width:150px;height:150px;pointer-events:none;visibility:hidden;opacity:0;transform:scale(.9);transition:opacity .25s ease,transform .25s cubic-bezier(.2,.85,.25,1);touch-action:none';
     var e0=_autoPt(0), e1=_autoPt(1);
-    var arcD='M'+e0.x+' '+e0.y+' A52 52 0 0 0 '+e1.x+' '+e1.y;
+    var arcD='M'+e0.x+' '+e0.y+' A55 55 0 0 0 '+e1.x+' '+e1.y;
     w.innerHTML='<svg width="150" height="150" viewBox="0 0 150 150" style="overflow:visible;touch-action:none">'
       +'<path d="'+arcD+'" fill="none" stroke="rgba(8,9,12,.55)" stroke-width="13" stroke-linecap="round"></path>'
       +'<path d="'+arcD+'" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="7" stroke-linecap="round"></path>'
@@ -1591,12 +1591,12 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
       +'<path d="'+arcD+'" fill="none" stroke="transparent" stroke-width="34" stroke-linecap="round" data-hit style="pointer-events:stroke;cursor:pointer"></path>'
       +'<circle r="17" fill="transparent" data-grab style="pointer-events:auto;cursor:grab"></circle>'
       +'<circle r="8.5" fill="#d8b46a" stroke="#15110a" stroke-width="2" data-knob style="pointer-events:none;transition:r .18s ease"></circle>'
-      +'<text data-lbl x="75" y="143" text-anchor="middle" fill="#d8b46a" stroke="rgba(8,9,12,.8)" stroke-width="3.5" paint-order="stroke" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.4"></text></svg>';
+      +'<text data-lbl x="75" y="152" text-anchor="middle" fill="#d8b46a" stroke="rgba(8,9,12,.8)" stroke-width="3.5" paint-order="stroke" font-family="JetBrains Mono,monospace" font-size="9" letter-spacing="1.4"></text></svg>';
     document.body.appendChild(w); AUTO.ring=w;
     var svg=w.querySelector('svg');
     function fromEvent(ev){ var r=svg.getBoundingClientRect(); var cx=r.left+r.width*0.5, cy=r.top+r.height*0.5;
-      var a=Math.atan2(ev.clientY-cy, ev.clientX-cx); var t;
-      if(a<=0) t=(a+Math.PI)/Math.PI; else t=(ev.clientX>=cx)?1:0;
+      var px=(ev.clientX-r.left)*150/(r.width||150), py=(ev.clientY-r.top)*150/(r.height||150); var t=0, bd=1e9;
+      for(var k=0;k<=120;k++){ var q=_autoPt(k/120); var dd=(q.x-px)*(q.x-px)+(q.y-py)*(q.y-py); if(dd<bd){ bd=dd; t=k/120; } }
       _autoSet(_autoSpd(Math.max(0,Math.min(1,t)))); }
     var drag=false, knob=null;
     function down(ev){ ev.preventDefault(); ev.stopPropagation(); drag=true;
@@ -1619,7 +1619,7 @@ async function openForum(forceKey,forceFresh){ var _silent=(forceFresh==='silent
       _autoSet(_autoSpd(t)); try{ localStorage.setItem('rb-autospeed',String(AUTO.spd)); }catch(e){} },{passive:false});
     return w; }
   function _autoPaint(){ var w=_autoRing(), t=_autoT(), p=_autoPt(t), s=_autoPt(0);
-    w.querySelector('[data-fill]').setAttribute('d','M'+s.x+' '+s.y+' A52 52 0 0 0 '+p.x+' '+p.y);
+    w.querySelector('[data-fill]').setAttribute('d','M'+s.x+' '+s.y+' A55 55 0 0 0 '+p.x+' '+p.y);
     var k=w.querySelector('[data-knob]'); k.setAttribute('cx',p.x); k.setAttribute('cy',p.y);
     w.querySelector('[data-lbl]').textContent=(AUTO.spd*60<10?(Math.round(AUTO.spd*600)/10):Math.round(AUTO.spd*60))+' PX/S'; }
   function _autoSet(v){ AUTO.spd=Math.max(AMIN,Math.min(AMAX,v)); _autoPaint(); try{ _autoRingPoke(); }catch(e){} }
