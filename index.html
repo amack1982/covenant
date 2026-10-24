@@ -9,7 +9,7 @@
         try{ fetch(C.u+'/rest/v1/events',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json',apikey:C.k,Authorization:'Bearer '+C.k,Prefer:'return=minimal'},body:JSON.stringify({book_id:'site',session_id:sid(),type:'site',chapter_id:String(name||'').slice(0,60),para_order:0,city:p.visitor_city?String(p.visitor_city).slice(0,80):null,meta:meta})}).catch(function(){}); }catch(e){} }; })({"u":"https://qnnkguvmzdvnsbnxxpbz.supabase.co","k":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubmtndXZtemR2bnNibnh4cGJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMDE4OTksImV4cCI6MjA5Nzg3Nzg5OX0.txBQjtXReYpFRU0p0YaBeyy3_3CjuLAPHJsmlwNHjyE"});</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Covenant of The Flowers — Relationship Web</title>
+<title>The Covenant of the Flowers · Starlit Atlas</title><meta name="description" content="Explore the relationships, worlds, and celestial calendar of The Covenant of the Flowers in an illuminated interactive atlas.">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -281,7 +281,70 @@ font-family:'EB Garamond',serif;font-size:14px;
 color:rgba(140,180,160,0.7);margin-top:10px;
 }
 </style>
-<!-- covenant-studio: built 2026-10-23T15:48:39.864Z -->
+
+<style id="starlit-edition">
+:root{--gilt:#dfc18a;--pearl:#f6eddc;--violet:#b6a3dc}
+body{background:#080b18;color:#ded9e9}
+#stars{filter:brightness(1.25)}#aurora{filter:saturate(1.45)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#title-bar{padding:24px 0 30px;background:linear-gradient(#080b18ed,#080b1880,transparent)}
+#title-bar h1{color:#8090a0;font-size:20px;letter-spacing:.24em;text-shadow:none}
+#title-bar .sub{color:#8090a0;margin-top:7px;font-size:14px}
+.node text{fill:#e7e0ef;text-shadow:0 2px 6px #080b18,0 0 16px #b5a2e233}
+.node:hover circle,.node.selected circle{filter:brightness(1.5) drop-shadow(0 0 7px #e9cc9c)}
+#legend,#instructions{background:#1014279e;border:1px solid #c1a67730;border-radius:8px;padding:14px 18px;backdrop-filter:blur(16px);line-height:1.7;opacity:.85}
+#tooltip,#cal-detail-panel{background:linear-gradient(145deg,#1a2035f5,#0c1023f5);border:1px solid #c9ab7655;box-shadow:0 16px 80px #0008, inset 0 1px #e5d3a315;border-radius:10px}
+#tooltip .tt-name,#cal-detail-panel .dp-name{color:#e8d2a8}
+#cal-detail-panel .dp-message{color:#c4bfd2}#cal-detail-panel .dp-ideal{color:#baa77f}
+#about-overlay{background:radial-gradient(ellipse at 50% 10%,#25213de8,#090c19fa)!important;backdrop-filter:blur(18px)}
+#about-content h2{color:#e5cca0!important;letter-spacing:.08em}
+#about-content p{color:#c6c1cf}
+body > button:focus-visible,#about-overlay button:focus-visible,a:focus-visible{outline:2px solid #efd39b!important;outline-offset:5px}
+#atlas-container{--parch:#f3ead8;--parch-dk:#e8dcc3;--gold:#917135;--bord:#8c774e}
+#atlas-container .hd{border-bottom:1px solid var(--bord)}
+@media(max-width:600px){#legend,#instructions{padding:8px;font-size:10px;bottom:12px}#legend{left:12px}#instructions{right:12px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+</style>
+
+<style id="silver-sign-in">
+#cov-gate #wa{
+position:relative;isolation:isolate;overflow:hidden;color:#202c3b;
+border:1px solid rgba(231,242,255,.85);
+background:linear-gradient(118deg,#a9bacd 0%,#dce6ee 24%,#c2d5e6 49%,#e7edf2 73%,#b2c3d5 100%);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 -1px 2px rgba(47,59,80,.25),0 3px 18px rgba(186,210,237,.12);
+text-shadow:0 1px 0 rgba(255,255,255,.5);transition:box-shadow .35s,transform .25s,border-color .35s;
+}
+#cov-gate #wa:before{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:repeating-linear-gradient(174deg,rgba(255,255,255,.16) 0px,rgba(255,255,255,.16) .6px,rgba(91,110,138,.035) .6px,rgba(91,110,138,.035) 1.5px,transparent 1.5px,transparent 3px);opacity:.55}
+#cov-gate #wa:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;background:
+radial-gradient(ellipse 26% 145% at var(--iris-x,50%) var(--iris-y,50%),rgba(255,255,255,.38),rgba(245,252,255,.12) 35%,transparent 74%),
+linear-gradient(176deg,rgba(255,255,255,.28) 0%,transparent 25%,rgba(74,104,139,.12) 47%,rgba(255,255,255,.22) 64%,transparent 83%),
+linear-gradient(var(--iris-angle,112deg),rgba(122,208,174,.43) 0%,rgba(147,201,243,.48) var(--iris-left,24%),rgba(251,253,255,.7) var(--iris-white,50%),rgba(151,197,242,.47) var(--iris-right,76%),rgba(183,155,221,.43) 100%),
+repeating-linear-gradient(174deg,rgba(255,255,255,.1) 0px,rgba(255,255,255,.1) .6px,rgba(76,99,130,.04) .6px,transparent 2px);
+opacity:.12;transition:opacity .65s ease;}
+#cov-gate #wa:is(:hover,:focus-visible):after{opacity:1}
+#cov-gate #wa .silver-luster{position:absolute;inset:-35% -20%;pointer-events:none;z-index:-1;border-radius:50%;filter:saturate(1);transition:filter 1.2s ease;}
+#cov-gate #wa:is(:hover,:focus-visible) .silver-luster{filter:saturate(1.65) brightness(1.025)}
+#cov-gate #wa .silver-luster.blue{background:radial-gradient(ellipse at 35% 45%,rgba(234,248,255,.8),rgba(141,185,225,.36) 40%,transparent 72%);opacity:.45}
+#cov-gate #wa .silver-luster.green{background:radial-gradient(ellipse at 66% 60%,rgba(159,217,196,.6),rgba(192,230,217,.25) 28%,transparent 60%);opacity:.28}
+#cov-gate #wa .silver-luster.purple{background:radial-gradient(ellipse at 35% 32%,rgba(184,169,220,.57),rgba(213,205,232,.2) 31%,transparent 63%);opacity:.24}
+#cov-gate #wa:hover{border-color:#fff;box-shadow:inset 0 1px 0 #fff,inset 0 -1px 2px #424d6733,0 3px 24px rgba(199,219,255,.3);transform:translateY(-1px)}
+#cov-gate #wa:active{transform:translateY(0);box-shadow:inset 0 1px 4px #46536d40}
+#cov-gate #wa:focus-visible{outline:2px solid #dfebff;outline-offset:4px}
+@media(prefers-reduced-motion:reduce){#cov-gate #wa,#cov-gate #wa .silver-luster,#cov-gate #wa:after{transition:none!important}}
+</style>
+<!-- covenant-studio: built 2026-10-24T01:23:08.597Z -->
 <style id="covenant-crawl">#quote-text.crawl-mode{font-size:30px!important}#opening-line2 div{font-size:30px!important}@media(max-width:600px){#quote-text.crawl-mode{font-size:21px!important}#opening-line2 div{font-size:21px!important}}</style>
 </head>
 <body>
@@ -378,13 +441,22 @@ Boulais, A. &ensp;&middot;&ensp; Collins, K. &ensp;&middot;&ensp; Davis, G.
 <div id="tooltip"><div class="tt-name"></div><div class="tt-detail"></div></div>
 
 <div id="legend">
-<div class="leg-row"><div class="leg-swatch" style="background:#e05050"></div> Relative</div>
-<div class="leg-row"><div class="leg-swatch" style="background:#50c878"></div> Well-Known</div>
-<div class="leg-row"><div class="leg-swatch" style="background:#4a90d9"></div> Known</div>
+<div class="leg-row"><div class="leg-swatch" style="height:.85px;background:rgba(255,255,255,.68);box-shadow:0 0 7px #ffffff77"></div> Relative</div>
+<div class="leg-row"><div class="leg-swatch" style="height:.85px;background:rgba(255,255,255,.36);box-shadow:0 0 5px #ffffff33"></div> Well-Known</div>
+<div class="leg-row"><div class="leg-swatch" style="height:.85px;background:rgba(255,255,255,.16);box-shadow:0 0 3px #ffffff18"></div> Known</div>
 </div>
 <div id="instructions">Click a node to focus<br>Click central node to zoom out</div>
 <script>
-const COLORS={family:'#e05050','well-known':'#50c878',known:'#4a90d9'};
+const COLORS={family:'#ffffff','well-known':'#ffffff',known:'#ffffff'};
+const RELATION_LIGHT={family:1,'well-known':.5,known:.18};
+const RELATION_APPEARANCE={family:{width:.85,opacity:.68},'well-known':{width:.85,opacity:.36},known:{width:.85,opacity:.16}};
+function receivedRelationshipLight(source,relationships){
+const light=Object.create(null),direct=Object.create(null);light[source]=1;
+relationships.forEach(r=>{const other=r.source===source?r.target:r.target===source?r.source:null;if(other!==null&&other!==source)direct[other]=Math.max(direct[other]||0,RELATION_LIGHT[r.category]||.28)});
+Object.keys(direct).forEach(name=>light[name]=direct[name]);
+relationships.forEach(r=>{[[r.source,r.target],[r.target,r.source]].forEach(([from,to])=>{if(direct[from]!==undefined&&to!==source&&direct[to]===undefined)light[to]=Math.max(light[to]||0,direct[from]*(RELATION_LIGHT[r.category]||.28)*.2)})});
+return light;
+}
 const canvas=document.getElementById('stars');const ctx=canvas.getContext('2d');let starParticles=[];
 function initStars(){canvas.width=window.innerWidth*1.4;canvas.height=window.innerHeight*1.4;starParticles=[];for(let i=0;i<300;i++){starParticles.push({x:Math.random()*(canvas.width+400)-200,y:Math.random()*(canvas.height+400)-200,r:Math.random()*1.2+0.2,a:Math.random()*0.5+0.1,speed:Math.random()*0.0008+0.0002,phase:Math.random()*Math.PI*2,bright:Math.random()<0.1,speed2:Math.random()*0.0008+0.0006});}}
 function drawStars(t){ctx.clearRect(0,0,canvas.width,canvas.height);starParticles.forEach(s=>{const spd=s.bright?s.speed2:s.speed;const f1=Math.sin(t*spd*400+s.phase);const f2=Math.sin(t*spd*170+s.phase*2.7);const f3=Math.sin(t*spd*80+s.phase*0.4);const f=(f1*0.19+f2*0.115+f3*0.075+0.625);ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);var ba=s.bright?Math.min(1,s.a*f*1.8):s.a*f;ctx.fillStyle=`rgba(${s.bright?'220,235,255':'180,195,220'},${ba})`;ctx.fill();});requestAnimationFrame(drawStars);}
@@ -1178,11 +1250,13 @@ svgEl.appendChild(gLine);
 }
 
 function render(){
+window.__webLightNodes=[];window.__webLightEdges=[];
 var maxPan=Math.max(W(),H())*0.1;var panX=Math.max(-maxPan,Math.min(maxPan,-camOX*0.1));var panY=Math.max(-maxPan,Math.min(maxPan,-camOY*0.1));
 canvas.style.transform='translate('+panX+'px,'+panY+'px)';
 
 svg.innerHTML='';var defs=document.createElementNS(NS,'defs');defs.innerHTML='<filter id="textshadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#0a0e14" flood-opacity="0.8"/></filter>';svg.appendChild(defs);const linkG=document.createElementNS(NS,'g');const nodeG=document.createElementNS(NS,'g');
 const connected=selectedNode?getConnected(selectedNode):[];const secondary=selectedNode?getSecondary(selectedNode,connected):[];
+const receivedLight=selectedNode?receivedRelationshipLight(selectedNode,DATA.relationships):null;
 
 DATA.relationships.forEach((r,i)=>{
 var isGatewayLink=(r.source==='Gateway'||r.target==='Gateway')||(r.source==='To Halcyon Fold'||r.target==='To Halcyon Fold')||(r.source==='To Mons Concordia'||r.target==='To Mons Concordia');
@@ -1191,48 +1265,55 @@ const s=nodes[r.source];const t=nodes[r.target];const line=document.createElemen
 line.setAttribute('x1',s.x-camOX);line.setAttribute('y1',s.y-camOY);line.setAttribute('x2',t.x-camOX);line.setAttribute('y2',t.y-camOY);
 line.classList.add('link');var isHFLink=(r.source==='To Halcyon Fold'||r.target==='To Halcyon Fold')||(r.source==='Gateway'&&r.target==='To Halcyon Fold')||(r.target==='Gateway'&&r.source==='To Halcyon Fold');
 var isMCLink=(r.source==='To Mons Concordia'||r.target==='To Mons Concordia')||(r.source==='Gateway'&&r.target==='To Mons Concordia')||(r.target==='Gateway'&&r.source==='To Mons Concordia');
-line.setAttribute('stroke',(isHFLink||isMCLink)?'#8070a0':COLORS[r.category]);
+const categoryLight=RELATION_LIGHT[r.category]||.18;
+const appearance=RELATION_APPEARANCE[r.category]||RELATION_APPEARANCE.known;
+line.setAttribute('stroke','#ffffff');line.setAttribute('stroke-linecap','round');
+let lineLight=appearance.opacity*.65,lineWidth=appearance.width;
 if(selectedNode){
-const isPri=r.source===selectedNode||r.target===selectedNode;
-const isSec=!isPri&&((connected.includes(r.source)&&(connected.includes(r.target)||secondary.includes(r.target)))||(connected.includes(r.target)&&(connected.includes(r.source)||secondary.includes(r.source))));
-if(isPri){line.setAttribute('stroke-width',r.category==='family'?2.5:1.5);line.setAttribute('stroke-opacity','0.80');}
-else if(isSec){line.setAttribute('stroke','#8090a0');line.setAttribute('stroke-width',0.8);line.setAttribute('stroke-opacity','0.31');}
-else{line.setAttribute('stroke-width',0.3);line.setAttribute('stroke-opacity','0.18');}
-}else{line.setAttribute('stroke-width',r.category==='family'?1.8:1);line.setAttribute('stroke-opacity',r.category==='known'?'0.4':'0.55');}
+const primary=r.source===selectedNode||r.target===selectedNode;
+if(primary)lineLight=appearance.opacity;
+else{const sourceLight=receivedLight[r.source]||0,targetLight=receivedLight[r.target]||0;lineLight=sourceLight&&targetLight?Math.min(.09,Math.max(sourceLight,targetLight)*categoryLight*.1):.008*categoryLight;lineWidth=Math.min(.6,appearance.width*.45)}
+}
+line.setAttribute('stroke-width',lineWidth);line.setAttribute('stroke-opacity',lineLight);
+window.__webLightEdges.push({x1:s.x-camOX,y1:s.y-camOY,x2:t.x-camOX,y2:t.y-camOY,light:lineLight,index:i});
 linkG.appendChild(line);});
 
 DATA.characters.forEach(name=>{
 if(name==='Gateway'&&selectedNode&&selectedNode!=='Gateway'){return;}
 if(name==='To Halcyon Fold'&&selectedNode!=='Gateway'){return;}
 if(name==='To Mons Concordia'&&selectedNode!=='Gateway'){return;}
-const n=nodes[name];const g=document.createElementNS(NS,'g');g.classList.add('node');
+const n=nodes[name];const g=document.createElementNS(NS,'g');g.classList.add('node');g.setAttribute('data-character',name);
 if(selectedNode){const isPri=selectedNode===name||connected.includes(name);const isSec=secondary.includes(name);if(!isPri&&!isSec)g.classList.add('dimmed');else if(isSec)g.classList.add('secondary');}
 if(selectedNode===name)g.classList.add('selected');
+var nodeLight=receivedLight?(receivedLight[name]||.035):.6;g.setAttribute('data-received-light',nodeLight);
 var nx=n.x-camOX;var ny=n.y-camOY;
 var isGW=name==='Gateway';var isHF=name==='To Halcyon Fold';var isMC=name==='To Mons Concordia';var isSel=selectedNode===name;
 var baseR=(isHF||isMC)?n.r*1.4:isSel?n.r*1.6:n.r;
-var bloomR=(isHF||isMC)?n.r*6:isSel?n.r*5:n.isMain?n.r*4:n.r*3;
-var coreColor=isGW?'#a080c0':(isHF||isMC)?'#8070b0':n.isMain?'#c8ddf0':'#90a8c0';
-var glowColor=isGW?'rgba(160,128,192,':'rgba(140,180,220,';
+var bloomR=(isHF||isMC)?n.r*6:isSel?n.r*5:n.r*(2.5+nodeLight*3.5);
+var coreColor=isSel?'#ffffff':isGW?'#a080c0':(isHF||isMC)?'#8070b0':'rgba(255,255,255,'+(.14+.84*Math.pow(nodeLight,.8))+')';
+var glowColor=isSel?'rgba(255,255,255,':isGW?'rgba(160,128,192,':'rgba(255,255,255,';
 var glow3=document.createElementNS(NS,'circle');glow3.setAttribute('cx',nx);glow3.setAttribute('cy',ny);
-glow3.setAttribute('r',bloomR);glow3.setAttribute('fill',glowColor+(isSel?'0.06':'0.02')+')');g.appendChild(glow3);
+glow3.setAttribute('r',bloomR);glow3.setAttribute('fill',glowColor+(isSel?.06:.008+.04*nodeLight*nodeLight)+')');g.appendChild(glow3);
 var glow2=document.createElementNS(NS,'circle');glow2.setAttribute('cx',nx);glow2.setAttribute('cy',ny);
-glow2.setAttribute('r',bloomR*0.6);glow2.setAttribute('fill',glowColor+(isSel?'0.1':'0.04')+')');g.appendChild(glow2);
+glow2.setAttribute('r',bloomR*0.6);glow2.setAttribute('fill',glowColor+(isSel?.1:.012+.065*nodeLight*nodeLight)+')');g.appendChild(glow2);
 var glow1=document.createElementNS(NS,'circle');glow1.setAttribute('cx',nx);glow1.setAttribute('cy',ny);
-glow1.setAttribute('r',bloomR*0.3);glow1.setAttribute('fill',glowColor+(isSel?'0.15':'0.07')+')');g.appendChild(glow1);
+glow1.setAttribute('r',bloomR*0.3);glow1.setAttribute('fill',glowColor+(isSel?.15:.018+.12*nodeLight*nodeLight)+')');g.appendChild(glow1);
 var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',nx);circle.setAttribute('cy',ny);
 circle.setAttribute('r',baseR);circle.setAttribute('fill',coreColor);
 circle.setAttribute('stroke',glowColor+'0.4)');circle.setAttribute('stroke-width',isSel?'1.5':'0.8');g.appendChild(circle);
-if(n.isMain&&!isGW&&!isHF&&!isMC){
-var spkLen=baseR*2.5;var spkOp=isSel?'0.25':'0.12';
+var rayLines=[];
+if(!isGW&&!isHF&&!isMC){
+var spkLen=baseR*(n.isMain||isSel?2.5:2);var spkOp=isSel?'0.25':n.isMain?'0.12':'0.055';
 var h1=document.createElementNS(NS,'line');h1.setAttribute('x1',nx-spkLen);h1.setAttribute('y1',ny);h1.setAttribute('x2',nx+spkLen);h1.setAttribute('y2',ny);
 h1.setAttribute('stroke',glowColor+spkOp+')');h1.setAttribute('stroke-width','0.5');g.appendChild(h1);
 var v1=document.createElementNS(NS,'line');v1.setAttribute('x1',nx);v1.setAttribute('y1',ny-spkLen);v1.setAttribute('x2',nx);v1.setAttribute('y2',ny+spkLen);
 v1.setAttribute('stroke',glowColor+spkOp+')');v1.setAttribute('stroke-width','0.5');g.appendChild(v1);
+rayLines.push(h1,v1);
 }
 var glowRing=document.createElementNS(NS,'circle');glowRing.setAttribute('cx',nx);glowRing.setAttribute('cy',ny);
 glowRing.setAttribute('r',baseR*2);glowRing.setAttribute('fill','none');
 glowRing.setAttribute('stroke',glowColor+(n.isMain?'0.15':'0.08')+')');glowRing.setAttribute('stroke-width','0.5');g.appendChild(glowRing);
+window.__webLightNodes.push({name:name,x:nx,y:ny,r:baseR,selected:isSel,main:n.isMain,rays:rayLines,rayPhase:Array.from(name).reduce((seed,ch)=>seed+ch.charCodeAt(0)*.173,0),weight:g.classList.contains('dimmed')?.12:g.classList.contains('secondary')?.38:1});
 var text=document.createElementNS(NS,'text');text.setAttribute('x',nx);
 text.setAttribute('y',ny-baseR-10);
 text.setAttribute('font-size',selectedNode===name?'18':name==='Gateway'?'16':n.isMain?'15':'12');text.setAttribute('filter','url(#textshadow)');text.textContent=name;g.appendChild(text);
@@ -6828,3 +6909,75 @@ btn.textContent='Send';btn.disabled=false;
   })({"u":"https://qnnkguvmzdvnsbnxxpbz.supabase.co","k":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubmtndXZtemR2bnNibnh4cGJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMDE4OTksImV4cCI6MjA5Nzg3Nzg5OX0.txBQjtXReYpFRU0p0YaBeyy3_3CjuLAPHJsmlwNHjyE","works":{"the-covenant-of-the-flowers-chf0k8l1-chgatp3o":{"f":"read-opening-pages.html","t":"Opening Pages","d":1792066973531},"the-covenant-of-the-flowers-chf0k8l1-chf0k8l1":{"f":"read-the-wardens-of-dawn-and-dusk.html","t":"The Wardens of Dawn and Dusk","d":1792066973583},"the-covenant-of-the-flowers-chf0k8l1-chd8lv3a":{"f":"read-tycho-lunar-initiative.html","t":"Tycho Lunar Initiative","d":1792066973637},"the-covenant-of-the-flowers-chf0k8l1-chmxioq5":{"f":"read-the-material-revolution-the-lost-age-of-.html","t":"The Material Revolution & the Lost Age of Silver","d":1792163977216},"the-covenant-of-the-flowers-chf0k8l1-ch3u4q6l":{"f":"read-the-four-seasons-of-the-realm-kefari.html","t":"The Four Seasons of the Realm - Kefari","d":1792297608244}},"news":[{"id":"nmvl341uux664","t":"A built-in dictionary has been added to the Compendium. Long press any word while reading to call up its definition.","d":1792766880102}],"index":true});
 </script>
 </body></html>
+
+<style id="web-radiance-style">
+html body #web-radiance{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;mix-blend-mode:screen}
+#web .node:hover circle{filter:brightness(1.15)}
+#web .node.selected text{fill:#ffffff;text-shadow:0 2px 5px #080b18,0 0 12px #ffffff80}
+#web .node.selected circle{filter:brightness(1.3)}
+</style>
+<script id="web-radiance-effects">
+(()=>{
+const web=document.getElementById('svg');if(!web)return;
+const field=document.createElement('canvas');field.id='web-radiance';field.setAttribute('aria-hidden','true');document.getElementById('web').before(field);const ctx=field.getContext('2d');if(!ctx)return;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)');let frame=0,last=-100,hover=null,previous=null;const lights=new Map();
+function resize(){const d=Math.min(devicePixelRatio||1,2);field.width=innerWidth*d;field.height=innerHeight*d;ctx.setTransform(d,0,0,d,0,0);start()}
+function visible(){return !document.hidden&&typeof travelState!=='undefined'&&travelState==='web'&&!(typeof calendarActive!=='undefined'&&calendarActive)&&!(typeof roadmapState!=='undefined'&&roadmapState!=='hidden')}
+function aura(n,t,boost,index){
+const radius=Math.min(155,Math.max(95,innerWidth*.14)),strength=.85+boost*.15;
+ctx.save();ctx.translate(n.x,n.y);
+const bloom=ctx.createRadialGradient(0,0,0,0,0,radius);bloom.addColorStop(0,`rgba(255,255,255,${.65*strength})`);bloom.addColorStop(.14,`rgba(255,255,255,${.3*strength})`);bloom.addColorStop(.45,`rgba(255,255,255,${.085*strength})`);bloom.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=bloom;ctx.fillRect(-radius,-radius,radius*2,radius*2);
+// Broad radiance belongs only to the selected central character.
+for(let j=0;j<16;j++){const angle=j*Math.PI/8+.065*Math.sin(t*.19+j*1.7)+.024*Math.sin(t*.37+j*.63),length=radius*(j%2?.6:1)*(.94+.04*Math.sin(t*.24+j)+.02*Math.sin(t*.41+j*.7));ctx.save();ctx.rotate(angle);const beam=ctx.createLinearGradient(4,0,length,0);beam.addColorStop(0,`rgba(255,255,255,${strength*.28})`);beam.addColorStop(.26,`rgba(255,255,255,${strength*.17})`);beam.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=beam;ctx.beginPath();ctx.moveTo(4,-.6);ctx.lineTo(length,-(j%2?2:5));ctx.lineTo(length,j%2?2:5);ctx.lineTo(4,.6);ctx.closePath();ctx.fill();ctx.restore()}
+if(!reduce.matches){for(let j=0;j<85;j++){const seed=j*2.39996,indexPhase=j*.6180339,phase=(t*(.12+(j%5)*.009)+indexPhase)%1,angle=seed+Math.sin(t*.22+seed)*.12,spread=radius*(.18+((j*37)%83)/100),x=Math.cos(angle)*spread+Math.sin(t*.6+seed)*5,y=Math.sin(angle)*spread+(0.5-phase)*22;const twinkle=Math.pow(Math.max(0,Math.sin(t*(1.5+(j%4)*.3)+seed)),3),alpha=Math.sin(phase*Math.PI)*(.3+.7*twinkle),size=(j%9===0?2.4:1+(j%3)*.35)*(.55+.45*twinkle);
+ctx.shadowColor='#ffffff';ctx.shadowBlur=8+twinkle*7;ctx.fillStyle=`rgba(255,255,255,${alpha})`;ctx.beginPath();ctx.arc(x,y,size,0,Math.PI*2);ctx.fill();
+if(j%3===0){const arm=(4+(j%7))*twinkle;ctx.fillStyle=`rgba(255,255,255,${alpha*.9})`;ctx.beginPath();ctx.moveTo(x,y-arm);ctx.quadraticCurveTo(x+.7,y-.7,x+arm*.7,y);ctx.quadraticCurveTo(x+.7,y+.7,x,y+arm);ctx.quadraticCurveTo(x-.7,y+.7,x-arm*.7,y);ctx.quadraticCurveTo(x-.7,y-.7,x,y-arm);ctx.fill()}}
+}
+ctx.restore();ctx.shadowBlur=0;
+}
+function shimmerLine(edge,t){
+if(edge.light<=0)return;const dx=edge.x2-edge.x1,dy=edge.y2-edge.y1,length=Math.hypot(dx,dy);if(length<1)return;
+ctx.save();ctx.shadowColor='#ffffff';ctx.shadowBlur=7;ctx.lineWidth=.75;ctx.lineCap='round';ctx.strokeStyle=`rgba(255,255,255,${edge.light*.18})`;ctx.beginPath();ctx.moveTo(edge.x1,edge.y1);ctx.lineTo(edge.x2,edge.y2);ctx.stroke();
+if(!reduce.matches){const phase=(t*(.043+(edge.index%7)*.003)+edge.index*.618034)%1,span=Math.min(46,Math.max(16,length*.13))/length,start=Math.max(0,phase-span),end=Math.min(1,phase+span),fade=Math.sin(phase*Math.PI),alpha=Math.min(.85,edge.light*1.6)*fade;const ax=edge.x1+dx*start,ay=edge.y1+dy*start,bx=edge.x1+dx*end,by=edge.y1+dy*end;const glint=ctx.createLinearGradient(ax,ay,bx,by);glint.addColorStop(0,'rgba(255,255,255,0)');glint.addColorStop(.5,`rgba(255,255,255,${alpha})`);glint.addColorStop(1,'rgba(255,255,255,0)');ctx.strokeStyle=glint;ctx.shadowBlur=9;ctx.lineWidth=.85;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke()}
+ctx.restore();ctx.shadowBlur=0;
+}
+function swayNodeRays(nodes,t){
+nodes.forEach(n=>{const phase=n.rayPhase||0;(n.rays||[]).forEach((ray,i)=>{const angle=reduce.matches?0:4.2*Math.sin(t*.22+phase)+1.4*Math.sin(t*.43+phase*1.61+i*.8);ray.setAttribute('transform',`rotate(${angle.toFixed(3)} ${n.x} ${n.y})`)})});
+}
+function draw(now){frame=0;if(document.hidden)return;if(now-last<32&&!reduce.matches){start();return}last=now;ctx.clearRect(0,0,innerWidth,innerHeight);if(visible()){swayNodeRays(window.__webLightNodes||[],reduce.matches?0:now/1000);ctx.globalCompositeOperation='lighter';(window.__webLightEdges||[]).forEach(edge=>shimmerLine(edge,reduce.matches?0:now/1000));const selected=(window.__webLightNodes||[]).find(n=>n.selected);if(selected){if(selected.name!==previous){lights.clear();lights.set(selected.name,1);previous=selected.name}const boost=Math.max(0,(lights.get(selected.name)||0)-.006);lights.set(selected.name,boost);aura(selected,reduce.matches?0:now/1000,boost,0)}else{previous=null;lights.clear()}}if(!reduce.matches)start()}
+function start(){if(!frame&&!document.hidden)frame=requestAnimationFrame(draw)}
+web.addEventListener('pointermove',e=>{const n=e.target.closest?.('[data-character]');const name=n?.getAttribute('data-character')||null;if(name!==hover){hover=name;start()}});web.addEventListener('pointerleave',()=>{hover=null;start()});web.addEventListener('click',start);document.addEventListener('visibilitychange',start);window.addEventListener('resize',resize);reduce.addEventListener('change',start);
+// Existing layout animation redraws SVG groups; refresh the static reduced-motion glow too.
+new MutationObserver(()=>{if(reduce.matches)start()}).observe(web,{childList:true});
+resize();
+})();
+</script>
+
+<script id="silver-iridescence">
+function initSilverIridescence(){
+const button=document.querySelector('#cov-gate #wa');if(!button||button.__iris)return;button.__iris=1;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+// Keep the entire spectrum on the metal; the pointer tilts its reflection.
+function reflect(x,y=.5){
+x=Math.max(0,Math.min(1,x));y=Math.max(0,Math.min(1,y));const tilt=x-.5;
+button.style.setProperty('--iris-x',(x*100)+'%');button.style.setProperty('--iris-y',(y*100)+'%');
+button.style.setProperty('--iris-angle',(112+tilt*24+(y-.5)*6)+'deg');
+button.style.setProperty('--iris-left',(24+tilt*6)+'%');button.style.setProperty('--iris-white',(50+tilt*10)+'%');button.style.setProperty('--iris-right',(76+tilt*6)+'%');
+}
+function followPointer(event){const bounds=button.getBoundingClientRect();if(bounds.width&&bounds.height)reflect((event.clientX-bounds.left)/bounds.width,(event.clientY-bounds.top)/bounds.height)}
+button.addEventListener('pointerenter',followPointer);button.addEventListener('pointermove',followPointer);
+button.addEventListener('focus',()=>{if(!button.matches(':hover'))reflect(.5)});reflect(.5);
+
+const range=(a,b)=>a+Math.random()*(b-a);
+const state=(kind)=>({transform:`translate(${range(-9,9)}%,${range(-16,16)}%) rotate(${range(-22,22)}deg) scale(${range(.85,1.3)},${range(.8,1.25)})`,opacity:kind==='blue'?range(.35,.55):range(.15,.32)});
+const layers=['blue','green','purple'].map(kind=>{const element=document.createElement('span');element.className='silver-luster '+kind;element.setAttribute('aria-hidden','true');button.appendChild(element);return{kind,element,current:state(kind),animation:null}});
+function drift(layer){if(reduced.matches||!button.isConnected)return;const target=state(layer.kind);layer.animation=layer.element.animate([layer.current,target],{duration:range(26000,48000),easing:'cubic-bezier(.45,0,.55,1)',fill:'forwards'});if(document.hidden)layer.animation.pause();layer.animation.onfinish=()=>{Object.assign(layer.element.style,target);layer.current=target;layer.animation.cancel();drift(layer)}}
+function refresh(){layers.forEach(layer=>{if(layer.animation)layer.animation.cancel();layer.animation=null;Object.assign(layer.element.style,layer.current);drift(layer)})}
+function visibility(){layers.forEach(layer=>{if(layer.animation){if(document.hidden)layer.animation.pause();else layer.animation.play()}})}
+reduced.addEventListener('change',refresh);document.addEventListener('visibilitychange',visibility);
+const cleanup=new MutationObserver(()=>{if(!button.isConnected){layers.forEach(layer=>layer.animation?.cancel());reduced.removeEventListener('change',refresh);document.removeEventListener('visibilitychange',visibility);cleanup.disconnect()}});cleanup.observe(document.body,{childList:true});refresh();
+}
+initSilverIridescence();
+if(!document.querySelector('#cov-gate #wa')){const waWatch=new MutationObserver(()=>{if(document.querySelector('#cov-gate #wa')){initSilverIridescence();waWatch.disconnect()}});waWatch.observe(document.documentElement,{childList:true,subtree:true});setTimeout(()=>waWatch.disconnect(),120000)}
+</script>
+
