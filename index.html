@@ -344,7 +344,7 @@ opacity:.12;transition:opacity .65s ease;}
 #cov-gate #wa:focus-visible{outline:2px solid #dfebff;outline-offset:4px}
 @media(prefers-reduced-motion:reduce){#cov-gate #wa,#cov-gate #wa .silver-luster,#cov-gate #wa:after{transition:none!important}}
 </style>
-<!-- covenant-studio: built 2026-10-24T01:23:08.597Z -->
+<!-- covenant-studio: built 2026-10-24T01:34:06.552Z -->
 <style id="covenant-crawl">#quote-text.crawl-mode{font-size:30px!important}#opening-line2 div{font-size:30px!important}@media(max-width:600px){#quote-text.crawl-mode{font-size:21px!important}#opening-line2 div{font-size:21px!important}}</style>
 </head>
 <body>
@@ -1256,7 +1256,7 @@ canvas.style.transform='translate('+panX+'px,'+panY+'px)';
 
 svg.innerHTML='';var defs=document.createElementNS(NS,'defs');defs.innerHTML='<filter id="textshadow" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#0a0e14" flood-opacity="0.8"/></filter>';svg.appendChild(defs);const linkG=document.createElementNS(NS,'g');const nodeG=document.createElementNS(NS,'g');
 const connected=selectedNode?getConnected(selectedNode):[];const secondary=selectedNode?getSecondary(selectedNode,connected):[];
-const receivedLight=selectedNode?receivedRelationshipLight(selectedNode,DATA.relationships):null;
+
 
 DATA.relationships.forEach((r,i)=>{
 var isGatewayLink=(r.source==='Gateway'||r.target==='Gateway')||(r.source==='To Halcyon Fold'||r.target==='To Halcyon Fold')||(r.source==='To Mons Concordia'||r.target==='To Mons Concordia');
@@ -1272,7 +1272,7 @@ let lineLight=appearance.opacity*.65,lineWidth=appearance.width;
 if(selectedNode){
 const primary=r.source===selectedNode||r.target===selectedNode;
 if(primary)lineLight=appearance.opacity;
-else{const sourceLight=receivedLight[r.source]||0,targetLight=receivedLight[r.target]||0;lineLight=sourceLight&&targetLight?Math.min(.09,Math.max(sourceLight,targetLight)*categoryLight*.1):.008*categoryLight;lineWidth=Math.min(.6,appearance.width*.45)}
+else{lineLight=appearance.opacity*.22;lineWidth=Math.min(.6,appearance.width*.45)}
 }
 line.setAttribute('stroke-width',lineWidth);line.setAttribute('stroke-opacity',lineLight);
 window.__webLightEdges.push({x1:s.x-camOX,y1:s.y-camOY,x2:t.x-camOX,y2:t.y-camOY,light:lineLight,index:i});
@@ -1285,19 +1285,19 @@ if(name==='To Mons Concordia'&&selectedNode!=='Gateway'){return;}
 const n=nodes[name];const g=document.createElementNS(NS,'g');g.classList.add('node');g.setAttribute('data-character',name);
 if(selectedNode){const isPri=selectedNode===name||connected.includes(name);const isSec=secondary.includes(name);if(!isPri&&!isSec)g.classList.add('dimmed');else if(isSec)g.classList.add('secondary');}
 if(selectedNode===name)g.classList.add('selected');
-var nodeLight=receivedLight?(receivedLight[name]||.035):.6;g.setAttribute('data-received-light',nodeLight);
+
 var nx=n.x-camOX;var ny=n.y-camOY;
 var isGW=name==='Gateway';var isHF=name==='To Halcyon Fold';var isMC=name==='To Mons Concordia';var isSel=selectedNode===name;
 var baseR=(isHF||isMC)?n.r*1.4:isSel?n.r*1.6:n.r;
-var bloomR=(isHF||isMC)?n.r*6:isSel?n.r*5:n.r*(2.5+nodeLight*3.5);
-var coreColor=isSel?'#ffffff':isGW?'#a080c0':(isHF||isMC)?'#8070b0':'rgba(255,255,255,'+(.14+.84*Math.pow(nodeLight,.8))+')';
+var bloomR=(isHF||isMC)?n.r*6:isSel?n.r*5:n.isMain?n.r*4:n.r*3;
+var coreColor=isSel?'#ffffff':isGW?'#a080c0':(isHF||isMC)?'#8070b0':'rgba(255,255,255,.72)';
 var glowColor=isSel?'rgba(255,255,255,':isGW?'rgba(160,128,192,':'rgba(255,255,255,';
 var glow3=document.createElementNS(NS,'circle');glow3.setAttribute('cx',nx);glow3.setAttribute('cy',ny);
-glow3.setAttribute('r',bloomR);glow3.setAttribute('fill',glowColor+(isSel?.06:.008+.04*nodeLight*nodeLight)+')');g.appendChild(glow3);
+glow3.setAttribute('r',bloomR);glow3.setAttribute('fill',glowColor+(isSel?.06:.02)+')');g.appendChild(glow3);
 var glow2=document.createElementNS(NS,'circle');glow2.setAttribute('cx',nx);glow2.setAttribute('cy',ny);
-glow2.setAttribute('r',bloomR*0.6);glow2.setAttribute('fill',glowColor+(isSel?.1:.012+.065*nodeLight*nodeLight)+')');g.appendChild(glow2);
+glow2.setAttribute('r',bloomR*0.6);glow2.setAttribute('fill',glowColor+(isSel?.1:.04)+')');g.appendChild(glow2);
 var glow1=document.createElementNS(NS,'circle');glow1.setAttribute('cx',nx);glow1.setAttribute('cy',ny);
-glow1.setAttribute('r',bloomR*0.3);glow1.setAttribute('fill',glowColor+(isSel?.15:.018+.12*nodeLight*nodeLight)+')');g.appendChild(glow1);
+glow1.setAttribute('r',bloomR*0.3);glow1.setAttribute('fill',glowColor+(isSel?.15:.07)+')');g.appendChild(glow1);
 var circle=document.createElementNS(NS,'circle');circle.setAttribute('cx',nx);circle.setAttribute('cy',ny);
 circle.setAttribute('r',baseR);circle.setAttribute('fill',coreColor);
 circle.setAttribute('stroke',glowColor+'0.4)');circle.setAttribute('stroke-width',isSel?'1.5':'0.8');g.appendChild(circle);
@@ -6929,22 +6929,22 @@ ctx.save();ctx.translate(n.x,n.y);
 const bloom=ctx.createRadialGradient(0,0,0,0,0,radius);bloom.addColorStop(0,`rgba(255,255,255,${.65*strength})`);bloom.addColorStop(.14,`rgba(255,255,255,${.3*strength})`);bloom.addColorStop(.45,`rgba(255,255,255,${.085*strength})`);bloom.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=bloom;ctx.fillRect(-radius,-radius,radius*2,radius*2);
 // Broad radiance belongs only to the selected central character.
 for(let j=0;j<16;j++){const angle=j*Math.PI/8+.065*Math.sin(t*.19+j*1.7)+.024*Math.sin(t*.37+j*.63),length=radius*(j%2?.6:1)*(.94+.04*Math.sin(t*.24+j)+.02*Math.sin(t*.41+j*.7));ctx.save();ctx.rotate(angle);const beam=ctx.createLinearGradient(4,0,length,0);beam.addColorStop(0,`rgba(255,255,255,${strength*.28})`);beam.addColorStop(.26,`rgba(255,255,255,${strength*.17})`);beam.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=beam;ctx.beginPath();ctx.moveTo(4,-.6);ctx.lineTo(length,-(j%2?2:5));ctx.lineTo(length,j%2?2:5);ctx.lineTo(4,.6);ctx.closePath();ctx.fill();ctx.restore()}
-if(!reduce.matches){for(let j=0;j<85;j++){const seed=j*2.39996,indexPhase=j*.6180339,phase=(t*(.12+(j%5)*.009)+indexPhase)%1,angle=seed+Math.sin(t*.22+seed)*.12,spread=radius*(.18+((j*37)%83)/100),x=Math.cos(angle)*spread+Math.sin(t*.6+seed)*5,y=Math.sin(angle)*spread+(0.5-phase)*22;const twinkle=Math.pow(Math.max(0,Math.sin(t*(1.5+(j%4)*.3)+seed)),3),alpha=Math.sin(phase*Math.PI)*(.3+.7*twinkle),size=(j%9===0?2.4:1+(j%3)*.35)*(.55+.45*twinkle);
-ctx.shadowColor='#ffffff';ctx.shadowBlur=8+twinkle*7;ctx.fillStyle=`rgba(255,255,255,${alpha})`;ctx.beginPath();ctx.arc(x,y,size,0,Math.PI*2);ctx.fill();
-if(j%3===0){const arm=(4+(j%7))*twinkle;ctx.fillStyle=`rgba(255,255,255,${alpha*.9})`;ctx.beginPath();ctx.moveTo(x,y-arm);ctx.quadraticCurveTo(x+.7,y-.7,x+arm*.7,y);ctx.quadraticCurveTo(x+.7,y+.7,x,y+arm);ctx.quadraticCurveTo(x-.7,y+.7,x-arm*.7,y);ctx.quadraticCurveTo(x-.7,y-.7,x,y-arm);ctx.fill()}}
-}
-ctx.restore();ctx.shadowBlur=0;
+
+
+
+
+ctx.restore();
 }
 function shimmerLine(edge,t){
 if(edge.light<=0)return;const dx=edge.x2-edge.x1,dy=edge.y2-edge.y1,length=Math.hypot(dx,dy);if(length<1)return;
-ctx.save();ctx.shadowColor='#ffffff';ctx.shadowBlur=7;ctx.lineWidth=.75;ctx.lineCap='round';ctx.strokeStyle=`rgba(255,255,255,${edge.light*.18})`;ctx.beginPath();ctx.moveTo(edge.x1,edge.y1);ctx.lineTo(edge.x2,edge.y2);ctx.stroke();
-if(!reduce.matches){const phase=(t*(.043+(edge.index%7)*.003)+edge.index*.618034)%1,span=Math.min(46,Math.max(16,length*.13))/length,start=Math.max(0,phase-span),end=Math.min(1,phase+span),fade=Math.sin(phase*Math.PI),alpha=Math.min(.85,edge.light*1.6)*fade;const ax=edge.x1+dx*start,ay=edge.y1+dy*start,bx=edge.x1+dx*end,by=edge.y1+dy*end;const glint=ctx.createLinearGradient(ax,ay,bx,by);glint.addColorStop(0,'rgba(255,255,255,0)');glint.addColorStop(.5,`rgba(255,255,255,${alpha})`);glint.addColorStop(1,'rgba(255,255,255,0)');ctx.strokeStyle=glint;ctx.shadowBlur=9;ctx.lineWidth=.85;ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke()}
-ctx.restore();ctx.shadowBlur=0;
+ctx.save();ctx.lineWidth=1.4;ctx.lineCap='round';ctx.strokeStyle=`rgba(255,255,255,${edge.light*.14})`;ctx.beginPath();ctx.moveTo(edge.x1,edge.y1);ctx.lineTo(edge.x2,edge.y2);ctx.stroke();
+
+ctx.restore();
 }
 function swayNodeRays(nodes,t){
 nodes.forEach(n=>{const phase=n.rayPhase||0;(n.rays||[]).forEach((ray,i)=>{const angle=reduce.matches?0:4.2*Math.sin(t*.22+phase)+1.4*Math.sin(t*.43+phase*1.61+i*.8);ray.setAttribute('transform',`rotate(${angle.toFixed(3)} ${n.x} ${n.y})`)})});
 }
-function draw(now){frame=0;if(document.hidden)return;if(now-last<32&&!reduce.matches){start();return}last=now;ctx.clearRect(0,0,innerWidth,innerHeight);if(visible()){swayNodeRays(window.__webLightNodes||[],reduce.matches?0:now/1000);ctx.globalCompositeOperation='lighter';(window.__webLightEdges||[]).forEach(edge=>shimmerLine(edge,reduce.matches?0:now/1000));const selected=(window.__webLightNodes||[]).find(n=>n.selected);if(selected){if(selected.name!==previous){lights.clear();lights.set(selected.name,1);previous=selected.name}const boost=Math.max(0,(lights.get(selected.name)||0)-.006);lights.set(selected.name,boost);aura(selected,reduce.matches?0:now/1000,boost,0)}else{previous=null;lights.clear()}}if(!reduce.matches)start()}
+let edgeSig='';function draw(now){frame=0;if(document.hidden)return;if(now-last<40&&!reduce.matches){start();return}last=now;const nodes=window.__webLightNodes||[],edges=window.__webLightEdges||[];const selected=nodes.find(n=>n.selected);const sig=edges.length+':'+(edges[0]?edges[0].x1+','+edges[0].y1+','+edges[0].light:'')+':'+(selected?selected.name:'');const sel=!!selected||sig!==edgeSig;if(!visible()){ctx.clearRect(0,0,innerWidth,innerHeight);edgeSig='';if(!reduce.matches)start();return}swayNodeRays(nodes,reduce.matches?0:now/1000);if(sel){ctx.clearRect(0,0,innerWidth,innerHeight);ctx.globalCompositeOperation='lighter';edges.forEach(edge=>shimmerLine(edge,0));edgeSig=sig;if(selected){if(selected.name!==previous){lights.clear();lights.set(selected.name,1);previous=selected.name}const boost=Math.max(0,(lights.get(selected.name)||0)-.006);lights.set(selected.name,boost);aura(selected,reduce.matches?0:now/1000,boost,0)}else{previous=null;lights.clear()}}if(!reduce.matches)start()}
 function start(){if(!frame&&!document.hidden)frame=requestAnimationFrame(draw)}
 web.addEventListener('pointermove',e=>{const n=e.target.closest?.('[data-character]');const name=n?.getAttribute('data-character')||null;if(name!==hover){hover=name;start()}});web.addEventListener('pointerleave',()=>{hover=null;start()});web.addEventListener('click',start);document.addEventListener('visibilitychange',start);window.addEventListener('resize',resize);reduce.addEventListener('change',start);
 // Existing layout animation redraws SVG groups; refresh the static reduced-motion glow too.
