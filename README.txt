@@ -1,33 +1,6 @@
-PUBLISHING "The Covenant of the Flowers"
-====================================
+THE COVENANT OF THE FLOWERS — website build
 
-This folder is your whole book, ready for free static hosting (e.g. GitHub Pages).
+Unzip, then drag EVERYTHING in this folder into your GitHub repo, replacing what is there.
+index.html is your site. book.html is the Compendium contents page; each read-*.html is one chapter; assets/ holds audio, images and video.
 
-WHAT'S INSIDE
-  wardens          the reader — open it to read locally, or host it
-  manifest.json    your text, cues, effects & settings (already embedded in book.html too)
-  assets/audio/    14 audio file(s), consistently named
-  assets/img/      9 image file(s), consistently named
-  assets/dictionary.json   built-in dictionary (WordNet) for long-press look-ups
-
-TO PUBLISH ON GITHUB PAGES (in the browser)
-  1. In your repo, click "Add file" > "Upload files".
-  2. Drag wardens, manifest.json and README.txt onto the page.
-  3. THEN drag the WHOLE "assets" folder onto the SAME page (drop it on the
-     "Drag additional files here" box). GitHub keeps the assets/audio and
-     assets/img folders intact, and lists the files inside as assets/...
-     !! IMPORTANT: the blue "choose your files" link CANNOT pick a folder --
-     it only takes single files. You MUST drag the assets folder in. (This is
-     why an upload can end up with wardens but no assets folder.)
-     wardens must end up sitting NEXT TO the assets/ folder.
-  4. Type a short message and click "Commit changes".
-  5. Settings > Pages > deploy from your main branch. Your book is live at
-     https://<you>.github.io/<repo>/wardens
-
-HOW RETRIEVAL WORKS
-  The reader fetches each track/illustration ONLY when the reader reaches it
-  (lazy), by its stable path under assets/. Nothing loads up front, so audio
-  bandwidth stays low and the first page opens instantly.
-
-NOTE: reader comments & analytics need the optional Supabase step — see the
-project spec. Without it, the book reads & plays perfectly; discussion is local-only.
+24 unchanged asset file(s) (video, images, audio) were left out — the copies already in your repo are still correct.
