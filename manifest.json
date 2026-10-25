@@ -11,14 +11,15 @@
     "supabaseKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFubmtndXZtemR2bnNibnh4cGJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzMDE4OTksImV4cCI6MjA5Nzg3Nzg5OX0.txBQjtXReYpFRU0p0YaBeyy3_3CjuLAPHJsmlwNHjyE",
     "transition": "fadeblack",
     "fileName": "wardens",
-    "flipOpening": "none",
+    "flipOpening": "fade",
     "flipWipeSpeed": 0.6,
     "syncDelay": true,
     "credits": "Music is currently unlicensed and for demonstrative purposes only.",
     "bookId": "the-covenant-of-the-flowers-chf0k8l1",
     "skipVid": true,
     "creditsMigrated": 1,
-    "noName": true
+    "noName": true,
+    "buildStamp": true
   },
   "typography": {
     "font": "spectral",
@@ -42,7 +43,7 @@
       "id": "chgatp3o",
       "title": "Opening Pages",
       "flipOnly": true,
-      "credits": "Music is currently unlicensed and for demonstrative purposes only.",
+      "landingTheme": "compendium",
       "paras": [
         {
           "id": "pmvf69vso140v",
@@ -122,9 +123,14 @@
         },
         {
           "id": "pmvf69vsphh6n",
-          "text": "— Archival Committee, Citadel Repository\nof Letters, CP 804",
-          "html": "<em>— Archival Committee, Citadel Repository\nof Letters, CP 804</em>",
+          "text": "It did not appear in the first official printings of the first century due in part to its unflattering view of imperial legitimacy. It is restored here in accordance with the First Reformation’s commitment to an honest account of the record.",
+          "html": "<i>It did not appear in the first official printings of the first century due in part to its unflattering view of imperial legitimacy. It is restored here in accordance with the First Reformation’s commitment to an honest account of the record.</i>",
           "holdAfter": 9
+        },
+        {
+          "id": "pmvlqnsci0fwn",
+          "text": "— Archival Committee, Citadel Repository of Letters, CP 804",
+          "html": "<em>— Archival Committee, Citadel Repository of Letters, CP 804</em>"
         },
         {
           "id": "pmvf69vspi2jt",
@@ -218,7 +224,8 @@
         },
         {
           "id": "pmvf69vsp12xya",
-          "text": " "
+          "text": " ",
+          "fxStop": true
         },
         {
           "id": "pmvf69vsp13ru0",
@@ -361,11 +368,15 @@
           "align": "center"
         },
         {
+          "id": "pmvl4xh190co3",
+          "text": ""
+        },
+        {
           "id": "pmvfetbdo05cy",
           "type": "image",
           "imgId": "mvfet4gxzq1zd",
           "float": "center",
-          "width": 43
+          "width": 97
         },
         {
           "id": "pmvfcq3o610hl",
@@ -452,7 +463,7 @@
         },
         {
           "id": "pmvl0k08k16vb6",
-          "text": "A rhetorical question, so she did not\nanswer it. He drew the stopper from the decanter, but before he could pour, she\nplaced an iridescent silver talent upon the counter, the petals of the\nEight-Point Chrysanthemum as certain as if they were freshly minted."
+          "text": "A rhetorical question, so she did not\nanswer it. He drew the stopper from its decanter, but before he could pour, she\nplaced an iridescent silver talent upon the counter. The petals of the\nEight-Point Chrysanthemum were as certain as if they were freshly minted."
         },
         {
           "id": "pmvl0k08k17ids",
@@ -480,7 +491,7 @@
         },
         {
           "id": "pmvl0k08k1dqdx",
-          "text": "Her uncle had fashioned the cowl for\nthose occasions when necessity brought them into the city, with a veil to guard\nagainst recognition as much as to protect against the Pox. If his precautions\nwere any indication, being her parents’ daughter was something the Empire might\nhold against her, and on that account she was to remain inconspicuous and leave\nthe talking to him. This policy was still in place. Now she was beginning to\nunderstand why. "
+          "text": "Her uncle had fashioned it for\nthose occasions when necessity brought them into the city, along with a veil to guard\nagainst recognition as much as to protect against the Pox. If his precautions\nwere any indication, being her parents’ daughter was something the Empire might\nhold against her, and on that account she was to remain inconspicuous and leave\nthe talking to him. This policy was still in place. Now she was beginning to\nunderstand why. "
         },
         {
           "id": "pmvl0k08k1enuy",
@@ -500,7 +511,7 @@
         },
         {
           "id": "pmvl0k08k1ihtj",
-          "text": "Whatever had startled him lay there\nupon the counter, and she ought to have gathered it and been on her way, to be\nforgotten as shadows are forgotten. But she remembered the truth of his violin,\nin their shared culture, their homeland, their music. More than the rest, she\nwanted him to be pleased in what he saw, pleased to have her at his door. Her\nintuition had fully co-signed the risk, and she turned away from the window."
+          "text": "Whatever had startled him lay there\nupon the counter, and she ought to have gathered it and been on her way, to be\nforgotten as shadows are forgotten. But she remembered the truth of his violin,\nin their shared culture, their homeland, their music. As much as this, she\nwanted him to be pleased in what he saw, pleased to have her at his door. Her\nintuition had already co-signed the risk, and she unfastened the cord that held her veil secure."
         },
         {
           "id": "pmvl0k08k1je4n",
@@ -516,7 +527,7 @@
         },
         {
           "id": "pmvl0k08k1m05o",
-          "text": "His fingers loosened about the glass."
+          "text": "His hand loosened about the glass."
         },
         {
           "id": "pmvl0k08k1n4h7",
@@ -560,7 +571,7 @@
         },
         {
           "id": "pmvl0k08k1x22n",
-          "text": "She’d guessed right, but it seemed\nshe’d gotten more than she’d bargained for. The work of her parents had\nremained largely a mystery. She remembered a certain degree of privilege, of\nthe ease with which her father entered meetings regardless of an invitation.\nWhat any of it meant had scarcely concerned her then. Now someone stood before\nher who might be willing to explain it. Or was it a wound too deep for him to\naddress, as it was for her uncle?"
+          "text": "She’d guessed right, but it seemed\nshe’d gotten more than she’d bargained for. The work of her parents had\nremained largely a mystery. She remembered a certain degree of privilege, the ease with which her father entered meetings regardless of an invitation.\nWhat any of it meant had scarcely concerned her then. Now someone stood before\nher who might be willing to explain it. Or was it a wound too deep for him to\naddress, as it was for her uncle?"
         },
         {
           "id": "pmvl0k08k1yxgw",
@@ -1031,6 +1042,502 @@
         {
           "id": "pmvl0k08l532vb",
           "text": "Perhaps, unbeknownst to us, they have\nalready appeared on the stage. And yet, before we may answer this, we must turn\nback time, to a journey through the Sierra Nevada mountains."
+        },
+        {
+          "id": "pmvn8at7d0j86",
+          "text": ""
+        },
+        {
+          "id": "pmvn8duyh2r6v",
+          "text": "II"
+        },
+        {
+          "id": "pmvn8duyh3qve",
+          "text": "Shūren"
+        },
+        {
+          "id": "pmvn8duyh4eqd",
+          "text": " "
+        },
+        {
+          "id": "pmvn8duyh5h2w",
+          "text": "Three years before the waters transformed Historia, a boy lay in the frigid\nSierra Nevada with his father’s bootlace in his fist."
+        },
+        {
+          "id": "pmvn8duyh62ef",
+          "text": "He had ceased to feel the lace some time ago, looking down every so often to\nbe sure it remained between his fingers before returning his attention to the\nraised stone at the edge of the clearing. Beneath it lay a strip of curled\nmeat, cut from their prior hunt."
+        },
+        {
+          "id": "pmvn8duyh77ew",
+          "text": "At the fallen tree beside him, his father Brent watched the bait,\nunblinking. He was so stone still that snow had frosted his shoulders and the\ncurved blade at his back. "
+        },
+        {
+          "id": "pmvn8duyh8keg",
+          "text": "This blade had a name, insisted upon by the wise men of Kifune, as though it\nwere a name given from on high. Shūren, she was called. A great deal of\nimportance had been assigned to her by those last remnants, and it could be\nsaid she was the reason his family now starved in the wilderness."
+        },
+        {
+          "id": "pmvn8duyh9ajg",
+          "text": "The boy, Noah, knew nothing of such matters. He knew very little, at this\nmoment, outside the want to stretch his legs, to shake the life back into his\nhands. And when the evening turned to night, he glanced again to his father,\nwho remained exactly as he had been."
+        },
+        {
+          "id": "pmvn8duyhalbr",
+          "text": "A fox appeared between the trees."
+        },
+        {
+          "id": "pmvn8duyhb2v1",
+          "text": "It stopped with one forepaw lifted, ears toward the family campfire. Noah\nhad imagined something meatier while they prepared the trap, yet this creature\nlooked scarcely better fed than himself."
+        },
+        {
+          "id": "pmvn8duyhclmr",
+          "text": "It sniffed the air, and though its nose had suspicions, desperation was\nhardly a position unique to other predators. Sustenance seldom fell randomly\nout of the sky, let alone in the dead of winter."
+        },
+        {
+          "id": "pmvn8duyhdilr",
+          "text": "One pull would take the stone’s support away. His father had shown him where\nthe animal needed to stand, where it would fall and rupture the neck. One pull,\nand it would be over before it began. Painless. A soul cleanly released."
+        },
+        {
+          "id": "pmvn8duyheytz",
+          "text": "The fox padded forward, stopped, then stretched its head toward the bait."
+        },
+        {
+          "id": "pmvn8duyhf5mt",
+          "text": "Brent gave the signal, and Noah ripped the prop away. The fox turned, and\ntheir eyes met as the stone crushed its lower flank. Its cry brought Noah\nhalfway to his feet. Brent had already leapt the crest, drawing a knife and\nfinishing what should have since been finished. The fox scraped a single bloody\nfurrow with its paw, and then it was at peace."
+        },
+        {
+          "id": "pmvn8duyhg61x",
+          "text": "Noah stood with the cord still in his grip. He no longer had an appetite."
+        },
+        {
+          "id": "pmvn8duyhhjs5",
+          "text": "“Well done,” Brent said at last. “I know it weighs heavy.”"
+        },
+        {
+          "id": "pmvn8duyhidrd",
+          "text": "Noah bent to the fallen prop, retrieving the bootlace, wondering if there\nwas any other lesson to be gained from it all. His father had never been\nverbose, and his wisdom was often found in his example as opposed to his\nspeech. But to his surprise, Brent spoke again."
+        },
+        {
+          "id": "pmvn8duyhj57j",
+          "text": "“Most of what this animal has to offer must go to you and I.”"
+        },
+        {
+          "id": "pmvn8duyhkrpd",
+          "text": "“But what about mom and Layla?” he asked."
+        },
+        {
+          "id": "pmvn8duyhlu6j",
+          "text": "Brent eased the carcass over his shoulder. “They put us first tonight so\nthat we may have the strength to put them first tomorrow. Your sister does not\ninvite you to take from her portion unconditionally, lad. You receive it to\nmaintain your lethality, to defend her always. You must respect this.”"
+        },
+        {
+          "id": "pmvn8duyhmy7g",
+          "text": "Noah looked at the animal hanging from his father’s shoulder. The night had\ngrown too cold for further trapping, which meant another night of not having\nenough to go around. It was a hard thing to come to terms with, filling his\nstomach while Layla sacrificed in silence, but this was his father’s command."
+        },
+        {
+          "id": "pmvn8duyhnp4x",
+          "text": "“I understand.”"
+        },
+        {
+          "id": "pmvn8duyhotsa",
+          "text": "They followed their tracks through the trees until the campfire showed\nbetween the trunks. Their mother stood at the sound of their return, while\nLayla stayed beneath her fur covering. He suspected they'd been earshot of the\nslaughter. "
+        },
+        {
+          "id": "pmvn8duyhpvsp",
+          "text": "Noah stopped between his sister and the fire. “It was quick,” he said. “He\ndidn’t feel much.”"
+        },
+        {
+          "id": "pmvn8duyhqak3",
+          "text": "She drew the fur closer about her knees."
+        },
+        {
+          "id": "pmvn8duyhrvww",
+          "text": "“Next time I can come,” she said."
+        },
+        {
+          "id": "pmvn8duyhsvsm",
+          "text": "Noah glanced toward his father, who had seated himself amongst the three of\nthem."
+        },
+        {
+          "id": "pmvn8duyhtzop",
+          "text": "“I’ll be tough,” Layla promised. “I won’t cry, daddy. I can come.”"
+        },
+        {
+          "id": "pmvn8duyhu7q8",
+          "text": "“You certainly could, Layla. But then who would tend to your duties at\ncamp?  Do you think your brother would do a fine job? Or would we come\nhome to a disaster?”"
+        },
+        {
+          "id": "pmvn8duyhvb9t",
+          "text": "“I’d rather not say,” she said, throwing Noah a teasing smile. She lifted an\nedge of her fur for Noah, who sat beside her. He was keen to accept it, and did\nnot worry himself for a rebuttal."
+        },
+        {
+          "id": "pmvn8duyhw9y7",
+          "text": "Across from them, their mother’s hand had come to rest on Brent’s shoulder.\nHe covered it with his own."
+        },
+        {
+          "id": "pmvn8duyhxlab",
+          "text": "“Give me a moment,” he told her."
+        },
+        {
+          "id": "pmvn8duyhyamb",
+          "text": "She nodded, then set about dressing the animal. Noah watched his father\nstretch his hands toward the flames."
+        },
+        {
+          "id": "pmvn8duyhzu92",
+          "text": "By the time supper was ready, hunger had returned to Noah. The meat was\nleathery and wild, but he ate the portion given him."
+        },
+        {
+          "id": "pmvn8duyh10d5c",
+          "text": "Afterward he took first watch without being asked, sitting with his back to\nthe fire and his eyes upon the trees. The cold had seeped halfway through his\nfeet when a tremor passed beneath them, deep enough to trouble the pebbles by\nhis ankles. The third in as many days. He glanced toward Layla, who was licking\ngrease from her fingers, oblivious."
+        },
+        {
+          "id": "pmvn8duyh119dr",
+          "text": "When he turned back to the forest, he replayed the moment the fox had looked\nat him, and he offered silent apology."
+        },
+        {
+          "id": "pmvn8duyh12t24",
+          "text": " "
+        },
+        {
+          "id": "pmvn8duyh13p9t",
+          "text": "*"
+        },
+        {
+          "id": "pmvn8duyh14gz5",
+          "text": "He had been watching the same opening between the trees for some time,\nthough he couldn't have said what had passed through it. His focus was\nelsewhere."
+        },
+        {
+          "id": "pmvn8duyh15889",
+          "text": "“If you’re keeping watch over something that’s already happened,” his mother\nsaid, “you might as well go do it beside the fire.”"
+        },
+        {
+          "id": "pmvn8duyh16lcu",
+          "text": "He looked up as she stepped beside him, brushing hair from his forehead."
+        },
+        {
+          "id": "pmvn8duyh17x57",
+          "text": "“My turn,\" she said."
+        },
+        {
+          "id": "pmvn8duyh18ou8",
+          "text": "“I can stay a little longer.”"
+        },
+        {
+          "id": "pmvn8duyh190n7",
+          "text": "“No. Go warm yourself.”"
+        },
+        {
+          "id": "pmvn8duyh1a5gz",
+          "text": "Noah rose, working the stiffness from his knees before returning to the\nfire. His father had settled against a tree, Layla beneath his arm. She was\nwatching the branches overhead, where ravens disputed amongst themselves. A\ngust shook pine needles from their perches and sent a fresh round of complaints\nthrough the trees."
+        },
+        {
+          "id": "pmvn8duyh1bkjp",
+          "text": "“Go away!” Layla called."
+        },
+        {
+          "id": "pmvn8duyh1ccvv",
+          "text": "“Leave them be, sweetheart. They’ll settle down soon enough.”"
+        },
+        {
+          "id": "pmvn8duyh1d93q",
+          "text": "“They’re keeping everyone awake.”"
+        },
+        {
+          "id": "pmvn8duyh1e09d",
+          "text": "“You might set them an example.”"
+        },
+        {
+          "id": "pmvn8duyh1fvmo",
+          "text": "She buried her face inside his coat as Noah sat on his father’s other side.\nHe'd scarcely felt the wind on his watch, but now it seemed to find every\nopening in his clothes."
+        },
+        {
+          "id": "pmvn8duyh1gpf7",
+          "text": " “People always like you, dad. Why can’t we ask someone for help?”"
+        },
+        {
+          "id": "pmvn8duyh1hqa8",
+          "text": "“We have the girls to think of before we ask a stranger for kindness. Your\nmother spent years as the unofficial face of the Realm. The woman was an icon,\neven beyond our borders. No, son, there's nowhere we can go she won’t be\nrecognized.”"
+        },
+        {
+          "id": "pmvn8duyh1i2mb",
+          "text": "“But the Realm is gone.”"
+        },
+        {
+          "id": "pmvn8duyh1j4do",
+          "text": "Brent looked toward Elizabeth’s place among the trees."
+        },
+        {
+          "id": "pmvn8duyh1k2ix",
+          "text": "“Yes,” he said. “It is.”"
+        },
+        {
+          "id": "pmvn8duyh1lcva",
+          "text": "Layla shifted against him, snoring gently."
+        },
+        {
+          "id": "pmvn8duyh1mpbp",
+          "text": "Noah waited, but his father offered nothing more. He turned away, drawing\nthe fur over his shoulder and finding a place to rest his head. Somewhere among\nthe branches a raven made one final objection to their presence."
+        },
+        {
+          "id": "pmvn8duyh1nxqg",
+          "text": "His eyes closed. For a while he could still hear his father breathing, which\ncalmed him. When sleep came, he was transported to a memory of his mother\ncrossing over carpet so extravagant that her footsteps made no sound. He kept\npace while she fastened the last button at her wrist. Through the windows of\ntheir corridor, the Realm’s spaceport of Sungarde glittered in the mists of the\nNiagara Falls."
+        },
+        {
+          "id": "pmvn8duyh1okdt",
+          "text": "She stole one final look at her compact and then looked back to make certain\nhe was coming."
+        },
+        {
+          "id": "pmvn8duyh1pm84",
+          "text": "Of course he was coming. He'd been living in anticipation of this, his debut\nsemi-final in the Realm's official combat sport."
+        },
+        {
+          "id": "pmvn8duyh1qce0",
+          "text": "Reishotai no Youni, it was called. As the Script. A mixed martial art\nthat had long been guarded by the elders of Kifune, and a secret the Council\neventually acquired through ceaseless goodwill. Mostly. A modified version of\nthe original Script was permitted to be imported, one which did not remove agency\nfrom non-practitioners.",
+          "html": "Reishotai no Youni, it was called. <i>As the Script.</i> A mixed martial art\nthat had long been guarded by the elders of Kifune, and a secret the Council\neventually acquired through ceaseless goodwill. Mostly. A modified version of\nthe original Script was permitted to be imported, one which did not remove agency\nfrom non-practitioners."
+        },
+        {
+          "id": "pmvn8duyh1rorv",
+          "text": "By the time they reached the arena, the afternoon had warmed the tatami\nbeneath his tabi socks. Banners of the Eight-Point Chrysanthemum stirred above\nthe spectators, and orange blossoms scented the air. Somewhere in that crowd\nhis father would be finding their seats, Layla on his shoulders for a better\nview."
+        },
+        {
+          "id": "pmvn8duyh1sw85",
+          "text": "Noah tightened his grip upon the wooden practice katana."
+        },
+        {
+          "id": "pmvn8duyh1ty1r",
+          "text": "Across from him, a girl waited with her naginata. She was younger than him\nby a year or two, which surprised him until she took her stance. The symbol of\nHouse Hirata had been embroidered upon her reishogi, which was not a thing you\nwanted to see. What he had over her in mass, she more than reclaimed in\npedigree. He was so outclassed that he should have been angry."
+        },
+        {
+          "id": "pmvn8duyh1ufux",
+          "text": "She held her naginata steady between them. He adjusted his grip."
+        },
+        {
+          "id": "pmvn8duyh1vktx",
+          "text": "“Contestants,” the marshal called. “Approach. Bow.”"
+        },
+        {
+          "id": "pmvn8duyh1wzp0",
+          "text": "They stepped to their marks and obeyed the command. When she straightened, a\nstrand of walnut hair had slipped across her cheek. She blew it aside without\ntaking her eyes from him."
+        },
+        {
+          "id": "pmvn8duyh1x9ae",
+          "text": "He heard his mother call his name from the stands. There she was beside his\nfather, waving as though he might have forgotten which mother was his. Layla\nwaved both hands. He wished they would stop."
+        },
+        {
+          "id": "pmvn8duyh1ydlg",
+          "text": "Their adjudicator stepped clear."
+        },
+        {
+          "id": "pmvn8duyh1ziqm",
+          "text": "At the signal, Noah advanced, testing her reach with a strike she turned\naside. He changed his angle, and the shaft of her lance caught his practice\nblade with a crack that carried into the stands. Before he could recover, she\ntouched his ribs."
+        },
+        {
+          "id": "pmvn8duyh20wzv",
+          "text": "“Point.”"
+        },
+        {
+          "id": "pmvn8duyh21lnb",
+          "text": "Applause."
+        },
+        {
+          "id": "pmvn8duyh22hr9",
+          "text": "The girl withdrew to her mark, and Noah to his own. He caught the ferocity\nin her gaze and chuckled despite himself. Setting his pride to the left, he\nfound he was quite enjoying the present company."
+        },
+        {
+          "id": "pmvn8duyh236cs",
+          "text": "She offered another opening, but he opted instead for her weapon, disarming\nher. His left foot answered her open-hand strike, exposing her posterior to a\nswat with his blade."
+        },
+        {
+          "id": "pmvn8duyh24eb2",
+          "text": "“Point.”"
+        },
+        {
+          "id": "pmvn8duyh25x69",
+          "text": "The girl inspected the place he’d struck, as though she’d been party to some\nimpropriety. Noah thought it best to occupy himself with retrieving her\nnaginata."
+        },
+        {
+          "id": "pmvn8duyh26sa7",
+          "text": "She accepted the weapon, but not his courtesy. “I’ll never forgive you for\nthat.”"
+        },
+        {
+          "id": "pmvn8duyh271y3",
+          "text": "“You’ll hate me forever?” he asked, and remained unacknowledged."
+        },
+        {
+          "id": "pmvn8duyh2810k",
+          "text": "(Forgive me, friends. Such declarative banter among rivals and future\ncompanions brings a tear to your chronicler’s eye!)"
+        },
+        {
+          "id": "pmvn8duyh29d5n",
+          "text": "They took longer over the deciding point. He’d begun recognizing the small\nmovements that preceded her attacks, though recognizing them and evading them\nproved separate challenges. When he finally caught her across the middle, he\nwas short of breath."
+        },
+        {
+          "id": "pmvn8duyh2a4uy",
+          "text": "The marshal raised his hand. “Match. Burnfield.”"
+        },
+        {
+          "id": "pmvn8duyh2b037",
+          "text": "He drew back, surprised to find it over. From the stands came his mother’s\nuninhibited victory cry, followed by Layla’s attempt to eclipse it."
+        },
+        {
+          "id": "pmvn8duyh2cgpo",
+          "text": "The girl bowed. “Omedetou gozaimasu,” she said."
+        },
+        {
+          "id": "pmvn8duyh2d0zi",
+          "text": "Noah drank from a water bottle as he watched her leave, and it came to him\nthen, that there went a girl he’d have liked to get to know."
+        },
+        {
+          "id": "pmvn8duyh2ekt5",
+          "text": "He woke with his cheek against the root and his parents somewhere near."
+        },
+        {
+          "id": "pmvn8duyh2fal0",
+          "text": "“All well?” his father asked."
+        },
+        {
+          "id": "pmvn8duyh2gtne",
+          "text": "“All well.”"
+        },
+        {
+          "id": "pmvn8duyh2heou",
+          "text": "Noah shifted beneath the fur. Layla had found him in the midst of the night,\nand he drew the covering over her shoulder before looking after himself. By\nthen the dream had all but slipped beyond recall. He tried to remember who had\nwon the match, to remember the grudge he’d incurred that day, but all he could\nremember was the lightning in her eyes."
+        },
+        {
+          "id": "pmvn8duyh2inyo",
+          "text": "Then he slept again. "
+        },
+        {
+          "id": "pmvn8duyh2jxnq",
+          "text": "*"
+        },
+        {
+          "id": "pmvn8duyh2kgoh",
+          "text": "Now that this brief introduction is\nfinished, I speak to you directly, my Good Council."
+        },
+        {
+          "id": "pmvn8duyh2l1gh",
+          "text": "You have indulged me for these past two years, and some of you have been\nkept waiting on the finalization of this work for over a decade. I think we can\nall agree that I have spoken of it long enough. However, there are a few final\nmatters I would like to address before I turn my focus to the next chapter of polish\nand delivery. "
+        },
+        {
+          "id": "pmvn8duyh2m6yf",
+          "text": "On Legality."
+        },
+        {
+          "id": "pmvn8duyh2nlwf",
+          "text": "Some of you, with the love and good sense that only old friends bring to\nsuch conversations, have urged me to change the names in this book, to protect\nmyself, if I were to pursue publication. You were not wrong to suggest as much,\nand a more prudent man would have taken your advice without further discussion."
+        },
+        {
+          "id": "pmvn8duyh2omlb",
+          "text": "I have made my peace with what this means in practical terms: I will not be\ncourting agents who would require me to censor the story, and I have no\ninterest in erasing the people I love from this work in pursuit of personal\nsuccess. If this book finds the wider world in my lifetime, I will be pleased.\nBut if not, the book will still exist, waiting for the right reader to find it\nlong after the empire has forgotten us. I do not need to see it handed to them."
+        },
+        {
+          "id": "pmvn8duyh2phtx",
+          "text": "You who urged me toward safety did so out of love, and I received it as\nlove. "
+        },
+        {
+          "id": "pmvn8duyh2qceb",
+          "text": "It is also out of love that I must refuse. Whatever happens to it, and to\nme, our people will be in it, named and known, exactly as we have always been.\nThat is the only version of this story I ever desired to tell. And perhaps, now\nthat we’ve arrived here, you will also agree that anything lesser would be heartbreaking."
+        },
+        {
+          "id": "pmvn8duyh2rr6w",
+          "text": "On Gratitude."
+        },
+        {
+          "id": "pmvn8duyh2scfl",
+          "text": "Some debts are too great to summarize, but a final letter is where one\ntries."
+        },
+        {
+          "id": "pmvn8duyh2twx3",
+          "text": "There was a grandmother who read the immature writings of a teenage grandson\nand saw something like Covenant in them. There were English teachers who agreed\nwith her. From that belief came the deep foundation. Everything that followed\nwas built on top of it."
+        },
+        {
+          "id": "pmvn8duyh2ulwh",
+          "text": "Then came the season of summer, surrounded by a particular ensemble cast:\nThe kind that does not appear in life twice, and the kind that I did not fully\nunderstand was finite and beautiful. Later, an envelope on a desk in Japan,\nwaiting for me to return from one of life’s adventures. Inside it was a\nnewsletter detailing the recent days of our Council, a gift from my very best\nfriend, who thought I might want to know how things were going back home. And\nso our lore began."
+        },
+        {
+          "id": "pmvn8duyh2v0z1",
+          "text": "Further issues of High Council News arrived in mailboxes, but even then, we\nunderstood an important truth: The most special things have an end. "
+        },
+        {
+          "id": "pmvn8duyh2wu44",
+          "text": "That was until I laid eyes on my little girl for the first time, and\nsuddenly I knew that our story had not finished. I began speaking of a\ncontinuation to the saga, which was met with incredible enthusiasm from the\nvery face of the Realm herself. Then came the excitement of those who arrived\nlater, who never knew of our Council, and who have nothing invested in this\nstory except their investment in me. They’ve cheered me on without\nunderstanding what they were cheering for, only hoping that it pushed me on."
+        },
+        {
+          "id": "pmvn8duyh2x12e",
+          "text": "It did. Alberto, Kirsten, Justin, Grace, Krash. "
+        },
+        {
+          "id": "pmvn8duyh2y5z4",
+          "text": "I can’t think of any fellow Civilization VI players to mention. At least not\nany good ones."
+        },
+        {
+          "id": "pmvn8duyh2zcse",
+          "text": "And finally, the people who have actually borne the manuscript, who have\nread it in its roughest forms and called it the ugly baby that it was, and kept\nreading anyway. My brother, mother, and incredible partner. My fellow aspiring\nauthors. I cannot pay any of you back. I can only show you what I made with\nwhat you gave me, and hope you find yourself inside it."
+        },
+        {
+          "id": "pmvn8duyh301v9",
+          "text": "On the Future."
+        },
+        {
+          "id": "pmvn8duyh31ldp",
+          "text": "A few of you have wondered if Covenant is only the beginning. If a sequel\nmight be possible."
+        },
+        {
+          "id": "pmvn8duyh32l46",
+          "text": "The honest answer is no."
+        },
+        {
+          "id": "pmvn8duyh3352w",
+          "text": "This is the story I have set out to tell, and I do not believe I would ever\nbe able to top it."
+        },
+        {
+          "id": "pmvn8duyh348nu",
+          "text": "At the same time, there are corners of this world I’ve left unexplored,\ncharacters I wish I could spend far more time with. Some of you in my\nconfidence have already fallen in love with certain Imperial-aligned\npersonalities and are now quite insistent on a satellite novella. I am open to\nthese possibilities, but I won’t force them."
+        },
+        {
+          "id": "pmvn8duyh35wa8",
+          "text": "Perhaps I’ll leave the decision with you, my co-authors since the beginning."
+        },
+        {
+          "id": "pmvn8duyh36plx",
+          "text": "Conclusion:"
+        },
+        {
+          "id": "pmvn8duyh37vf6",
+          "text": "The posturing is over. The book is what comes next, along with its\ncontinuation of Chapter II. It will take longer than I have historically\npredicted, for I do not possess any particular innate talent in writing. I\nstruggle through it for another reason. Thank you for your patience, and may\nthe Eight-Point endure eternal."
+        },
+        {
+          "id": "pmvn8duyh381je",
+          "text": "Your Citadel Chronicler",
+          "html": "<em>Your Citadel Chronicler</em>"
+        },
+        {
+          "id": "pmvn8duyh3974c",
+          "text": " ",
+          "pageBreak": true
+        },
+        {
+          "id": "pmvn8athk11fu",
+          "text": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+        },
+        {
+          "id": "pmvn8duyh3ahli",
+          "text": " "
+        },
+        {
+          "id": "pmvn8e1no3b51z",
+          "text": "",
+          "align": "center"
+        },
+        {
+          "id": "pmvn8its83deyo",
+          "text": ""
+        },
+        {
+          "id": "pmvn8iuac3ejg8",
+          "text": ""
+        },
+        {
+          "id": "pmvn8ivj63f5ml",
+          "text": "The best is yet to come."
         }
       ],
       "textboxes": [],
@@ -1113,6 +1620,18 @@
       "fadeIn": 2.5,
       "fadeOut": 2.5,
       "curve": "equalpower"
+    },
+    {
+      "id": "mvn8gmg0rv7vk",
+      "chapterId": "chgatp3o",
+      "paraId": "pmvn8duyh301v9",
+      "trackId": "mvn8g47h9ruu1",
+      "volume": 0.8,
+      "loop": true,
+      "startTime": 12,
+      "fadeIn": 5,
+      "fadeOut": 2.5,
+      "curve": "equalpower"
     }
   ],
   "stingers": [
@@ -1121,7 +1640,7 @@
       "chapterId": "chgatp3o",
       "paraId": "pmvf69vsp6vdj",
       "trackId": "mvf7ff9msk2lj",
-      "volume": 0.03,
+      "volume": 0,
       "loop": false,
       "startTime": 126,
       "fadeIn": 6,
@@ -1160,6 +1679,15 @@
       "fadeIn": 0.2,
       "fadeOut": 0.6,
       "curve": "linear"
+    },
+    {
+      "id": "mvl4wdiehasv8",
+      "chapterId": "chgatp3o",
+      "paraId": "pmvf69vspxi3a",
+      "stop": true,
+      "target": "all",
+      "fadeOut": 1.5,
+      "delay": 0
     }
   ],
   "textFx": {
@@ -1393,12 +1921,6 @@
       "delay": 0,
       "effect": "split-right"
     },
-    "chgatp3o:pmvf69vso140v": {
-      "duration": 3.5,
-      "delay": 0.6,
-      "effect": "fade",
-      "run": true
-    },
     "chgatp3o:pmvf69vspgxlc": {
       "duration": 3.5,
       "delay": 0.3,
@@ -1428,65 +1950,17 @@
       "effect": "keys",
       "vary": 0.2
     },
-    "chgatp3o:pmvf69vsp14u4o": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "run": true
+    "chgatp3o:pmvn8athk11fu": {
+      "duration": 3.2,
+      "delay": 0,
+      "effect": "fade"
     },
-    "chgatp3o:pmvf69vso4khu": {
+    "chgatp3o:pmvlqnsci0fwn": {
       "duration": 3.5,
-      "delay": 0.6,
+      "delay": 0.3,
       "effect": "fade",
-      "_inh": "pmvf69vso140v"
-    },
-    "chgatp3o:pmvf69vsp55oo": {
-      "duration": 3.5,
-      "delay": 0.6,
-      "effect": "fade",
-      "_inh": "pmvf69vso140v"
-    },
-    "chgatp3o:pmvf69vsp6vdj": {
-      "duration": 3.5,
-      "delay": 0.6,
-      "effect": "fade",
-      "_inh": "pmvf69vso140v"
-    },
-    "chgatp3o:pmvf69vsp7uh0": {
-      "duration": 3.5,
-      "delay": 0.6,
-      "effect": "fade",
-      "_inh": "pmvf69vso140v"
-    },
-    "chgatp3o:pmvf69vsp8qe5": {
-      "duration": 3.5,
-      "delay": 0.6,
-      "effect": "fade",
-      "_inh": "pmvf69vso140v"
-    },
-    "chgatp3o:pmvf69vsp998o": {
-      "duration": 3.5,
-      "delay": 0.6,
-      "effect": "fade",
-      "_inh": "pmvf69vso140v"
-    },
-    "chgatp3o:pmvf69vspahft": {
-      "duration": 3.5,
-      "delay": 0.6,
-      "effect": "fade",
-      "_inh": "pmvf69vso140v"
-    },
-    "chgatp3o:pmvf69vspb8lt": {
-      "duration": 3.5,
-      "delay": 0.6,
-      "effect": "fade",
-      "_inh": "pmvf69vso140v"
-    },
-    "chgatp3o:pmvf69vspcxo7": {
-      "duration": 3.5,
-      "delay": 0.6,
-      "effect": "fade",
-      "_inh": "pmvf69vso140v"
+      "gap": 3.1,
+      "_inh": "pmvf69vspgxlc"
     },
     "chgatp3o:pmvf69vspry78": {
       "duration": 1.2,
@@ -1553,1128 +2027,6 @@
       "delay": 0.05,
       "effect": "keys",
       "_inh": "pmvf69vspp53w"
-    },
-    "chgatp3o:pmvl0j47j01hv": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47j1ry2": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47j2nl7": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47j3qgv": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47j458o": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47j5dq8": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47j6b7s": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47j7mhq": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47j8o1j": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47j9s6x": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47ja24q": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jbz5i": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jctyf": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jdvfn": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47je4gy": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jfsqu": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jg2m1": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jh3uk": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47ji9gp": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jjxyb": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jkhzf": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jl1d7": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jmj6d": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jnfl4": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jopsw": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0j47jpwqn": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvf69vsp1zc9f": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvfcq3o610hl": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvf69vsp2056v": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08kqjbv": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08krtre": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08ksika": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08ktipq": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08kuasv": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08kv9i5": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08kw0y9": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08kxulp": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08kybek": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08kz8h9": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k101q8": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1167x": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k12f5u": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k13cbg": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k14i6b": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k15m37": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k16vb6": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k17ids": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1889n": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k19h8b": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1aa59": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1bdu9": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1cf4n": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1dqdx": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1enuy": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1fooj": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1gls5": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1hyva": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1ihtj": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1je4n": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1kuvk": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1lb7t": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1m05o": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1n4h7": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1or61": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1p8t2": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1qux2": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1rlkn": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1sq83": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1trp4": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1u5py": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1v796": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1wyjv": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1x22n": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1yxgw": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k1zex6": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k20eax": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k21xd4": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k22wms": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k23oq9": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k242wf": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k25i12": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k26s30": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2702v": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k28qj8": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k29k2t": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2a5sk": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2blf5": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2cfbr": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2dl9m": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2etjr": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2fxjl": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2gf79": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2hwez": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2iysi": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2j77u": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2kb7o": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2lpcq": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2myxt": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2n27a": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2oc6v": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2po6p": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2q11y": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2r7hz": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2swjy": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2tamb": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2uozv": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2vste": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2wm1o": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2x27b": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2ysk3": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k2zx1a": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k309i4": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k31nzt": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k326w6": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k333y2": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k34zar": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k35c57": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k36i5n": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k377nz": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k3851a": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k39bmj": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k3a5kl": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k3bl5j": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k3cq6y": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k3defc": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08k3egsu": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3fne4": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3gokg": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3h6xu": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3ir0x": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3j8qv": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3keox": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3l4e7": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3mmu5": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3nbcj": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3oaab": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3prhd": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3q0np": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3rsp6": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3s2km": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3tr7h": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3u08x": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3vam6": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3wf96": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3xkbe": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3yhgm": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l3zzyx": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l403mn": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l41tti": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l42boq": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l43qvd": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4451i": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l45gd1": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l46ogu": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l47lwe": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l484aa": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l49xw4": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4a1ou": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4bbbw": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4c819": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4dum5": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4epsz": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4f6sd": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4go7h": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4hhis": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4iapg": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4j0lv": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4kgjf": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4lv6q": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4mbc5": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4nyxj": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4o4ha": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4pj2y": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4q490": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4rx2h": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4smwn": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4tzew": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4u2y2": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4v5uo": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4w976": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4xhwm": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4yvyo": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l4zf0f": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l50ep8": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l51146": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l528by": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
-    },
-    "chgatp3o:pmvl0k08l532vb": {
-      "duration": 0.6,
-      "delay": 0.05,
-      "effect": "fade",
-      "_inh": "pmvf69vsp14u4o"
     }
   },
   "indents": {
@@ -2825,6 +2177,7 @@
     }
   },
   "dictionary": "assets/dictionary.json",
+  "built": "2026-10-25T03:01:58.801Z",
   "tracks": [
     {
       "id": "mqyx0373x3n9k",
@@ -2890,6 +2243,11 @@
       "id": "mvg70vt345t1d",
       "name": "Page Turn",
       "src": "assets/audio/e82aqlc8sl.mp3"
+    },
+    {
+      "id": "mvn8g47h9ruu1",
+      "name": "The Arcadian Wild - Wolves of the Revolution",
+      "src": "assets/audio/idch9nl9ar.mp3"
     }
   ],
   "images": [
