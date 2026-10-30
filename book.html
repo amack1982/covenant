@@ -181,7 +181,7 @@
     window.CovAcct={ open:function(){ pill.onclick(); }, google:google, signOut:async function(){ var a=get(); try{ if(a) await fetch(AU+'/logout',{method:'POST',headers:H(a.access_token)}); }catch(e){} put(null); LS('rb-name',null); } };
     paintPill(); loadMine().catch(function(){});
     if(!pend&&!get()&&LS('cov-auth-pending')) setTimeout(showHandle,400);
-    if(C.index&&!window.__covDoorReturn) pend=null; /* a sign-in started inside the Compendium is finished by the Compendium itself */
+    if(C.index&&!window.__covDoorReturn&&!window.__covCouncilReturn) pend=null; /* a sign-in started inside the Compendium is finished by the Compendium itself; gate + Council returns are finished here */
     if(pend){ (async function(){ try{ var r=await fetch(AU+'/user',{headers:H(pend.access_token)}); var u=await J(r); if(!r.ok) return; var a=sess(pend,u);
         if(recovery){ showNewPw(Object.assign({},pend,{user:u})); return; }
         var h=''; try{ h=await profile(a); }catch(e){} a.handle=h;
