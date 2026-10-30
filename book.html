@@ -9,7 +9,7 @@
     var AU=C.u+'/auth/v1', RS=C.u+'/rest/v1', HERE=location.href.split('#')[0].split('?')[0];
     function LS(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} return null; }
     function get(){ try{ return JSON.parse(LS('cov-auth')||'null'); }catch(e){ return null; } }
-    function put(a){ LS('cov-auth',a?JSON.stringify(a):null); if(a&&a.handle){ LS('rb-name',a.handle); LS('rb-remember','1'); } paintPill(); }
+    function put(a){ LS('cov-auth',a?JSON.stringify(a):null); if(a&&a.handle){ LS('rb-name',a.handle); LS('rb-remember','1'); } paintPill(); if(!a){ try{ window.dispatchEvent(new Event('cov-signed-out')); }catch(e){} } }
     function H(tok){ var h={apikey:C.k,'Content-Type':'application/json'}; h.Authorization='Bearer '+(tok||C.k); return h; }
     async function J(r){ var t=''; try{ t=await r.text(); }catch(e){} try{ return t?JSON.parse(t):{}; }catch(e){ return {msg:t}; } }
     function errOf(j){ return (j&&(j.error_description||j.msg||j.message||j.error))||'Something went wrong'; }
@@ -106,15 +106,15 @@
       var reps=[]; if(mine.length){ var ids=mine.map(function(c){ return '"'+c.id+'"'; }).join(','); reps=await J(await fetch(RS+'/comments?parent_id=in.('+encodeURIComponent(ids)+')&select=id,parent_id,author_name,user_id,body,created_at&order=created_at.asc',{headers:h})); if(!Array.isArray(reps)) reps=[]; }
       var seen=p.replies_seen_at?new Date(p.replies_seen_at).getTime():0; var unread=0; reps.forEach(function(r){ r._new=(r.user_id!==a.user.id)&&new Date(r.created_at).getTime()>seen; if(r._new) unread++; });
       MINE={mine:mine,reps:reps,unread:unread}; paintAv(a); return MINE; }
-    async function pickPhoto(file,er){ var a=get(); if(!a) return; er.className='er'; er.textContent='Uploading\u2026';
+    async function pickPhoto(file,er,quiet){ var a=get(); if(!a) return; er.className='er'; er.textContent='Uploading\u2026';
       try{ var url=URL.createObjectURL(file); var img=await new Promise(function(res,rej){ var im=new Image(); im.onload=function(){ res(im); }; im.onerror=rej; im.src=url; });
         var S=256, cv=document.createElement('canvas'); cv.width=S; cv.height=S; var m=Math.min(img.width,img.height); cv.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S); URL.revokeObjectURL(url);
         var blob=await new Promise(function(res){ cv.toBlob(res,'image/jpeg',0.86); }); var tk=await fresh(a);
         var r=await fetch(C.u+'/storage/v1/object/avatars/'+a.user.id+'/avatar.jpg',{method:'POST',headers:{apikey:C.k,Authorization:'Bearer '+tk,'Content-Type':'image/jpeg','x-upsert':'true','cache-control':'3600'},body:blob}); if(!r.ok){ er.textContent=errOf(await J(r)); return; }
         var pub=C.u+'/storage/v1/object/public/avatars/'+a.user.id+'/avatar.jpg?v='+Date.now();
         var r2=await fetch(RS+'/profiles?id=eq.'+a.user.id,{method:'PATCH',headers:Object.assign(H(tk),{Prefer:'return=minimal'}),body:JSON.stringify({avatar_url:pub})}); if(!r2.ok){ er.textContent=errOf(await J(r2)); return; }
-        a=get(); a.avatar=pub; put(a); er.textContent=''; showMineUI(); }catch(x){ er.textContent='That photo couldn\u2019t be used \u2014 try a JPG or PNG'; } }
-    async function dropPhoto(er){ var a=get(); if(!a) return; try{ var tk=await fresh(a); await fetch(C.u+'/storage/v1/object/avatars/'+a.user.id+'/avatar.jpg',{method:'DELETE',headers:{apikey:C.k,Authorization:'Bearer '+tk}}); await fetch(RS+'/profiles?id=eq.'+a.user.id,{method:'PATCH',headers:Object.assign(H(tk),{Prefer:'return=minimal'}),body:JSON.stringify({avatar_url:null})}); a=get(); a.avatar=''; put(a); showMineUI(); }catch(x){ er.textContent='Could not reach the server'; } }
+        a=get(); a.avatar=pub; put(a); er.textContent=''; if(!quiet) showMineUI(); }catch(x){ er.textContent='That photo couldn\u2019t be used \u2014 try a JPG or PNG'; } }
+    async function dropPhoto(er,quiet){ var a=get(); if(!a) return; try{ var tk=await fresh(a); await fetch(C.u+'/storage/v1/object/avatars/'+a.user.id+'/avatar.jpg',{method:'DELETE',headers:{apikey:C.k,Authorization:'Bearer '+tk}}); await fetch(RS+'/profiles?id=eq.'+a.user.id,{method:'PATCH',headers:Object.assign(H(tk),{Prefer:'return=minimal'}),body:JSON.stringify({avatar_url:null})}); a=get(); a.avatar=''; put(a); if(!quiet) showMineUI(); }catch(x){ er.textContent='Could not reach the server'; } }
     /* seals: computed server-side by award_seals() for the signed-in reader; pins (≤3) ride profiles.seals */
     var SLD=null, SLE=null, SEALS=C.seals||[], SCOL={read:'#d8b46a',talk:'#8aaac8',kin:'#c9ccd3',lore:'#8fc0a4'};
     /* site telemetry for the signed-in reader (seals read it): same events table as the book, type 'site', user_id attached */
@@ -178,7 +178,11 @@
     setInterval(function(){ if(get()&&document.visibilityState==='visible'&&!ov.classList.contains('on')) loadMine().catch(function(){}); },120000);
     function inMons(){ try{ return !!(window.__covInMons&&window.__covInMons()); }catch(e){ return false; } }
     if(C.index) B.addEventListener('click',function(e){ var x=e.target&&e.target.closest&&e.target.closest('a[data-comp]'); if(!x) return; e.preventDefault(); if(!inMons()) return; close(); try{ if(window.__covOpenComp) window.__covOpenComp(x.getAttribute('data-comp')); }catch(_){} });
-    window.CovAcct={ open:function(){ pill.onclick(); }, google:google, signOut:async function(){ var a=get(); try{ if(a) await fetch(AU+'/logout',{method:'POST',headers:H(a.access_token)}); }catch(e){} put(null); LS('rb-name',null); } };
+    window.CovAcct={ open:function(){ pill.onclick(); }, google:google, signOut:async function(){ var a=get(); try{ if(a) await fetch(AU+'/logout',{method:'POST',headers:H(a.access_token)}); }catch(e){} put(null); LS('rb-name',null); },
+      /* used by the Council's YOU ▸ ACCOUNT card (the old account sheet is no longer reachable from the Council) */
+      photo:function(f,er){ return pickPhoto(f,er,true); }, dropPhoto:function(er){ return dropPhoto(er,true); },
+      reset:function(){ showReset(); var a=get(); var i=B.querySelector('input[type=email]'); if(i&&a&&a.user&&a.user.email) i.value=a.user.email; var bk=Array.prototype.filter.call(B.querySelectorAll('button.ln'),function(b){ return /Back to sign in/.test(b.textContent); })[0]; if(bk) bk.remove(); },
+      del:function(){ var a=get(); if(!a) return; var bl=acctBlock(a); var dz=bl[bl.length-1].querySelector('.dz'); if(!dz) return; dz.click(); ov.classList.add('on'); var bk=Array.prototype.filter.call(B.querySelectorAll('button.ln'),function(b){ return /Keep my account/.test(b.textContent); })[0]; if(bk) bk.onclick=close; } };
     paintPill(); loadMine().catch(function(){});
     if(!pend&&!get()&&LS('cov-auth-pending')) setTimeout(showHandle,400);
     if(C.index&&!window.__covDoorReturn&&!window.__covCouncilReturn) pend=null; /* a sign-in started inside the Compendium is finished by the Compendium itself; gate + Council returns are finished here */
