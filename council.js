@@ -86,7 +86,7 @@
    '#hc.light .ware .wn,#hc.light .bal .coin{color:#2b2418}#hc.light .ware .wd,#hc.light .bal{color:#6e634f}#hc.light .ware .wm{color:#8a7a5e}#hc.light .ware .wp .coin{color:#a8822e}#hc.light .ware{border-top-color:rgba(122,90,40,.14)}#hc.light .prof .tlb{color:#7a5a28}'+
    /* inline ink in innerHTML strings (titles, handles) */
    '#hc.light [style*="color:#e8ecf0"]{color:#2b2418!important}#hc.light [style*="color:#c88a8a"]{color:#a84848!important}'+
-   '@media (max-width:640px){#hc{font-size:16px}#hc .hd{padding:12px 14px 8px;row-gap:8px}#hc .hd .ttl{order:0}#hc .hd .x{order:1;margin-left:auto}#hc .hd .tabs{order:2;flex-basis:100%;margin-left:0}#hc .bd{padding:14px}#hc .ttl{font-size:17px;letter-spacing:.16em}#hc .tab{padding:5px 9px;font-size:11px}}';
+   '@media (max-width:640px){#hc{font-size:16px}#hc .hd{padding:12px 14px 8px;row-gap:8px}#hc .hd .ttl{order:0}#hc .hd .x{order:1;margin-left:auto;transform:translate(-5px,5px)}#hc .hd .tabs{order:2;flex-basis:100%;margin-left:0}#hc .bd{padding:14px}#hc .ttl{font-size:17px;letter-spacing:.16em}#hc .tab{padding:5px 9px;font-size:11px}}';
   document.head.appendChild(st);
   var root=null, BD=null, TABS=null, state={view:'boards',args:{},hist:[]}, ME=null, MEID='', ISMOD=false, UNREAD=0, OPENED=false;
   var NEEDME={messages:1,dm:1,you:1,mod:1,shop:1}; /* views that need an account; everything else is readable signed out */
