@@ -597,9 +597,12 @@
       var pb=el('button','ln','Profile'); pb.onclick=function(){ var q=PC[it.user_id||it.from_id]; if(q) go('profile',{h:q.handle}); }; row.appendChild(pb); c.appendChild(row); BD.appendChild(c); });
     BD.appendChild(el('div','sec','HIDDEN THREADS')); var hid=await _live(gen_,api('/threads?hidden=eq.true&select=id,title,board_id&order=last_at.desc&limit=50')); if(!hid.length) BD.appendChild(el('div','hint','None.')); hid.forEach(function(t){ var c=el('div','card cl'); c.textContent=t.title; c.onclick=function(){ go('thread',{id:t.id}); }; BD.appendChild(c); }); }
 
-  if(get()) setTimeout(function(){ ME=get(); MEID=ME?ME.user.id:''; perks(); sealCheck(); },1500); /* perks reach the site radial (shortcut) without opening the Council */
+  if(get()) setTimeout(function(){ ME=get(); MEID=ME?ME.user.id:''; perks(); sealCheck(); },1500);
+  /* PERKS FOLLOW THE SESSION (Nov 24 2026). They used to load only if the member was already signed in 1.5s after the page loaded, or once the Council was opened — so the Compendium Shortcut could be missing on the Relationship Web and then turn up after a visit to Mons Concordia. Now: loaded on sign-in, retried by the 90s tick, and wiped from the site radial on sign-out (it used to linger until a reload). */
+  window.addEventListener('cov-signed-in',function(){ setTimeout(function(){ try{ ME=get(); MEID=ME?ME.user.id:''; if(ME) perks(true); }catch(e){} },400); });
+  window.addEventListener('cov-signed-out',function(){ try{ window.covPerks=null; window.dispatchEvent(new CustomEvent('cov-perks',{detail:{}})); }catch(e){} }); /* perks reach the site radial (shortcut) without opening the Council */
   (function(){ var f=+(LS('cov-auth-council')||0); if(!CRET&&!(f&&Date.now()-f<15*60000)) return; if(get()){ CRET=false; LS('cov-auth-council',null); setTimeout(function(){ window.openCouncil(); },700); } /* else: the account runtime is still exchanging the Google tokens; cov-signed-in reopens the Council */ })();
   /* unread badge on the radial node while the Council is closed */
-  setTimeout(function tick(){ var a=get(); if(a){ ME=a; unreadMap().catch(function(){}); loadReps().then(paintBadge).catch(function(){}); countBadge(); } setTimeout(tick,90000); },4000);
+  setTimeout(function tick(){ var a=get(); if(a){ ME=a; if(!PERKS||PERKS.na){ try{ perks(true); }catch(e){} } unreadMap().catch(function(){}); loadReps().then(paintBadge).catch(function(){}); countBadge(); } setTimeout(tick,90000); },4000);
   window.__councilOpen=function(){ return OPENED; };
 })();
